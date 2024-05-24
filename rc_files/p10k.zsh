@@ -1,1 +1,0 @@
-/Users/anirudhgupta/.p10k.zsh
