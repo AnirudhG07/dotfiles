@@ -80,6 +80,7 @@
     "description": "Version control system Git. These are some commands you use in often.",
     "commands": [
       "git",
+      "lazygit",
       "git init",
       "git clone",
       "git add",

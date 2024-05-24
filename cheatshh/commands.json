@@ -2,586 +2,703 @@
   "ninvaders": {
     "description": "Space Invaders. It's actually pretty hard you know",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "moon-buggy": {
     "description": "Moon Buggy game in terminal. You don't wanna crash on moon, cause then there is no way back home!",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "nethack": {
     "description": "Just like Dungeons and Dragons, but of the terminal world. It's a classic.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "pacman4console": {
     "description": "Console version of the popular arcade game Pac-Man.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "bsdgames": {
     "description": "Collection of classic text games like tetris, snake, pong, hangman, and adventure.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "greed": {
     "description": "A game of consumption and survival on a grid.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "bastet": {
     "description": "A notoriously difficult version of Tetris.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "crawl": {
     "description": "Dungeon Crawl Stone Soup, a fun and highly addictive roguelike game.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "cmatrix": {
     "description": "Matrix style terminal effects. So cool!",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "sl": {
     "description": "Train passing through terminal",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "fortune": {
     "description": "Random fortune or a funny quote",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "cowsay": {
     "description": "Cow says something you want it to say. Try out various styles of cow",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "figlet": {
     "description": "ASCII text banner",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "toilet": {
     "description": "ASCII art in terminal",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "lolcat": {
     "description": "Colorful painter in terminal by a cat.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "asciiquarium": {
     "description": "Miss fishing? Well you can sure see fishes in terminal getting fished.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "pipes.sh": {
     "description": "Pipes in terminal",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "hollywood": {
     "description": "Hollywood style effects in terminal. Makes you a pro instantly!",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "edex-ui": {
     "description": "A cross-platform, customizable science fiction terminal emulator with advanced monitoring & touchscreen support. Make an alias to run the software.",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "bb": {
     "description": "Runs an ASCII art demo with music.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "nyancat": {
     "description": "Shows an animated ASCII Nyan Cat.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "btop": {
     "description": "A better top command. It is a task manager. ",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "neofetch": {
     "description": "A command line system information tool. It displays information about your system next to an image, your operating system logo, or any ASCII file of your choice.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "ncdu": {
     "description": "A disk usage analyzer with an ncurses interface.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "fdupes": {
     "description": "A program for identifying or deleting duplicate files residing within specified directories.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "df": {
     "description": "A command-line utility for reporting file system disk space usage.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "zoxide": {
     "description": "A faster way to navigate your filesystem. It acts as replacement for cd command.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "eza": {
     "description": "A simple and fast command-line file manager. It is a replacement for ls command.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "fzf": {
     "description": "A command-line fuzzy finder. It is used to search and open files. It is AMAZING once setup properly with key bindings and previews.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "bat": {
     "description": "A cat clone with wings. It is used to display file contents with syntax highlighting.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "wget": {
     "description": "A command-line utility for downloading files from the web.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "procs": {
     "description": "A modern replacement for ps written in Rust.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "rip": {
     "description": "You use rip instead of rm. You can recover files deleted by rip. Although later you can permanent delete too.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "gping": {
     "description": "A ping tool with a graph.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "cmus": {
     "description": "A small, fast and powerful console music player for Unix-like operating systems.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "hexdump": {
     "description": "A command-line utility that displays the contents of a file in hexadecimal, decimal, octal, or ASCII format.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "objdump": {
     "description": "Display information from object files. Mainly wanna use this for binary files like `objdump -d <file>`",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "file": {
     "description": "Determine file type and more information which is a must when reverse engineering binary files.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "exiftool": {
     "description": "Read meta information in files. It is very handy.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "chmod": {
     "description": "Change file permissions. You can use chmod +x <file> to make it executable.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "chown": {
     "description": "Change file owner and group.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "strings": {
     "description": "Print the strings of printable characters in files. It is very useful for reverse engineering.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "sshs": {
     "description": "A wrapper for ssh. It is used to manage ssh connections.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "pip install twine": {
     "description": " STEP 0: Install twine for uploading packages to pypi if you don't have.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "python setup.py sdist bdist_wheel": {
     "description": "STEP 1: Create a source distribution.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "pip install dist/<wheel_name>": {
     "description": "STEP 1.5: Install the package locally to test if it works. This is important!",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "twine upload dist/*": {
     "description": "STEP 2: Upload the distribution to PyPI. Add API token or username and password, if asked.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git": {
     "description": "The stupid content tracker",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git init": {
     "description": "Create an empty Git repository or reinitialize an existing one",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git clone": {
     "description": "Clone a repository into a new directory",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git add": {
     "description": "Add file contents to the index",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git commit": {
     "description": "Record changes to the repository",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git push": {
     "description": "Update remote refs along with associated objects",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git pull": {
     "description": "Fetch from and integrate with another repository or a local branch",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git log": {
     "description": "Show commit logs",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git status": {
     "description": "Show the working tree status",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git branch": {
     "description": "List, create, or delete branches",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git checkout": {
     "description": "Switch branches or restore working tree files",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git merge": {
     "description": "Join two or more development histories together",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git rebase": {
     "description": "Reapply commits on top of another base tip",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git reset": {
     "description": "Reset current HEAD to the specified state",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git revert": {
     "description": "Revert some existing commits",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git stash": {
     "description": "Stash the changes in a dirty working directory away",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git tag": {
     "description": "Create, list, delete or verify a tag object signed with GPG",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git fetch": {
     "description": "Download objects and refs from another repository",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git remote": {
     "description": "Manage set of tracked repositories",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git diff": {
     "description": "Show changes between commits, commit and working tree, etc",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git blame": {
     "description": "Show what revision and author last modified each line of a file",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git show": {
     "description": "Show various types of objects",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git grep": {
     "description": "Print lines matching a pattern",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git bisect": {
     "description": "Use binary search to find the commit that introduced a bug",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git reflog": {
     "description": "Manage reflog information",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "git cherry-pick": {
     "description": "Apply the changes introduced by some existing commits",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "lg": {
     "description": "LAZYGIT. Simple terminal UI for git commands. You use this for git no matter what!",
     "alias": "yes",
-    "group": "no"
+    "group": "yes",
+    "bookmark": "yes"
   },
   "code": {
     "description": "Open Visual Studio Code. You can use code . for current directory.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "nvim": {
     "description": "Open Neovim. You can use nvim <file> for opening file in neovim. Or nvim to enter neovim.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "tmux": {
     "description": "Terminal multiplexer. Create tmux session with $ tmux new -s <session_name>. Use $ tmux attach -t <session_name> to attach to session.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "less": {
     "description": "Less is more. It's a pager. You can use less <file> to open file in less. ",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "rm": {
     "description": "Remove files. rm *.<type> will delete all kinds of files. You can use rip instead of rm.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "rmdir": {
     "description": "Remove directory. rmdir <dir> will remove empty directory. For non-empty directory, use rm -rf <dir>.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "mkdir": {
     "description": "Make directory. mkdir <dir> will create a directory with name dir.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "touch": {
     "description": "Create a file. touch <file> will create a file with name file.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "mv": {
     "description": "Move files. mv <file> <dir> will move file to directory. mv <file1> <file2> will rename file1 to file2.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "cp": {
     "description": "Copy files. cp <file> <dir> will copy file to directory.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "cat": {
     "description": "Cat stands for concatenate. Cat <file> will show file contents. cat <file1> <file2> will concatenate file1 and file2.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "echo": {
     "description": "Echo. echo <string> will print string. echo 'string' > <file> will write string to file.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "grep": {
     "description": "Grep. grep <pattern> <file> will search for pattern in file.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "find": {
     "description": "Find. find <dir> -name <file> will search for file in directory.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "ls": {
     "description": "List. ls will list files in directory. ls -a will list all files including hidden files.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "cd": {
     "description": "Change directory. cd <dir> will change directory to dir. cd .. will go to parent directory.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "pwd": {
     "description": "Print working directory. pwd will show current directory.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "clear": {
     "description": "Clear screen. clear will clear the terminal screen. It basically jumps down but you can always scroll up to see previous commands and work.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "exit": {
     "description": "Exit. exit will close the terminal.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "whoami": {
     "description": "Who am I. whoami will show the current user.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "man": {
     "description": "Manual for each command. It provides a detailed view of the command.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "ghidra": {
     "description": "Software you use to decompile binary, see assembly code, and reverse engineer. It's amazing!",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "jadx": {
     "description": "Decompile APK files. It's a must for Android reverse engineering. Good search tools.",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "hexcurse": {
     "description": "Hex editor. Your favourite hex editor in terminal.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "lldb": {
     "description": "It's your mac debugger. GDB is better, but this works fine ig.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "gdb(in linux)": {
     "description": "GNU Debugger. It's your best friend when you are reverse engineering. Use in linux.",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "task": {
     "description": "It's your task manager. This makes your life so much easy! ",
     "alias": "no",
-    "group": "no"
+    "group": "no",
+    "bookmark": "no"
   },
   "llama": {
     "description": "Your made llama drawing for terminal.",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "eww": {
     "description": "SHIT in terminal! Come on bro, have manners.",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "cheatshh": {
     "description": "Your made command line cheatshheet. You know what it does!",
     "alias": "no",
-    "group": "no"
+    "group": "no",
+    "bookmark": "no"
   },
   "amuse_me": {
     "description": "Your alias for reminding you what games you can play. Don't be bored man, it's terminal, you love it!",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "espeak": {
     "description": "Espeak is ",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "moo": {
     "description": "cowsay | fortune. You want colour? moo | lolcat",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "dino": {
     "description": "dinosaur with fortune. You want colour? dino | lolcat",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "tux": {
     "description": "Tux with fortune. You want colour? tux | lolcat",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "fishing": {
     "description": "You old man still like fishin, eh? Well you got yourself an asciiquarium. ",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "tgpt": {
     "description": "tgpt is AI in terminal. Really cool. Lot's of models and best part, you can copy codes it generates as it is.",
     "alias": "no",
-    "group": "no"
+    "group": "no",
+    "bookmark": "no"
   },
   "bpytop": {
     "description": "bpytop is same as btop, but more coolourful and in python.",
     "group": "yes",
-    "alias": "no"
+    "alias": "no",
+    "bookmark": "no"
   },
   "lynx": {
     "description": "Web on terminal. You have view the website in terminal, with colours and featues!",
     "group": "Terminal tools",
-    "alias": "yes"
+    "alias": "yes",
+    "bookmark": "no"
   },
   "wtfutil": {
     "description": "Your Terminal dashboard! Set it according to your needs. ",
     "alias": "no",
-    "group": "no"
+    "group": "no",
+    "bookmark": "no"
   },
   "flask-unsign": {
     "description": "flask-unsign: For brute forcing on website. Eg. cookies",
     "alias": "yes",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "nmap": {
     "description": "nmap is for discovering hosts, ports, sending scripts there, etc. (for ssh atleast). Kinda useful",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   },
   "nnn": {
     "description": "nnn is useful, lot's of features, a lil ugly file manager for your terminal",
     "alias": "no",
-    "group": "yes"
+    "group": "yes",
+    "bookmark": "no"
   }
 }
