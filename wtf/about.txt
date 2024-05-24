@@ -1,0 +1,7 @@
+        ANIRUDH GUPTA
+
+OS: MacOS M1
+Terminal: iTerm
+Shell: zsh
+Text-editor: NeoVim, VS Code
+

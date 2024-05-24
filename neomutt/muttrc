@@ -1,0 +1,99 @@
+
+# Basic NeoMutt configuration
+
+# Set the real name and email address
+set realname = "Anirudh Gupta"
+set from = "anirudhgupta.ani0711@gmail.com"
+
+# Set your mailbox
+set spoolfile = "+inbox"
+set folder = "~/Mail"
+set record = "+sent"
+set postponed = "+drafts"
+set trash = "+trash"
+set header_cache = "~/.cache/neomutt"
+
+# IMAP/SMTP settings (example for Gmail)
+set imap_user = "anirudhgupta.ani0711@gmail.com"
+set imap_pass = "jrjkjvsggmm"
+
+set smtp_url = "smtp://anirudhgupta.ani0711@gmail.com@smtp.gmail.com:587/"
+set smtp_pass = "jrjkjvsggmm"
+
+# Mailboxes
+mailboxes +inbox +sent +drafts +trash
+
+# Sidebar configuration
+set sidebar_visible = yes
+set sidebar_width = 30
+set sidebar_short_path = yes
+set sidebar_indent_string = "  "
+set sidebar_format = "%B%* %?F? [%F]?%* %?N?%N/?%S"
+
+# Toggle sidebar visibility
+macro index,pager <F9> '<enter-command>toggle sidebar_visible<enter>' "Toggle sidebar"
+
+# Appearance and colors
+color header brightwhite black
+color quoted green black
+color signature red black
+color body brightwhite black
+color indicator brightblack cyan
+color attachment brightmagenta black
+
+# Customize status line
+set status_format = "%f %t %m %p %?l?%l?%> %?n?N? %?M?M?"
+
+# Highlight unread messages
+color index bold green default "~N"
+
+# Custom key bindings
+macro index,pager <space> '<next-page>' "Next page"
+macro index,pager <backspace> '<previous-page>' "Previous page"
+macro index,pager <F5> '<sync-mailbox>' "Refresh mailbox"
+macro index,pager <F7> '<change-folder>+inbox<enter>' "Go to inbox"
+macro index,pager <F8> '<change-folder>+sent<enter>' "Go to sent"
+macro index,pager <F12> 'q' "Quit NeoMutt"
+
+# Sorting and interactive search
+set sort = 'threads'
+set sort_aux = 'reverse-last-date-received'
+set auto_tag = yes
+
+macro index,pager / '<search>'
+
+# Attachments and external viewers
+auto_view text/html
+auto_view application/pdf
+
+set mailcap_path = "~/.config/neomutt/mailcap"
+set implicit_autoview = yes
+
+
+
+# Signature management
+set signature = "~/.config/neomutt/signature"
+
+# Different signatures for different accounts
+send-hook 'anirudhgupta.ani0711@gmail.com' 'set signature=~/.config/neomutt/signature1'
+send-hook 'anirudhgupta.mom@gmail.com' 'set signature=~/.config/neomutt/signature2'
+
+# Multiple accounts configuration
+account-hook anirudhgupta.ani0711@gmail.com 'set imap_user=anirudhgupta.ani0711@gmail.com imap_pass=jrjkjvsggmm'
+account-hook anirudhgupta.ani0711@gmail.com 'set smtp_url=smtp://anirudhgupta.ani0711@gmail.com@smtp.gmail.com:587/ smtp_pass=jrjkjvsggmm'
+
+account-hook anirudhgupta.mom@gmail.com 'set imap_user=anirudhgupta.mom@gmail.com imap_pass=jrmkbgjwgd'
+account-hook anirudhgupta.mom@gmail.com 'set smtp_url=smtp://anirudhgupta.mom@gmail.com@smtp.gmail.com:587/ smtp_pass=jrmkbgjwgd'
+
+# Notmuch integration
+set nm_default_uri = "notmuch:///home/anirudhgupta/Mail"
+macro index,pager "<Ctrl-f>" "<shell-escape>notmuch search --format=short %s<enter>" "Notmuch search"
+
+# Password security with GPG (optional)
+# Encrypt your password using gpg and store it in a file
+# echo "yourpassword" | gpg --encrypt -r your-gpg-key-id -o ~/.config/neomutt/password.gpg
+
+# In your muttrc, you can use:
+# source "gpg -dq ~/.config/neomutt/password.gpg |"
+# set imap_pass = $result
+# set smtp_pass = $result
