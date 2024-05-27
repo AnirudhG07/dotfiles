@@ -700,5 +700,29 @@
     "alias": "no",
     "group": "yes",
     "bookmark": "no"
+  },
+  "httpie":{
+    "description": "httpie is a command line HTTP client. It's friendlier than curl.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "blink":{
+    "description": "Blink is your x86_64 teeny tiny machine. You use it when you cant do VM or ssh. It's small so handly only small files.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "mc":{
+    "description": "Midnight Commander is a console file manager. It's a bit old school but it's good.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "yes"
+  },
+  "typespeed":{
+    "description": "Typespeed is a game to test your typing speed. It's fun to play with friends. It's fun and you can improve your typing speed.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
   }
 }

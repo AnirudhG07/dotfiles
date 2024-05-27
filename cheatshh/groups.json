@@ -151,7 +151,13 @@
       "hexcurse",
       "lldb",
       "gdb(in linux)",
-      "flask-unsigned"
+      "flask-unsigned",
+      "barpsuite",
+      "httpie"
     ]
+  },
+  "My Collection": {
+    "description": "My Cool Collection of cool commands I rarely use, just coolly collecting for my cool Terminal!",
+    "commands": ["nnn", "mc", "typespeed", "blink"]
   }
 }
