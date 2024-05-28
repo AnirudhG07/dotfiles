@@ -701,27 +701,69 @@
     "group": "yes",
     "bookmark": "no"
   },
-  "httpie":{
+  "httpie": {
     "description": "httpie is a command line HTTP client. It's friendlier than curl.",
     "alias": "no",
     "group": "yes",
     "bookmark": "no"
   },
-  "blink":{
+  "blink": {
     "description": "Blink is your x86_64 teeny tiny machine. You use it when you cant do VM or ssh. It's small so handly only small files.",
     "alias": "no",
     "group": "yes",
     "bookmark": "no"
   },
-  "mc":{
+  "mc": {
     "description": "Midnight Commander is a console file manager. It's a bit old school but it's good.",
     "alias": "no",
     "group": "yes",
     "bookmark": "yes"
   },
-  "typespeed":{
+  "typespeed": {
     "description": "Typespeed is a game to test your typing speed. It's fun to play with friends. It's fun and you can improve your typing speed.",
     "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "jwtui": {
+    "description": "jwtui is your jw tokens encoder decoder in your terminal. No need to go to web!",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "rizin": {
+    "description": "seriously cool reverse engineering tool with debuggers are hex.",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "silicon": {
+    "description": "Silicon is really beatiful code picture taking tool. Its i think number 2.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "toipe": {
+    "description": "Toipe is nice typing speed test for you. Fun Fact: The maximum speed i got was 2479.7 wpm. Guess how XD!",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "carbon-now": {
+    "description": "It creates beatiful code images. It is number 1 in list. Interactive versions there too. NOICE!!!",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "r2": {
+    "description": "radar2, the next level reverse engineering terminal tool. daddy of rizin!",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "sttr": {
+    "description": "sttr is a simple tool for lots of encoding decoding possibilities for a text, image, etc. Nice",
+    "alias": "yes",
     "group": "yes",
     "bookmark": "no"
   }

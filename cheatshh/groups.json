@@ -51,7 +51,6 @@
       "wget",
       "procs",
       "rip",
-      "gping",
       "cmus",
       "hexdump",
       "objdump",
@@ -153,11 +152,27 @@
       "gdb(in linux)",
       "flask-unsigned",
       "barpsuite",
-      "httpie"
+      "httpie",
+      "rizin",
+      "r2"
     ]
   },
   "My Collection": {
     "description": "My Cool Collection of cool commands I rarely use, just coolly collecting for my cool Terminal!",
-    "commands": ["nnn", "mc", "typespeed", "blink"]
+    "commands": [
+      "nnn",
+      "mc",
+      "typespeed",
+      "blink",
+      "gping",
+      "joshuto",
+      "jwtui",
+      "rizin",
+      "toipe",
+      "silicon",
+      "carbon-now",
+      "r2",
+      "sttr"
+    ]
   }
 }
