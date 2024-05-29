@@ -766,5 +766,11 @@
     "alias": "yes",
     "group": "yes",
     "bookmark": "no"
+  },
+  "faker": {
+    "description": "Make your own fake ID, address name, browser details, sha's, EVERYTHING, like literally everything! Damn!",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
   }
 }
