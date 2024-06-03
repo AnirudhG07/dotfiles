@@ -173,7 +173,8 @@
       "carbon-now",
       "r2",
       "sttr",
-      "faker"
+      "faker",
+      "asciinema"
     ]
   }
 }

@@ -772,5 +772,11 @@
     "alias": "yes",
     "group": "yes",
     "bookmark": "no"
+  },
+  "asciinema": {
+    "description": "Terminal session recorder. Really nice and lots of features.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
   }
 }
