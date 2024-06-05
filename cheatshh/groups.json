@@ -15,7 +15,6 @@
       "edex-ui",
       "llama",
       "eww",
-      "cheatshh",
       "amuse_me",
       "espeak",
       "moo",
@@ -176,5 +175,9 @@
       "faker",
       "asciinema"
     ]
+  },
+  "My Creations": {
+    "description": "My own creations CLI, maybe published, maybe personal.",
+    "commands": ["cheatshh", "typeinc"]
   }
 }

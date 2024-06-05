@@ -778,5 +778,11 @@
     "alias": "no",
     "group": "yes",
     "bookmark": "no"
+  },
+  "typeinc": {
+    "description": "Typeinc is a typing speed test tool. It's fun to play with friends. It's fun and you can improve your typing speed.",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
   }
 }
