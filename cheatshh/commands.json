@@ -692,7 +692,7 @@
   "nmap": {
     "description": "nmap is for discovering hosts, ports, sending scripts there, etc. (for ssh atleast). Kinda useful",
     "alias": "no",
-    "group": "yes",
+    "group": "cyber-ctf",
     "bookmark": "no"
   },
   "nnn": {
@@ -728,7 +728,7 @@
   "jwtui": {
     "description": "jwtui is your jw tokens encoder decoder in your terminal. No need to go to web!",
     "alias": "yes",
-    "group": "yes",
+    "group": "cyber-ctf",
     "bookmark": "no"
   },
   "rizin": {
@@ -782,6 +782,72 @@
   "typeinc": {
     "description": "Typeinc is a typing speed test tool. It's fun to play with friends. It's fun and you can improve your typing speed.",
     "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "sqlmap": {
+    "description": "Sqlmap is a really powerfull tool which lets out all SQL vulnerabilities, information and passwords,etc. depending on website security. You input BarpSuite Proxy info as txt file and Boom!",
+    "alias": "yes",
+    "group": "cyber-ctf",
+    "bookmark": "no"
+  },
+  "harlequin": {
+    "description": "Terminal IDE for database, mysql, sqlite, postgres, what not. Really cool and easy!",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "typeinc-mini": {
+    "description": "mini version of Typeinc, made for those with a bit of smaller screen.",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "dirsearch": {
+    "description": "Web path scanner for hidden sites within a website. Super awesome tool for CTF.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "pdftotext": {
+    "description": "This converts pdf to text in another file.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "mmls": {
+    "description": "Sleuthkit: for determining size taken by images, etc.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "srch_strings": {
+    "description": "Sleuthkit: for searching strings in images, etc.",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "zsteg": {
+    "description": "Steganography: A tool for png images",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "steghide": {
+    "description": "Steganography: For jpeg, wav, au, vmp files, etc.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "pngcheck": {
+    "description": "This checks the validity of png files.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "tshark": {
+    "description": "Tshark is command line WireShark.",
+    "alias": "no",
     "group": "yes",
     "bookmark": "no"
   }

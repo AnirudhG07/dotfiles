@@ -62,7 +62,8 @@
       "bpytop",
       "lynx",
       "nmap",
-      "nnn"
+      "nnn",
+      "pdftotext"
     ]
   },
   "Pypi publish": {
@@ -153,7 +154,17 @@
       "barpsuite",
       "httpie",
       "rizin",
-      "r2"
+      "r2",
+      "sqlmap",
+      "jwtui",
+      "nmap",
+      "dirsearch",
+      "mmls",
+      "srch_strings",
+      "zsteg",
+      "steghide",
+      "pngcheck",
+      "tshark"
     ]
   },
   "My Collection": {
@@ -173,11 +184,16 @@
       "r2",
       "sttr",
       "faker",
-      "asciinema"
+      "asciinema",
+      "harlequin"
     ]
   },
   "My Creations": {
     "description": "My own creations CLI, maybe published, maybe personal.",
-    "commands": ["cheatshh", "typeinc"]
+    "commands": [
+      "cheatshh",
+      "typeinc",
+      "typeinc-mini"
+    ]
   }
 }
