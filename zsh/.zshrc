@@ -1,6 +1,7 @@
 # Amazon Q pre block. Keep at the top of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
 task
+echo -e "\e[1;30mType '#' in beginning for AI command suggestions\e[0m"
 # Q pre block. Keep at the top of this file.
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -184,7 +185,8 @@ export BAT_THEME=tokyonight_night
 
 eval $(thefuck --alias)
 eval $(thefuck --alias shit)
-
+# Postgress@16 path 
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 # ---- Zoxide (better cd) ----
 eval "$(zoxide init zsh)"
 
@@ -214,11 +216,15 @@ alias cmds='tldr --list | fzf --preview "tldr {1} --color" --preview-window=righ
 
 alias ghidra='/Applications/ghidra_11.0.3_PUBLIC/ghidraRun'
 alias jadx='/Applications/jadx/bin/jadx-gui'
+alias barpsuite='open /Applications/Burp\ Suite\ Community\ Edition.app'
 alias wget="aria2c"
 alias lg='lazygit'
 alias vm='ssh -i /Applications/awsvm1.pem  ec2-user@ec2-13-200-254-231.ap-south-1.compute.amazonaws.com'
 alias c='clear'
 alias ppt='presenterm'
+alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
+./packmol'
+alias cheatshh='bash ~/.config/cheatshh/cheats.sh'
 ####################################################################
 
 # USELESS ALIASES
