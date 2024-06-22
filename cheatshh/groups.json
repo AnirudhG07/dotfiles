@@ -61,7 +61,6 @@
       "sshs",
       "bpytop",
       "lynx",
-      "nmap",
       "nnn",
       "pdftotext"
     ]
@@ -164,7 +163,8 @@
       "zsteg",
       "steghide",
       "pngcheck",
-      "tshark"
+      "tshark",
+      "hashcat"
     ]
   },
   "My Collection": {
@@ -172,6 +172,7 @@
     "commands": [
       "nnn",
       "mc",
+      "yazi",
       "typespeed",
       "blink",
       "gping",
@@ -190,10 +191,6 @@
   },
   "My Creations": {
     "description": "My own creations CLI, maybe published, maybe personal.",
-    "commands": [
-      "cheatshh",
-      "typeinc",
-      "typeinc-mini"
-    ]
+    "commands": ["cheatshh", "typeinc", "typeinc-mini"]
   }
 }

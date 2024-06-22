@@ -717,7 +717,7 @@
     "description": "Midnight Commander is a console file manager. It's a bit old school but it's good.",
     "alias": "no",
     "group": "yes",
-    "bookmark": "yes"
+    "bookmark": "no"
   },
   "typespeed": {
     "description": "Typespeed is a game to test your typing speed. It's fun to play with friends. It's fun and you can improve your typing speed.",
@@ -850,5 +850,17 @@
     "alias": "no",
     "group": "yes",
     "bookmark": "no"
+  },
+  "hashcat": {
+    "description": "hashcat is next level password cracker. ",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "yazi": {
+    "description": "Yazi is my favourite terminal file maneger. It's really cool and easy to use.",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "yes"
   }
 }
