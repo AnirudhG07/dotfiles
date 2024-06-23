@@ -1,7 +1,8 @@
 # My configuration of MacOS
 
 My personal files and yehaaa!
-
+<br>
+Stow branch contains all the files which can be stowed. The master branch may contain them as well as other configs or my .config files. Althought the `stow` branch is the MOST IMPORTANT ONE.
 ## Neovim
 
 Neovim contents are stored in a seperate branch on the repo called `nvim`. Simply download the branch and do
@@ -35,6 +36,7 @@ Zsh and p10k setup on terminal from your `.zshrc` and `.p10k.zsh` by-
 ```bash
 stow zsh p10k.zsh
 ```
+## .etc
 
 # Setup Tips
 
