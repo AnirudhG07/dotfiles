@@ -280,7 +280,7 @@ keymap = [
 	{ on = [ "<Up>" ],   run = "arrow -1", desc = "Move cursor up" },
 	{ on = [ "<Down>" ], run = "arrow 1",  desc = "Move cursor down" },
 
-	{ on = [ "<C-p>" ], run = "arrow -1", desc = "Move cursor up" },
+	{ on = [ "<C-m>" ], run = "arrow -1", desc = "Move cursor up" },
 	{ on = [ "<C-n>" ], run = "arrow 1",  desc = "Move cursor down" },
 
 	{ on = [ "~" ], run = "help", desc = "Open help" }
@@ -322,3 +322,29 @@ on   = [ "B" ]
 run  = "plugin --sync hide-preview"
 desc = "hide preview window"
 
+## SHell Opener
+[[manager.prepend_keymap]]
+on   = [ "<C-s>" ]
+run  = 'shell "$SHELL" --block --confirm'
+desc = "Open shell here"
+
+[[manager.prepend_keymap]]
+on  = [ "k" ]
+run = "plugin --sync arrow --args=-1"
+
+[[manager.prepend_keymap]]
+on  = [ "j" ]
+run = "plugin --sync arrow --args=1"
+
+[[manager.prepend_keymap]]
+on  = [ "K" ]
+run = "plugin --sync parent-arrow --args=-1"
+
+[[manager.prepend_keymap]]
+on  = [ "J" ]
+run = "plugin --sync parent-arrow --args=1"
+
+[[manager.prepend_keymap]]
+on   = [ "<C-p>" ]
+run  = "plugin --sync smart-paste"
+desc = "Paste into the hovered directory or CWD"
