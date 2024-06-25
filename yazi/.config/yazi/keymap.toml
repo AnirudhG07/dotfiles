@@ -260,7 +260,7 @@ keymap = [
 	{ on = [ "P" ], run = "paste --before", desc = "Paste the copied characters before the cursor" },
 
 	# Undo/Redo
-	{ on = [ "u" ],     run = "undo", desc = "Undo the last operation" },
+	{ on = [ "u", "u" ],     run = "undo", desc = "Undo the last operation" },
 	{ on = [ "<C-r>" ], run = "redo", desc = "Redo the last operation" },
 
 	# Help
@@ -367,4 +367,25 @@ desc = "Delete a bookmark"
 [[manager.prepend_keymap]]
 on = [ "b", "D" ]
 run = "plugin bookmarks --args=delete_all"
+desc = "Delete all bookmarks"
+
+## Bookmark persistence
+[[manager.prepend_keymap]]
+on = [ "u", "a" ]
+run = "plugin bookmarks-persistence --args=save"
+desc = "Save current position as a bookmark"
+
+[[manager.prepend_keymap]]
+on = [ "u", "g" ]
+run = "plugin bookmarks-persistence --args=jump"
+desc = "Jump to a bookmark"
+
+[[manager.prepend_keymap]]
+on = [ "u", "d" ]
+run = "plugin bookmarks-persistence --args=delete"
+desc = "Delete a bookmark"
+
+[[manager.prepend_keymap]]
+on = [ "u", "D" ]
+run = "plugin bookmarks-persistence --args=delete_all"
 desc = "Delete all bookmarks"

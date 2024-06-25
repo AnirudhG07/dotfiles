@@ -14,9 +14,9 @@ show_symlink   = true
 scrolloff      = 5
 
 [preview]
-tab_size        = 2
-max_width       = 600
-max_height      = 900
+tab_size        = 3
+max_width       = 1200
+max_height      = 1800
 cache_dir       = ""
 image_filter    = "triangle"
 image_quality   = 75
@@ -27,11 +27,13 @@ ueberzug_offset = [ 0, 0, 0, 0 ]
 [opener]
 edit = [
 	{ run = '${EDITOR:=vi} "$@"', desc = "$EDITOR", block = true, for = "unix" },
+  { run = 'code "$@"',          desc = "VS Code",     block = false, for = "unix" },
 	{ run = 'code "%*"',    orphan = true, desc = "code",         for = "windows" },
 	{ run = 'code -w "%*"', block = true,  desc = "code (block)", for = "windows" },
 ]
 open = [
 	{ run = 'xdg-open "$@"',                desc = "Open", for = "linux" },
+  { run = 'code "$@"',                     desc = "VS Code", for = "linux" },
 	{ run = 'open "$@"',                    desc = "Open", for = "macos" },
 	{ run = 'start "" "%1"', orphan = true, desc = "Open", for = "windows" },
 ]
