@@ -1,0 +1,49 @@
+## Configuration file for cheatshh. This was setup on MacOS. Please read the comments carefully before making any changes.
+## Do not change the Default values mentioned unless you know what you are doing.
+
+[settings]
+
+    # Add the shell command for copying command like xclip, pbcopy, etc. (including flags if you like)
+    ## Template: `printf "text"| $copy_command`
+    copy_command = "pbcopy" # Default: "pbcopy"
+
+    # Display the number of groups in whiptail dialog
+    ## Keep the below number small enough to fit in whiptail dialog, else it may produce error.
+    display_group_number = 10 # Default: 10
+
+    # Automatically display man pages in preview without using the -m flag
+    man_pages = false # Default: false
+
+    ## Location of storage of commands.json & groups.json
+    ### PLEASE NOTE: cheats.sh & cheatshh.toml will remain in ~/.config/cheatshh. Do not change it's PATH
+    cheatshh_home = "~/.config/cheatshh" # Default: "~/.config/cheatshh"
+
+    ## Other Cheatsheets(predownloaded) you would like to you use Apart from TLDR like cheat.sh, bropages, etc 
+    ## Template: `$ notes command_name`. Color flag is present in TLDR, add suitable flags for any other.
+    notes = "tldr --color" # DEFAULT: "tldr --color"
+
+    ## Allow full display of commands with groups in the fzf - ("on"/"off"). Example group_name/group_command
+    full_display = "on" # Default: "on"
+
+    ## Preview width - Changing the width of the preview window. It is recommended to not change this.
+    preview_width = 70 # Default: 70
+
+[color_scheme]
+
+## Define color codes, please use the color codes mentioned below(make sure they are supported by your terminal
+# CYAN='\\033[0;36m'
+# YELLOW='\\033[0;33m'
+# RED='\\033[0;31m'
+# GREEN='\\033[0;32m'
+# BLUE='\\033[0;34m'
+# MAGENTA='\\033[0;35m'
+# WHITE='\\033[0;37m'
+# BLACK='\\033[0;30m'
+# PURPLE='\\033[0;35m'
+# ORANGE='\\033[0;33m'
+# If you would like some other color, please add their color code on your own. Thank you!
+
+    # Color for the title in preview
+    title_color = "\\033[0;36m" # Default: "\\033[0;36m"
+    # Color for About and Command/Group name in preview
+    about_color = "\\033[0;33m" # Default: "\\033[0;33m"
