@@ -164,7 +164,8 @@
       "steghide",
       "pngcheck",
       "tshark",
-      "hashcat"
+      "hashcat",
+      "hexyl"
     ]
   },
   "My Collection": {
@@ -186,11 +187,17 @@
       "sttr",
       "faker",
       "asciinema",
-      "harlequin"
+      "harlequin",
+      "glow",
+      "miller"
     ]
   },
   "My Creations": {
     "description": "My own creations CLI, maybe published, maybe personal.",
-    "commands": ["cheatshh", "typeinc", "typeinc-mini"]
+    "commands": [
+      "cheatshh",
+      "typeinc",
+      "typeinc-mini"
+    ]
   }
 }

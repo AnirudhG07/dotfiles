@@ -862,5 +862,23 @@
     "alias": "no",
     "group": "yes",
     "bookmark": "yes"
+  },
+  "glow": {
+    "description": "glow is super beautiful markdown preview tool",
+    "alias": "no",
+    "group": "yes",
+    "bookmark": "no"
+  },
+  "hexyl": {
+    "description": "hexyl is a good enough hex viewer and editor",
+    "alias": "yes",
+    "group": "cyber-ctf",
+    "bookmark": "no"
+  },
+  "miller": {
+    "description": "miller is a good csv previewer ",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
   }
 }
