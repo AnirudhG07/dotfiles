@@ -90,6 +90,17 @@ preloaders = [
 	# PDF
 	{ mime = "application/pdf", run = "pdf" },
 ]
+prepend_previewers = [
+  { mime = "text/csv", run = "miller"},
+  { mime = "application/*zip",            run = "ouch" },
+	{ mime = "application/x-tar",           run = "ouch" },
+	{ mime = "application/x-bzip2",         run = "ouch" },
+	{ mime = "application/x-7z-compressed", run = "ouch" },
+	{ mime = "application/x-rar",           run = "ouch" },
+	{ mime = "application/x-xz",            run = "ouch" },
+  { name = "*.md", run = "glow" },
+  { mime = "audio/*", run = "exifaudio"},
+]
 previewers = [
 	{ name = "*/", run = "folder", sync = true },
 	# Code
@@ -110,7 +121,9 @@ previewers = [
 	# Fallback
 	{ name = "*", run = "file" },
 ]
-
+append_previewers = [
+  { name = "*", run = "hexyl" },
+]
 [input]
 # cd
 cd_title  = "Change directory:"
