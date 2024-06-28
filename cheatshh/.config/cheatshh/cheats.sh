@@ -28,7 +28,7 @@ about_color=$(getConfigValue "color_scheme" "about_color")
 # function for displaying group names when needed
 get_group_names() {
   group_names=$(jq -r 'keys[]' "$cheatshh_json/groups.json")
-  group_names=$(echo "$group_names" | head -n $display_group_numberx | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
+  group_names=$(echo "$group_names" | head -n $display_group_number | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
 
   if [ $(jq -r 'keys | length' "$cheatshh_json/groups.json") -gt $display_group_number ]; then
     group_names="$group_names, ..."
@@ -408,7 +408,7 @@ display_preview() {
     while IFS= read -r group_name; do
         # Step 2: For each group, fetch commands and format them as "group_name/command_name"
         jq -r --arg group_name "$group_name" '.[$group_name].commands[] | "\($group_name)/\(.)"' "$cheatshh_json/groups.json"
-    done < <(jq -r 'keys[]' "$cheatshh_json/groups.json") > "$cheatshh_json/grouped_commands.txt"
+    done < <(jq -r 'keys[]' "$cheatshh_json/groups.json") > "${cheatshh_json}/grouped_commands.txt"
 
     # Fetch commands that are not part of any group (assuming commands.json structure and logic for this)
     commands=$(jq -r 'to_entries[] | select(.value.bookmark == "yes" or (.value.bookmark == "no" and .value.group == "no")) | .key' "$cheatshh_json/commands.json")
@@ -417,7 +417,7 @@ display_preview() {
     groups=$(jq -r 'keys[]' "$cheatshh_json/groups.json")
 
     # Combine commands, grouped_commands (from file), and groups
-    display_feat=$(echo -e "$commands\n$groups\n$(cat "$cheatshh_json/grouped_commands.txt")")
+    display_feat=$(echo -e "$commands\n$groups\n$(cat "${cheatshh_json}/grouped_commands.txt")")
   elif [ "$full_display" == "off" ]; then
       commands=$(jq -r 'to_entries[] | select(.value.bookmark == "yes" or (.value.bookmark == "no" and .value.group == "no")) | .key' "$cheatshh_json/commands.json")  groups=$(jq -r 'keys[]' "$cheatshh_json/groups.json")
       display_feat=$(echo -e "$commands\n$groups")
@@ -517,10 +517,10 @@ display_preview() {
               bookmark=$(jq -r --arg cmd "$selected" '.[$cmd].bookmark' "$cheatshh_json/commands.json")
               if [ "$bookmark" = "yes" ]; then
                   # If it is, remove the bookmark
-                  jq --arg cmd "$selected" '.[$cmd].bookmark = "no"' "$cheatshh_json/commands.json" > /tmp/commands.json && mv /tmp/commands.json "$cheatshh_json/commands.json"
+                  jq --arg cmd "$selected" '.[$cmd].bookmark = "no"' "$cheatshh_json/commands.json" > "$cheatshh_json/tmp/commands.json" && mv "$cheatshh_json/tmp/commands.json" "$cheatshh_json/commands.json"
               else
                   # If it isn't, add the bookmark
-                  jq --arg cmd "$selected" '.[$cmd].bookmark = "yes"' "$cheatshh_json/commands.json" > /tmp/commands.json && mv /tmp/commands.json "$cheatshh_json/commands.json"
+                  jq --arg cmd "$selected" '.[$cmd].bookmark = "yes"' "$cheatshh_json/commands.json" > "$cheatshh_json/tmp/commands.json" && mv "$cheatshh_json/tmp/commands.json" "$cheatshh_json/commands.json"
               fi
               ;;
           esac
@@ -590,10 +590,10 @@ display_group_commands() {
             bookmark=$(jq -r --arg cmd "$selected" '.[$cmd].bookmark' "$cheatshh_json/commands.json")
             if [ "$bookmark" = "yes" ]; then
                 # If it is, remove the bookmark
-                jq --arg cmd "$selected" '.[$cmd].bookmark = "no"' "$cheatshh_json/commands.json" > /tmp/commands.json && mv /tmp/commands.json "$cheatshh_json/commands.json"
+                jq --arg cmd "$selected" '.[$cmd].bookmark = "no"' "$cheatshh_json/commands.json" > "$cheatshh_json/tmp/commands.json" && mv "$cheatshh_json/tmp/commands.json" "$cheatshh_json/commands.json"
             else
                 # If it isn't, add the bookmark
-                jq --arg cmd "$selected" '.[$cmd].bookmark = "yes"' "$cheatshh_json/commands.json" > /tmp/commands.json && mv /tmp/commands.json "$cheatshh_json/commands.json"
+                jq --arg cmd "$selected" '.[$cmd].bookmark = "yes"' "$cheatshh_json/commands.json" > "$cheatshh_json/tmp/commands.json" && mv "$cheatshh_json/tmp/commands.json" "$cheatshh_json/commands.json"
             fi
             ;;
         esac
@@ -651,7 +651,7 @@ case "$@" in
     delete_group
     ;;
   *'-v'*|*'--version'*)
-    echo "cheatshh --version 1.0.7"
+    echo "cheatshh --version 1.1.1"
     enter_loop=false
     ;;
   *'-h'*|*'--help'*)
