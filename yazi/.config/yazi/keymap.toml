@@ -445,3 +445,11 @@ desc = "Keyjump (Select mode)"
 on   = [ "i", "g" ]
 run  = "plugin keyjump --args=global"
 desc = "Keyjump (Global mode)"
+
+## Drag and Drop functionality using Finder
+[[manager.prepend_keymap]]
+on  = [ "<C-n>" ]
+run = '''
+	shell 'open -R "$1"' --confirm
+'''
+
