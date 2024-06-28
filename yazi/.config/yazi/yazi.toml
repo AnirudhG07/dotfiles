@@ -121,9 +121,9 @@ previewers = [
 	# Fallback
 	{ name = "*", run = "file" },
 ]
-append_previewers = [
-  { name = "*", run = "hexyl" },
-]
+#append_previewers = [
+#  { name = "*", run = "hexyl" },
+#]
 [input]
 # cd
 cd_title  = "Change directory:"

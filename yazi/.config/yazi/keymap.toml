@@ -419,7 +419,7 @@ run  = "plugin diff"
 desc = "Diff the selected with the hovered file"
 
 [[manager.prepend_keymap]]
-on = [ "L" ]
+on = [ "l" ]
 run = "plugin bypass --args=smart_enter"
 desc = "Recursively enter child directory, skipping children with only a single subdirectory"
 [[manager.prepend_keymap]]
