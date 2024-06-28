@@ -1,14 +1,3 @@
-local function splitAndGetFirst(inputstr, sep)
-	if sep == nil then
-		sep = "%s"
-	end
-	local sepStart, sepEnd = string.find(inputstr, sep)
-	if sepStart then
-		return string.sub(inputstr, 1, sepStart - 1)
-	end
-	return inputstr
-end
-
 local state = ya.sync(function()
 	return tostring(cx.active.current.cwd)
 end)
@@ -23,9 +12,8 @@ local function entry(_, args)
 	local shell_value = os.getenv("SHELL"):match(".*/(.*)")
 	local cmd_args = ""
 	if args[1] == nil then
-		cmd_args = [[~/.config/cheatshh/cheats.sh]]
-	elseif args[1] == "a" then
-		cmd_args = [[~/.config/cheatshh/cheats.sh -a]]
+		cmd_args = [[cheatshh]]
+		-- All the flags are -a, -g, -ec, -eg, -dc, -dg, -m, simply we have to run cheatshh -flag.
 	end
 	local child, err = Command(shell_value)
 		:args({ "-c", cmd_args })

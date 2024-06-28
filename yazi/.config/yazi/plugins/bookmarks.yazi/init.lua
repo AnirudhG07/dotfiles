@@ -14,13 +14,15 @@ local SUPPORTED_KEYS = {
 	{ on = "u"}, { on = "v"}, { on = "w"}, { on = "x"}, { on = "y"}, { on = "z"},
 }
 
-local _send_notification = ya.sync(function(state, message)
-	ya.notify({
-		title = "Bookmarks",
-		content = message,
-		timeout = state.notify.timeout,
-	})
-end)
+local _send_notification = ya.sync(
+	function(state, message)
+		ya.notify {
+			title = "Bookmarks",
+			content = message,
+			timeout = state.notify.timeout,
+		}
+	end
+)
 
 local _get_real_index = ya.sync(function(state, idx)
 	for key, value in pairs(state.bookmarks) do
@@ -187,7 +189,7 @@ return {
 		end
 
 		if action == "save" then
-			local key = ya.which({ cands = SUPPORTED_KEYS, silent = true })
+			local key = ya.which { cands = SUPPORTED_KEYS, silent = true }
 			if key then
 				save_bookmark(key)
 			end
@@ -199,7 +201,7 @@ return {
 		end
 
 		local bookmarks = all_bookmarks(action == "jump")
-		local selected = #bookmarks > 0 and ya.which({ cands = bookmarks })
+		local selected = #bookmarks > 0 and ya.which { cands = bookmarks }
 		if not selected then
 			return
 		end

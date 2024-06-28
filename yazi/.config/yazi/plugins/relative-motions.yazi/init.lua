@@ -37,15 +37,13 @@ local SHOW_NUMBERS_RELATIVE_ABSOLUTE = 2
 local render_motion_setup = ya.sync(function()
 	ya.render()
 
-	Status.motion = function()
-		return ui.Span("")
-	end
+	Status.motion = function() return ui.Span("") end
 
 	Status.render = function(self, area)
 		self.area = area
 
-		local left = ui.Line({ self:mode(), self:size(), self:name() })
-		local right = ui.Line({ self:motion(), self:permissions(), self:percentage(), self:position() })
+		local left = ui.Line { self:mode(), self:size(), self:name() }
+		local right = ui.Line { self:motion(), self:permissions(), self:percentage(), self:position() }
 		return {
 			ui.Paragraph(area, { left }),
 			ui.Paragraph(area, { right }):align(ui.Paragraph.RIGHT),
@@ -71,12 +69,12 @@ local render_motion = ya.sync(function(_, motion_num, motion_cmd)
 			motion_span = ui.Span(string.format(" %3d%s ", motion_num, motion_cmd)):style(style)
 		end
 
-		return ui.Line({
+		return ui.Line {
 			ui.Span(THEME.status.separator_open):fg(style.bg),
 			motion_span,
 			ui.Span(THEME.status.separator_close):fg(style.bg),
 			ui.Span(" "),
-		})
+		}
 	end
 end)
 
@@ -125,7 +123,7 @@ local render_numbers = ya.sync(function(_, mode)
 
 		local items, markers = {}, {}
 		for i, f in ipairs(files) do
-			items[#items + 1] = ui.ListItem(ui.Line(ya.flat({ File:number(i, f, hovered_index), File:full(f) })))
+			items[#items + 1] = ui.ListItem(ui.Line(ya.flat { File:number(i, f, hovered_index), File:full(f) }))
 				:style(File:style(f))
 
 			-- Yanked/marked/selected files
@@ -135,25 +133,21 @@ local render_numbers = ya.sync(function(_, mode)
 			end
 		end
 
-		return ya.flat({
+		return ya.flat {
 			ui.List(area, items),
 			Folder:linemode(area, files),
 			Folder:markers(area, markers),
-		})
+		}
 	end
 end)
 
-local function render_clear()
-	render_motion()
-end
+local function render_clear() render_motion() end
 
 -----------------------------------------------
 --------- C O M M A N D   P A R S E R ---------
 -----------------------------------------------
 
-local get_keys = ya.sync(function(state)
-	return state._only_motions and MOTION_KEYS or MOTIONS_AND_OP_KEYS
-end)
+local get_keys = ya.sync(function(state) return state._only_motions and MOTION_KEYS or MOTIONS_AND_OP_KEYS end)
 
 local function normal_direction(dir)
 	if dir == "<Down>" then
@@ -170,7 +164,7 @@ local function get_cmd(first_char, keys)
 
 	while true do
 		render_motion(tonumber(lines))
-		local key = ya.which({ cands = keys, silent = true })
+		local key = ya.which { cands = keys, silent = true }
 		if not key then
 			return nil, nil, nil
 		end
@@ -192,7 +186,7 @@ local function get_cmd(first_char, keys)
 		DIRECTION_KEYS[#DIRECTION_KEYS + 1] = {
 			on = last_key,
 		}
-		local direction_key = ya.which({ cands = DIRECTION_KEYS, silent = true })
+		local direction_key = ya.which { cands = DIRECTION_KEYS, silent = true }
 		if not direction_key then
 			return nil, nil, nil
 		end
@@ -214,9 +208,7 @@ local function is_tab_command(command)
 	return false
 end
 
-local get_active_tab = ya.sync(function(_)
-	return cx.tabs.idx
-end)
+local get_active_tab = ya.sync(function(_) return cx.tabs.idx end)
 
 -----------------------------------------------
 ---------- E N T R Y   /   S E T U P ----------

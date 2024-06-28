@@ -404,13 +404,9 @@ run  = "plugin fg"
 desc = "find file by content (fuzzy match)"
 
 [[manager.prepend_keymap]]
-on   = [ "c","H" ]
+on   = [ "c","h" ]
 run  = "plugin cheatshh"
 desc = "Yazi cheatshh"
-[[manager.prepend_keymap]]
-on   = [ "c","a",]
-run  = "plugin cheatshh --args='a'"
-desc = "Yazi cheatshh add"
 
 ## diff.yazi
 [[manager.prepend_keymap]]
@@ -427,7 +423,25 @@ on = [ "H" ]
 run = "plugin bypass --args=reverse"
 desc = "Recursively enter parent directory, skipping parents with only a single subdirectory"
 
+#[[manager.prepend_keymap]]
+#on = [ "r", "m" ]
+#run = "plugin relative-motions"
+#desc = "Trigger a new relative motion"
+
+# Keyjump.yazi
 [[manager.prepend_keymap]]
-on = [ "r", "m" ]
-run = "plugin relative-motions"
-desc = "Trigger a new relative motion"
+on   = [ "i", "k" ]
+run  = "plugin keyjump --args=keep"
+desc = "Keyjump (Keep mode)"
+[[manager.prepend_keymap]]
+on   = [ "i", "n" ]
+run  = "plugin keyjump"
+desc = "Keyjump (Normal mode)"
+[[manager.prepend_keymap]]
+on   = [ "i", "s" ]
+run  = "plugin keyjump --args=select"
+desc = "Keyjump (Select mode)"
+[[manager.prepend_keymap]]
+on   = [ "i", "g" ]
+run  = "plugin keyjump --args=global"
+desc = "Keyjump (Global mode)"
