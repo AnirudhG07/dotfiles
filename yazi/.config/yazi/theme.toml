@@ -1,3 +1,5 @@
+[flavor]
+use = "catppuccin-mocha"
 [icon]
 files = [
 	{ name = ".babelrc", text = "", fg_dark = "#f9e2af", fg_light = "#40a02b" },
@@ -502,7 +504,7 @@ exts = [
 	{ name = "tfvars", text = "", fg_dark = "#89b4fa", fg_light = "#8839ef" },
 	{ name = "tgz", text = "", fg_dark = "#fab387", fg_light = "#df8e1d" },
 	{ name = "tmux", text = "", fg_dark = "#a6e3a1", fg_light = "#40a02b" },
-	{ name = "toml", text = "", fg_dark = "#fab387", fg_light = "#d20f39" },
+	{ name = "toml", text = "", fg_dark = "#fab387", fg_light = "#d20f39" },
 	{ name = "torrent", text = "", fg_dark = "#94e2d5", fg_light = "#179299" },
 	{ name = "tres", text = "", fg_dark = "#7f849c", fg_light = "#6c6f85" },
 	{ name = "ts", text = "", fg_dark = "#74c7ec", fg_light = "#179299" },

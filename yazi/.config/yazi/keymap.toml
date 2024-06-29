@@ -453,3 +453,7 @@ run = '''
 	shell 'open -R "$1"' --confirm
 '''
 
+desc = "Open file in Finder to drag and drop"
+[[manager.prepend_keymap]]
+on  = [ ":" ]
+run = "plugin zsh"
