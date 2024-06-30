@@ -452,8 +452,12 @@ on  = [ "<C-n>" ]
 run = '''
 	shell 'open -R "$1"' --confirm
 '''
-
 desc = "Open file in Finder to drag and drop"
+## Testing plugin for understanding
+[[manager.prepend_keymap]]
+on  = [ "e", "e" ]
+run = "plugin test"
+desc  = "Test plugin"
 [[manager.prepend_keymap]]
 on  = [ ":" ]
-run = "plugin zsh"
+run = "plugin custom-shell --args=auto"
