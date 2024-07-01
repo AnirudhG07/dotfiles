@@ -348,45 +348,25 @@ run = "plugin --sync parent-arrow --args=1"
 on   = [ "<C-p>" ]
 run  = "plugin --sync smart-paste"
 desc = "Paste into the hovered directory or CWD"
-## Bookmark
-[[manager.prepend_keymap]]
-on = [ "b", "s" ]
-run = "plugin bookmarks --args=save"
-desc = "Save current position as a bookmark"
-
-[[manager.prepend_keymap]]
-on = [ "'" ]
-run = "plugin bookmarks --args=jump"
-desc = "Jump to a bookmark"
-
-[[manager.prepend_keymap]]
-on = [ "b", "d" ]
-run = "plugin bookmarks --args=delete"
-desc = "Delete a bookmark"
-
-[[manager.prepend_keymap]]
-on = [ "b", "D" ]
-run = "plugin bookmarks --args=delete_all"
-desc = "Delete all bookmarks"
 
 ## Bookmark persistence
 [[manager.prepend_keymap]]
-on = [ "u", "a" ]
+on = [ "b", "a" ]
 run = "plugin bookmarks-persistence --args=save"
 desc = "Save current position as a bookmark"
 
 [[manager.prepend_keymap]]
-on = [ "u", "g" ]
+on = [ "b", "g" ]
 run = "plugin bookmarks-persistence --args=jump"
 desc = "Jump to a bookmark"
 
 [[manager.prepend_keymap]]
-on = [ "u", "d" ]
+on = [ "b", "d" ]
 run = "plugin bookmarks-persistence --args=delete"
 desc = "Delete a bookmark"
 
 [[manager.prepend_keymap]]
-on = [ "u", "D" ]
+on = [ "b", "D" ]
 run = "plugin bookmarks-persistence --args=delete_all"
 desc = "Delete all bookmarks"
 
