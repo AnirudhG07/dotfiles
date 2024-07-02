@@ -9,3 +9,4 @@ mc
 meli
 asciinema
 cheatshh/.config/cheatshh/grouped_commands.txt
+nvim/.config/nvim/lua/anirudh/plugins/autosave.lua
