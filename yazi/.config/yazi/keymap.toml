@@ -351,22 +351,22 @@ desc = "Paste into the hovered directory or CWD"
 
 ## Bookmark persistence
 [[manager.prepend_keymap]]
-on = [ "b", "a" ]
+on = [ "u", "a" ]
 run = "plugin bookmarks-persistence --args=save"
 desc = "Save current position as a bookmark"
 
 [[manager.prepend_keymap]]
-on = [ "b", "g" ]
+on = [ "u", "g" ]
 run = "plugin bookmarks-persistence --args=jump"
 desc = "Jump to a bookmark"
 
 [[manager.prepend_keymap]]
-on = [ "b", "d" ]
+on = [ "u", "d" ]
 run = "plugin bookmarks-persistence --args=delete"
 desc = "Delete a bookmark"
 
 [[manager.prepend_keymap]]
-on = [ "b", "D" ]
+on = [ "u", "D" ]
 run = "plugin bookmarks-persistence --args=delete_all"
 desc = "Delete all bookmarks"
 
@@ -441,3 +441,29 @@ desc  = "Test plugin"
 [[manager.prepend_keymap]]
 on  = [ ":" ]
 run = "plugin custom-shell --args=auto"
+
+## Mactagging
+[[manager.prepend_keymap]]
+on = ["b", "a"]
+run = "plugin mactags --args=add"
+desc = "Add tagging colors to a file/folder"
+[[manager.prepend_keymap]]
+on = ["b", "r"]
+run = "plugin mactags --args=remove"
+desc = "removes input tags from all tags to a file/folder"
+[[manager.prepend_keymap]]
+on = ["b", "d"]
+run = "plugin mactags --args=remove_all"
+desc = "removed all the tags attached to the file/folder"
+[[manager.prepend_keymap]]
+on = ["b", "s"]
+run = "plugin mactags --args=set"
+desc = "completely replace existing tags with new ones"
+[[manager.prepend_keymap]]
+on = ["b", "f"]
+run = "plugin mactags --args=find_all"
+desc = "find all files with set color"
+[[manager.prepend_keymap]]
+on = ["b", "o"]
+run = "plugin mactags --args=display"
+desc = "find all files with set color"
