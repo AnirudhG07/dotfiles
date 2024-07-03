@@ -387,7 +387,10 @@ desc = "find file by content (fuzzy match)"
 on   = [ "c","h" ]
 run  = "plugin cheatshh"
 desc = "Yazi cheatshh"
-
+[[manager.prepend_keymap]]
+on   = [ "c","H" ]
+run  = "plugin cheatshh --args=options"
+desc = "Yazi cheatshh"
 ## diff.yazi
 [[manager.prepend_keymap]]
 on   = [ "<C-d>" ]
@@ -439,7 +442,7 @@ on  = [ "e", "e" ]
 run = "plugin test"
 desc  = "Test plugin"
 [[manager.prepend_keymap]]
-on  = [ ":" ]
+on  = [ "'", ";" ]
 run = "plugin custom-shell --args=auto"
 
 ## Mactagging

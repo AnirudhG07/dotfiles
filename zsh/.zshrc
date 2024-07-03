@@ -225,6 +225,7 @@ alias ppt='presenterm'
 alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
 ./packmol'
 alias y='yazi'
+alias v='nvim'
 ####################################################################
 
 # USELESS ALIASES
