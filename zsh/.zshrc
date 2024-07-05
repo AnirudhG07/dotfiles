@@ -111,7 +111,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting web-search zsh-bat you-should-use)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting web-search zsh-bat zsh-autopair)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -224,8 +224,9 @@ alias c='clear'
 alias ppt='presenterm'
 alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
 ./packmol'
-alias y='yazi'
 alias v='nvim'
+alias y="bash -ic '/Users/anirudhgupta/yazi/target/release/yazi'"
+alias yazi='bash -ic "/Users/anirudhgupta/yazi/target/release/yazi"'
 ####################################################################
 
 # USELESS ALIASES
