@@ -880,5 +880,11 @@
     "alias": "yes",
     "group": "yes",
     "bookmark": "no"
+  },
+  "nbpreview": {
+    "description": "Very amazing preview for jupyter notebooks in terminal",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
   }
 }
