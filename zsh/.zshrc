@@ -227,6 +227,7 @@ alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
 alias v='nvim'
 alias y="bash -ic '/Users/anirudhgupta/yazi/target/release/yazi'"
 alias yazi='bash -ic "/Users/anirudhgupta/yazi/target/release/yazi"'
+alias q="exit"
 ####################################################################
 
 # USELESS ALIASES

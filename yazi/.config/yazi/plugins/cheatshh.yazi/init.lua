@@ -8,7 +8,8 @@ local function fail(s, ...)
 end
 
 local function get_selected_option()
-    local command = Shell_value ..[[ -c '
+	local command = Shell_value
+		.. [[ -c '
     OPTIONS=("1" "Add command" "2" "Add group" "3" "Edit Command" "4" "Edit group" "5" "Delete Command" "6" "Delete group")
     CHOICE=$(whiptail --title "Menu" --menu "Choose an option" 15 60 6 \
     "1" "Add command" \
@@ -24,16 +25,16 @@ local function get_selected_option()
         echo "Cancelled"
         exit 1
     fi
-    ']] 
-    local handle = io.popen(command, 'r')  -- Open the process for reading
-    if handle then
-        local output = handle:read("*a")  -- Read the entire output of the command
-        handle:close()  -- Close the process
-        return output  -- Return the captured output
-    else
+    ']]
+	local handle = io.popen(command, "r") -- Open the process for reading
+	if handle then
+		local output = handle:read("*a") -- Read the entire output of the command
+		handle:close() -- Close the process
+		return output -- Return the captured output
+	else
 		fail("Failed to run cheatshh options")
-        return nil
-    end
+		return nil
+	end
 end
 
 local function commad_runner(cmd_args)
@@ -55,9 +56,9 @@ local function commad_runner(cmd_args)
 		return fail("Cannot read `cheatshh` output, error code %s", err), output
 	elseif not output.status.success and output.status.code ~= 130 then
 		return fail("`cheatshh` exited with error code %s", output.status.code), output
-    else
-        return true, output
-    end
+	else
+		return true, output
+	end
 end
 
 local function entry(_, args)
@@ -83,7 +84,6 @@ local function entry(_, args)
 			return
 		end
 		-- cmd_args = [[cheatshh -a]]
-
 	end
 	local success, output = commad_runner(cmd_args)
 	if not success then
