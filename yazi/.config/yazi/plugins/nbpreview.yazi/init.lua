@@ -17,6 +17,7 @@ function M:peek()
 
 			-- SPECIAL CUSTOMIZATIONS --
 			"--color-system=standard",
+			"--theme=ansi_dark",
 			tostring(self.file.url),
 		})
 		:stdout(Command.PIPED)

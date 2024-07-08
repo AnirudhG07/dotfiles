@@ -8,7 +8,7 @@ function M:peek()
 		:spawn()
 	local limit = self.area.h
 	local file_name = string.match(tostring(self.file.url), ".*[/\\](.*)")
-	local lines = string.format("\x1b[2m📁 %s\x1b[0m\n", file_name)
+	local lines = string.format("\x1b[33m %s\x1b[0m\n", file_name)
 	local num_lines = 1
 	local num_skip = 0
 	repeat

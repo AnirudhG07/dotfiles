@@ -225,8 +225,9 @@ alias ppt='presenterm'
 alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
 ./packmol'
 alias v='nvim'
-alias y="bash -ic '/Users/anirudhgupta/yazi/target/release/yazi'"
-alias yazi='bash -ic "/Users/anirudhgupta/yazi/target/release/yazi"'
+alias y='bash -ic "source /dev/stdin; /Users/anirudhgupta/yazi/target/release/yazi $@"'
+alias yazi='bash -ic "source /dev/stdin; /Users/anirudhgupta/yazi/target/release/yazi $@"'
+
 alias q="exit"
 ####################################################################
 
