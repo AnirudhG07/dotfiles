@@ -227,8 +227,8 @@ alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
 alias v='nvim'
 alias y='bash -ic "source /dev/stdin; /Users/anirudhgupta/yazi/target/release/yazi $@"'
 alias yazi='bash -ic "source /dev/stdin; /Users/anirudhgupta/yazi/target/release/yazi $@"'
-
 alias q="exit"
+alias mathworks='ssh anirudhgupta@10.134.13.103'
 ####################################################################
 
 # USELESS ALIASES

@@ -886,5 +886,11 @@
     "alias": "yes",
     "group": "yes",
     "bookmark": "no"
+  },
+  "morseet": {
+    "description": "morse code converter morseeeeeeet!",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
   }
 }
