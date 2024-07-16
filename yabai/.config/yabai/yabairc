@@ -27,4 +27,7 @@ yabai -m mouse_drop_action swap
 
 yabai -m rule --add app="^System Settings$" manage=off
 yabai -m rule --add app="^Calculator$" manage=off
-yabai -m rule --add app="^Karabiner-Elements$" manage=off
+
+yabai -m rule --add app="^iTerm2$" space=^1
+
+yabai -m config external_bar all:34:0
