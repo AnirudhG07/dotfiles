@@ -225,9 +225,17 @@ alias ppt='presenterm'
 alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
 ./packmol'
 alias v='nvim'
-alias y='bash -ic "source /dev/stdin; /Users/anirudhgupta/yazi/target/release/yazi $@"'
-alias yazi='bash -ic "source /dev/stdin; /Users/anirudhgupta/yazi/target/release/yazi $@"'
-alias q="exit"
+function yy() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+alias y='yazi'
+#alias yazi='bash -ic "source /dev/stdin; /Users/anirudhgupta/yazi/target/release/yazi $@"'
+alias :q="exit"
 alias mathworks='ssh anirudhgupta@10.134.13.103'
 ####################################################################
 

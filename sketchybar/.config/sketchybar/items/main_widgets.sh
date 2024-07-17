@@ -5,30 +5,40 @@ sketchybar --add       alias              MeetingBar right                      
                                           background.padding_left=-6                    \
                                           update_freq=60                                \
                                                                                         \
-           --add       item               calendar.time right                           \
-           --set       calendar.time      update_freq=2                                 \
+           --add       item               widget.time right                           \
+           --set       widget.time      update_freq=2                                 \
                                           icon.drawing=on                               \
                                           script="$PLUGIN_DIR/time.sh"                  \
                                                                                         \
-           --clone     calendar.date      label_template                                \
-           --set       calendar.date      update_freq=60                                \
+           --clone     widget.date      label_template                                \
+           --set       widget.date      update_freq=60                                \
                                           position=right                                \
                                           label=cal                                     \
                                           drawing=on                                    \
                                           background.padding_right=0                    \
                                           script="$PLUGIN_DIR/date.sh"                  \
+                                                                                        \                                                                                        \
+           --add       item               widget.battery right                        \
+           --set       widget.battery     update_freq=1                                \
+                                          icon.drawing=on                               \
+                                          script="$PLUGIN_DIR/battery.sh"               \
                                                                                         \
-                                                                                        \
-           --add       item               calender.weather right                        \
-           --set       calender.weather   update_freq=15                                \
+           --add       item               widget.weather right                        \
+           --set       widget.weather   update_freq=15                                \
                                           icon.drawing=on                               \
                                           script="$PLUGIN_DIR/weather.sh"               \
-           --add       bracket            calendar                                      \
+           --add       bracket            widget                                      \
                                           MeetingBar                                    \
-                                          calendar.time                                 \
-                                          calendar.date                                 \
-                                          calender.weather                              \
-           --set       calendar           background.drawing=on
+                                          widget.time                                 \
+                                          widget.date                                 \
+                                          widget.battery                              \
+                                          widget.weather                              \
+                                          widget.volume \
+           --set       widget           background.drawing=on
+
+sketchybar --add item volume right \
+           --set volume script="$PLUGIN_DIR/volume.sh" \
+           --subscribe volume volume_change 
 
  #--add       item               mailIndicator right                           \
            #--set       mailIndicator      update_freq=30                                \

@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-status=$(https 'wttr.in?format=%C+|+%t' | tail -n 1)
+status=$(timeout 5 https 'wttr.in?format=%C+|+%t' | tail -n 1)
+
+if [ -z "$status" ]; then
+  status=$(curl -s 'wttr.in?format=%C+|+%t' | tail -n 1)
+fi
 condition=$(echo $status | awk -F '|' '{print $1}' | tr '[:upper:]' '[:lower:]')
 condition="${condition// /}"
 temp=$(echo $status | awk -F '|' '{print $2}')
@@ -40,7 +44,7 @@ case "${condition}" in
     icon="􀇉"
     ;;
   *)
-    icon="Weath Error"
+    icon="􀇃 ?" 
     ;;
 esac
 
