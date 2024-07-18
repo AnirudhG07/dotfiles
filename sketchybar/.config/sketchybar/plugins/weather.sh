@@ -40,6 +40,9 @@ case "${condition}" in
   "showerinvicinity")
     icon="􀇗"
   ;;
+  "lightdrizzle")
+    icon="􀇗"
+  ;;
   "rainshower")
     icon="􀇉"
     ;;

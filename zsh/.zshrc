@@ -237,6 +237,7 @@ alias y='yazi'
 #alias yazi='bash -ic "source /dev/stdin; /Users/anirudhgupta/yazi/target/release/yazi $@"'
 alias :q="exit"
 alias mathworks='ssh anirudhgupta@10.134.13.103'
+alias fuweather="https 'wttr.in?format=%C+|+%t' | tail -n 1; sketchybar --reload"
 ####################################################################
 
 # USELESS ALIASES
