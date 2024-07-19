@@ -1,22 +1,24 @@
 local Tag_mapping = {
-    r = { tag = "red", priority = 1 },
-    b = { tag = "blue", priority = 2 },
-    g = { tag = "green", priority = 3 },
-    y = { tag = "yellow", priority = 4 },
-    o = { tag = "orange", priority = 5 },
-    p = { tag = "purple", priority = 6 },
-    a = { tag = "grey", priority = 7 },
-    h = { tag = "home", priority = 8 },
-    i = { tag = "important", priority = 9 },
-    w = { tag = "work", priority = 10 }
+	r = { tag = "red", priority = 1, color = "red" },
+	b = { tag = "blue", priority = 2, color = "blue" },
+	g = { tag = "green", priority = 3, color = "green" },
+	y = { tag = "yellow", priority = 4, color = "yellow" },
+	o = { tag = "orange", priority = 5, color = "lightred" },
+	p = { tag = "purple", priority = 6, color = "magenta" },
+	a = { tag = "grey", priority = 7, color = "gray" },
+	h = { tag = "home", priority = 8, color = "cyan" },
+	i = { tag = "important", priority = 9, color = "lightgreen" },
+	w = { tag = "work", priority = 10, color = "lightblue" },
 }
 
 local Self_enabled = false
 
 local function table_length(tbl)
-    local count = 0
-	for _ in pairs(tbl) do count = count + 1 end
-    return count
+	local count = 0
+	for _ in pairs(tbl) do
+		count = count + 1
+	end
+	return count
 end
 
 local Max_tags = table_length(Tag_mapping)
@@ -223,11 +225,11 @@ end)
 
 local function reorder_string(input)
 	-- so that output tags are in similar order
-    local priority = {}
-    for abbr, data in pairs(Tag_mapping) do
-        priority[abbr] = data.priority
-
-    end	local chars = {}
+	local priority = {}
+	for abbr, data in pairs(Tag_mapping) do
+		priority[abbr] = data.priority
+	end
+	local chars = {}
 	for i = 1, #input do
 		table.insert(chars, input:sub(i, i))
 	end
@@ -252,36 +254,33 @@ local function process_tags(output)
 		return nil
 	end
 
-    for tag in tagset:gmatch("([^,]+)") do
-        local tag_char = get_tag_char(tag) 
-        if tag_char then
-            table.insert(tag_table, tag_char)
-        end
-    end
-    return tag_table
+	for tag in tagset:gmatch("([^,]+)") do
+		local tag_char = get_tag_char(tag)
+		if tag_char then
+			table.insert(tag_table, tag_char)
+		end
+	end
+	return tag_table
 end
 
 local function setup()
-	local files = selected_files()
-	-- assert, #files == 1, since it is hovered
-	local cmd_args = "tag -l " .. files[1]
+	local function tag_col()
+		local files = selected_files()
+		-- assert, #files == 1, since it is hovered
+		local cmd_args = "tag -l " .. files[1]
 
-	local success, output = commad_runner(cmd_args)
-	if not success then
-		return false
+		local success, output = commad_runner(cmd_args)
+		if not success then
+			return false
+		end
+
+		local target = output.stdout:gsub("\n$", "")
+		local tag_table = process_tags(target)
+		local tags = reorder_string(table.concat(tag_table, ""))
+
+		return tags
 	end
-
-	local target = output.stdout:gsub("\n$", "")
-	local tag_table = process_tags(target)
-	local tags = reorder_string(table.concat(tag_table, ""))
-
-	function Header:cwd(max)
-		local cwd = cx.active.current.cwd
-
-		local s = ya.readable_path(tostring(cx.active.current.cwd)) .. self:flags()
-
-		return ui.Line{ui.Span(ya.truncate(s, { max = max, rtl = true }) ):style(THEME.manager.cwd),tags}
-	end
+	--Status:children_add(tag_col, 1000, Status.RIGHT)
 end
 
 return {

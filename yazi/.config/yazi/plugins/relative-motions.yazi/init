@@ -34,22 +34,24 @@ local SHOW_NUMBERS_RELATIVE_ABSOLUTE = 2
 ----------------- R E N D E R -----------------
 -----------------------------------------------
 
-local render_motion_setup = ya.sync(function()
+local render_motion_setup = ya.sync(function(_)
 	ya.render()
 
 	Status.motion = function() return ui.Span("") end
 
-	Status.render = function(self, area)
-		self.area = area
-
-		local left = ui.Line { self:mode(), self:size(), self:name() }
-		local right = ui.Line { self:motion(), self:permissions(), self:percentage(), self:position() }
-		return {
-			ui.Paragraph(area, { left }),
-			ui.Paragraph(area, { right }):align(ui.Paragraph.RIGHT),
-			table.unpack(Progress:render(area, right:width())),
-		}
+	Status.children_render = function(self, side)
+		local lines = {}
+		if side == self.RIGHT then
+			lines[1] = self:motion(self)
+		end
+		for _, c in ipairs(side == self.RIGHT and self._right or self._left) do
+			lines[#lines + 1] = (type(c[1]) == "string" and self[c[1]] or c[1])(self)
+		end
+		return ui.Line(lines)
 	end
+
+	-- TODO: check why it doesn't work line this
+	-- Status:children_add(Status.motion, 100, Status.RIGHT)
 end)
 
 local render_motion = ya.sync(function(_, motion_num, motion_cmd)
@@ -60,7 +62,7 @@ local render_motion = ya.sync(function(_, motion_num, motion_cmd)
 			return ui.Span("")
 		end
 
-		local style = self.style()
+		local style = self:style()
 
 		local motion_span
 		if not motion_cmd then
@@ -81,7 +83,7 @@ end)
 local render_numbers = ya.sync(function(_, mode)
 	ya.render()
 
-	File.number = function(_, index, file, hovered)
+	Entity.number = function(_, index, file, hovered)
 		local idx
 		if mode == SHOW_NUMBERS_RELATIVE then
 			idx = math.abs(hovered - index)
@@ -105,12 +107,10 @@ local render_numbers = ya.sync(function(_, mode)
 		end
 	end
 
-	Current.render = function(self, area)
-		self.area = area
-
-		local files = Folder:by_kind(Folder.CURRENT).window
+	Current.render = function(self)
+		local files = self._folder.window
 		if #files == 0 then
-			return self:empty(area)
+			return self:empty()
 		end
 
 		local hovered_index
@@ -121,22 +121,18 @@ local render_numbers = ya.sync(function(_, mode)
 			end
 		end
 
-		local items, markers = {}, {}
+		local entities, linemodes = {}, {}
 		for i, f in ipairs(files) do
-			items[#items + 1] = ui.ListItem(ui.Line(ya.flat { File:number(i, f, hovered_index), File:full(f) }))
-				:style(File:style(f))
+			linemodes[#linemodes + 1] = Linemode:new(f):render()
 
-			-- Yanked/marked/selected files
-			local marker = File:marker(f)
-			if marker ~= 0 then
-				markers[#markers + 1] = { i, marker }
-			end
+			local entity = Entity:new(f)
+			entities[#entities + 1] = ui.ListItem(ui.Line { Entity:number(i, f, hovered_index), entity:render() })
+				:style(entity:style())
 		end
 
-		return ya.flat {
-			ui.List(area, items),
-			Folder:linemode(area, files),
-			Folder:markers(area, markers),
+		return {
+			ui.List(self._area, entities),
+			ui.Paragraph(self._area, linemodes):align(ui.Paragraph.RIGHT),
 		}
 	end
 end)

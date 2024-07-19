@@ -482,6 +482,6 @@ run = "plugin mactags --args=display"
 desc = "find all files with set color"
 
 [[manager.prepend_keymap]]
-on   = [ "c", "a" ]
-run  = "plugin archive"
-desc = "Archive selected files"
+on = ["c", "a"]
+run = "plugin ouch --args=zip"
+desc = "Compress with ouch"

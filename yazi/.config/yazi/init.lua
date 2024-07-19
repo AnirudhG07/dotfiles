@@ -1,14 +1,17 @@
 require("full-border"):setup()
 -- ~/.config/yazi/init.lua
 --require("relative-motions"):setup({ show_numbers = "relative", show_motion = true })
+require("starship_prompt"):setup()
+
+require("mactags"):setup()
 
 require("keyjump"):setup({
 	icon_fg = "#fda1a1",
 })
 -- Symlink
-require("git-status"):setup({
-	style = "linemode", -- beside or linemode
-})
+--require("git-status"):setup({
+--	style = "linemode", -- beside or linemode
+--})
 
 function Status:name()
 	local h = cx.active.current.hovered
@@ -23,25 +26,16 @@ function Status:name()
 end
 
 -- Header name
-function Header:host()
+function header_host()
 	if ya.target_family() ~= "unix" then
 		return ui.Line({})
 	end
 	return ui.Span(ya.user_name() .. "@yazi" .. ": "):fg("blue")
 end
-function Header:render(area)
-	self.area = area
 
-	local right = ui.Line({ self:count(), self:tabs() })
-	local left = ui.Line({ self:host(), self:cwd(math.max(0, area.w - right:width())) })
-	return {
-		ui.Paragraph(area, { left }),
-		ui.Paragraph(area, { right }):align(ui.Paragraph.RIGHT),
-	}
-end
-
+Header:children_add(header_host, 500, Header.LEFT)
 -- group of files and username at the bottom
-function Status:owner()
+function Status_owner()
 	local h = cx.active.current.hovered
 	if h == nil or ya.target_family() ~= "unix" then
 		return ui.Line({})
@@ -54,14 +48,5 @@ function Status:owner()
 		ui.Span(" "),
 	})
 end
-function Status:render(area)
-	self.area = area
 
-	local left = ui.Line({ self:mode(), self:size(), self:name() })
-	local right = ui.Line({ self:owner(), self:permissions(), self:percentage(), self:position() })
-	return {
-		ui.Paragraph(area, { left }),
-		ui.Paragraph(area, { right }):align(ui.Paragraph.RIGHT),
-		table.unpack(Progress:render(area, right:width())),
-	}
-end
+Status:children_add(Status_owner, 500, Status.RIGHT)
