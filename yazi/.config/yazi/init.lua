@@ -1,6 +1,6 @@
 require("full-border"):setup()
 -- ~/.config/yazi/init.lua
---require("relative-motions"):setup({ show_numbers = "relative", show_motion = true })
+--require("relative-motions"):setup({ show_numbers = "none", show_motion = true })
 require("starship_prompt"):setup()
 
 require("mactags"):setup()

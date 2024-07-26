@@ -92,6 +92,7 @@ prepend_previewers = [
 	{ mime = "application/x-rar",           run = "ouch" },
 	{ mime = "application/x-xz",            run = "ouch" },
   { name = "*.md", run = "glow" },
+  { name = "*.{pdb,pqr}", run = "code"},
   { mime = "audio/*", run = "exifaudio"},
   { mime = "application/x-bittorrent", run = "torrent-preview"},
   { name = "*.ipynb", run = "nbpreview"},

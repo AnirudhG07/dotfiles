@@ -892,5 +892,11 @@
     "alias": "yes",
     "group": "yes",
     "bookmark": "no"
+  },
+  "ntfyme": {
+    "description": "my made notification tool for any command urn",
+    "alias": "yes",
+    "group": "yes",
+    "bookmark": "no"
   }
 }
