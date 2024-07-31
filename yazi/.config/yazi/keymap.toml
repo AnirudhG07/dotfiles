@@ -417,7 +417,7 @@ run = "plugin bypass --args=reverse"
 desc = "Recursively enter parent directory, skipping parents with only a single subdirectory"
 
 #[[manager.prepend_keymap]]
-#on = [ "m" ]
+#on = [ "r", "m" ]
 #run = "plugin relative-motions"
 #desc = "Trigger a new relative motion"
 
@@ -443,45 +443,34 @@ desc = "Keyjump (Global mode)"
 [[manager.prepend_keymap]]
 on  = [ "<C-n>" ]
 run = '''
-	shell 'open -R "$1"' --confirm
+	shell 'dragon -x -i -T "$1"' --confirm
 '''
-desc = "Open file in Finder to drag and drop"
+[[manager.prepend_keymap]]
+on  = [ "y" ]
+run = [ '''
+	shell 'echo "$@" | xclip -i -selection clipboard -t text/uri-list' --confirm
+''', "yank" ]
 ## Testing plugin for understanding
 [[manager.prepend_keymap]]
 on  = [ "e", "e" ]
-run = ["select --state=none", "rename --hovered --force --cursor=before_ext", "select --state=none"]
+run = ["plugin custom-shell --args=manager"]
 desc  = "Test plugin"
 [[manager.prepend_keymap]]
 on  = [ "'", ";" ]
 run = "plugin custom-shell --args=auto"
 
-## Mactagging
 [[manager.prepend_keymap]]
-on = ["b", "a"]
-run = "plugin mactags --args=add"
-desc = "Add tagging colors to a file/folder"
-[[manager.prepend_keymap]]
-on = ["b", "r"]
-run = "plugin mactags --args=remove"
-desc = "removes input tags from all tags to a file/folder"
-[[manager.prepend_keymap]]
-on = ["b", "d"]
-run = "plugin mactags --args=remove_all"
-desc = "removed all the tags attached to the file/folder"
-[[manager.prepend_keymap]]
-on = ["b", "s"]
-run = "plugin mactags --args=set"
-desc = "completely replace existing tags with new ones"
-[[manager.prepend_keymap]]
-on = ["b", "f"]
-run = "plugin mactags --args=find_all"
-desc = "find all files with set color"
-[[manager.prepend_keymap]]
-on = ["b", "o"]
-run = "plugin mactags --args=display"
-desc = "find all files with set color"
+on   = [ "c", "a" ]
+run  = "plugin archive"
+desc = "Archive selected files"
 
 [[manager.prepend_keymap]]
-on = ["c", "a"]
-run = "plugin ouch --args=zip"
-desc = "Compress with ouch"
+on   = [ "m", "a" ]
+run  = "plugin archivemount --args=mount"
+desc = "Mount selected archive"
+
+[[manager.prepend_keymap]]
+on   = [ "m", "u" ]
+run  = "plugin archivemount --args=unmount"
+desc = "Unmount and save changes to original archive"
+

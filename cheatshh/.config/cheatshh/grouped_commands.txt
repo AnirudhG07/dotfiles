@@ -1,0 +1,157 @@
+Games/ninvaders
+Games/moon-buggy
+Games/nethacks
+Games/pacman4console
+Games/bastet
+Games/greed
+Games/crawl
+Games/bsdgames
+General-Commands/code
+General-Commands/nvim
+General-Commands/vim
+General-Commands/tmux
+General-Commands/less
+General-Commands/rm
+General-Commands/rmdir
+General-Commands/mkdir
+General-Commands/touch
+General-Commands/mv
+General-Commands/cp
+General-Commands/cat
+General-Commands/echo
+General-Commands/grep
+General-Commands/find
+General-Commands/ls
+General-Commands/cd
+General-Commands/pwd
+General-Commands/clear
+General-Commands/exit
+General-Commands/whoami
+General-Commands/man
+My Collection/nnn
+My Collection/mc
+My Collection/yazi
+My Collection/typespeed
+My Collection/blink
+My Collection/gping
+My Collection/joshuto
+My Collection/jwtui
+My Collection/rizin
+My Collection/toipe
+My Collection/silicon
+My Collection/carbon-now
+My Collection/r2
+My Collection/sttr
+My Collection/faker
+My Collection/asciinema
+My Collection/harlequin
+My Collection/glow
+My Collection/miller
+My Collection/nbpreview
+My Creations/cheatshh
+My Creations/typeinc
+My Creations/typeinc-mini
+Pypi publish/pip install twine
+Pypi publish/python setup.py sdist bdist_wheel
+Pypi publish/pip install dist/<wheel-name
+Pypi publish/twine upload dist/*
+Terminal tools/btop
+Terminal tools/neofetch
+Terminal tools/ncdu
+Terminal tools/fdupes
+Terminal tools/df
+Terminal tools/zoxide
+Terminal tools/eza
+Terminal tools/fzf
+Terminal tools/bat
+Terminal tools/wget
+Terminal tools/procs
+Terminal tools/rip
+Terminal tools/cmus
+Terminal tools/hexdump
+Terminal tools/objdump
+Terminal tools/file
+Terminal tools/exiftool
+Terminal tools/chmod
+Terminal tools/chown
+Terminal tools/strings
+Terminal tools/sshs
+Terminal tools/bpytop
+Terminal tools/lynx
+Terminal tools/nnn
+Terminal tools/pdftotext
+cool things/cmatrix
+cool things/sl
+cool things/fortune
+cool things/cowsay
+cool things/figlet
+cool things/toilet
+cool things/lolcat
+cool things/fishing
+cool things/pipes.sh
+cool things/hollywood
+cool things/edex-ui
+cool things/llama
+cool things/eww
+cool things/amuse_me
+cool things/espeak
+cool things/moo
+cool things/dino
+cool things/tux
+cyber-ctf/strings
+cyber-ctf/hexdump
+cyber-ctf/objdump
+cyber-ctf/file
+cyber-ctf/exiftool
+cyber-ctf/chmod
+cyber-ctf/chown
+cyber-ctf/ghidra
+cyber-ctf/jadx
+cyber-ctf/hexcurse
+cyber-ctf/lldb
+cyber-ctf/gdb(in linux)
+cyber-ctf/flask-unsigned
+cyber-ctf/barpsuite
+cyber-ctf/httpie
+cyber-ctf/rizin
+cyber-ctf/r2
+cyber-ctf/sqlmap
+cyber-ctf/jwtui
+cyber-ctf/nmap
+cyber-ctf/dirsearch
+cyber-ctf/mmls
+cyber-ctf/srch_strings
+cyber-ctf/zsteg
+cyber-ctf/steghide
+cyber-ctf/pngcheck
+cyber-ctf/tshark
+cyber-ctf/hashcat
+cyber-ctf/hexyl
+git/git
+git/lazygit
+git/git init
+git/git clone
+git/git add
+git/git commit
+git/git push
+git/git pull
+git/git log
+git/git status
+git/git log
+git/git branch
+git/git checkout
+git/git merge
+git/git rebase
+git/git reset
+git/git revert
+git/git stash
+git/git tag
+git/git fetch
+git/git remote
+git/git diff
+git/git blame
+git/git show
+git/git grep
+git/git bisect
+git/git reflog
+git/git cherry-pick
