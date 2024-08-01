@@ -318,6 +318,11 @@ on   = [ "B" ]
 run  = "plugin --sync hide-preview"
 desc = "hide preview window"
 
+[[manager.prepend_keymap]]
+on  = "y"
+run = [ '''
+	shell 'echo "$@" | xclip -i -selection clipboard -t text/uri-list' --confirm
+''', "yank" ]
 ## SHell Opener
 [[manager.prepend_keymap]]
 on   = [ "<C-s>" ]
@@ -417,7 +422,7 @@ run = "plugin bypass --args=reverse"
 desc = "Recursively enter parent directory, skipping parents with only a single subdirectory"
 
 #[[manager.prepend_keymap]]
-#on = [ "r", "m" ]
+#on = [ "m" ]
 #run = "plugin relative-motions"
 #desc = "Trigger a new relative motion"
 
@@ -441,36 +446,20 @@ desc = "Keyjump (Global mode)"
 
 ## Drag and Drop functionality using Finder
 [[manager.prepend_keymap]]
-on  = [ "<C-n>" ]
+on  = "<C-n>"
 run = '''
 	shell 'dragon -x -i -T "$1"' --confirm
 '''
-[[manager.prepend_keymap]]
-on  = [ "y" ]
-run = [ '''
-	shell 'echo "$@" | xclip -i -selection clipboard -t text/uri-list' --confirm
-''', "yank" ]
 ## Testing plugin for understanding
 [[manager.prepend_keymap]]
 on  = [ "e", "e" ]
-run = ["plugin custom-shell --args=manager"]
+run = ["select --state=none", "rename --hovered --force --cursor=before_ext", "select --state=none"]
 desc  = "Test plugin"
 [[manager.prepend_keymap]]
 on  = [ "'", ";" ]
 run = "plugin custom-shell --args=auto"
 
 [[manager.prepend_keymap]]
-on   = [ "c", "a" ]
-run  = "plugin archive"
-desc = "Archive selected files"
-
-[[manager.prepend_keymap]]
-on   = [ "m", "a" ]
-run  = "plugin archivemount --args=mount"
-desc = "Mount selected archive"
-
-[[manager.prepend_keymap]]
-on   = [ "m", "u" ]
-run  = "plugin archivemount --args=unmount"
-desc = "Unmount and save changes to original archive"
-
+on = ["c", "a"]
+run = "plugin ouch --args=zip"
+desc = "Compress with ouch"

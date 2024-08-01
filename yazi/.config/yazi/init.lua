@@ -1,11 +1,11 @@
 require("full-border"):setup()
 -- ~/.config/yazi/init.lua
---require("relative-motions"):setup({ show_numbers = "relative", show_motion = true })
+--require("relative-motions"):setup({ show_numbers = "none", show_motion = true })
+require("starship_prompt"):setup()
+
 require("keyjump"):setup({
 	icon_fg = "#fda1a1",
 })
-
---require("archivemount"):setup()
 -- Symlink
 --require("git-status"):setup({
 --	style = "linemode", -- beside or linemode
@@ -16,7 +16,6 @@ function Status:name()
 	if not h then
 		return ui.Span("")
 	end
-
 	local linked = ""
 	if h.link_to ~= nil then
 		linked = " -> " .. tostring(h.link_to)
@@ -24,7 +23,17 @@ function Status:name()
 	return ui.Span(" " .. h.name .. linked)
 end
 
-local function status_owner()
+-- Header name
+function header_host()
+	if ya.target_family() ~= "unix" then
+		return ui.Line({})
+	end
+	return ui.Span(ya.user_name() .. "@yazi" .. ": "):fg("blue")
+end
+
+Header:children_add(header_host, 500, Header.LEFT)
+-- group of files and username at the bottom
+function Status_owner()
 	local h = cx.active.current.hovered
 	if h == nil or ya.target_family() ~= "unix" then
 		return ui.Line({})
@@ -38,13 +47,4 @@ local function status_owner()
 	})
 end
 
-Status:children_add(status_owner, 500, Status.RIGHT)
-
-function Header_host()
-	if ya.target_family() ~= "unix" then
-		return ui.Line({})
-	end
-	return ui.Span(ya.user_name() .. "@" .. ya.host_name() .. ":"):fg("blue")
-end
-
-Header:children_add(Header_host, 500, Header.LEFT)
+Status:children_add(Status_owner, 500, Status.RIGHT)

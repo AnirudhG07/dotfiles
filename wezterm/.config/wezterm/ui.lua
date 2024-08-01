@@ -13,7 +13,7 @@ return function(config)
 	--config.color_scheme = "Catppuccin Mocha"
 	config.font_size = 11
 	config.enable_tab_bar = true
-	config.window_background_opacity = 0.75
+	config.window_background_opacity = 0.8
 
 	config.use_fancy_tab_bar = true
 	config.hide_tab_bar_if_only_one_tab = true
