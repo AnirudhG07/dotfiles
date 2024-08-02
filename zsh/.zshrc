@@ -182,7 +182,7 @@ _fzf_comprun() {
 }
 # ----- Bat (better cat) -----
 
-export BAT_THEME=tokyonight_night
+export BAT_THEME=ansi
 
 eval $(thefuck --alias)
 eval $(thefuck --alias shit)
