@@ -188,10 +188,16 @@ eval $(thefuck --alias shit)
 # Postgress@16 path 
 export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 # ---- Zoxide (better cd) ----
-eval "$(zoxide init zsh)"
+eval "$(zoxide init --cmd cd zsh)"
 
-alias cd="z"
-
+function yy() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
 # USEFUL ALIASES
 alias tmux_in='tmux a -t'
 alias tmux_kill='tmux kill-session -t'
@@ -225,16 +231,7 @@ alias ppt='presenterm'
 alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
 ./packmol'
 alias v='nvim'
-function yy() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
-}
-alias y='yazi'
-#alias yazi='bash -ic "source /dev/stdin; /Users/anirudhgupta/yazi/target/release/yazi $@"'
+alias y='yy'
 alias :q="exit"
 alias mathworks='ssh anirudhgupta@10.134.13.103'
 alias fuweather="https 'wttr.in?format=%C+|+%t' | tail -n 1; sketchybar --reload"
