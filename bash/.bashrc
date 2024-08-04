@@ -132,7 +132,8 @@ source "$OSH"/oh-my-bash.sh
 # else
 #   export EDITOR='mvim'
 # fi
-
+export VISUAL=nvim 
+export EDITOR=nvim
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -147,7 +148,14 @@ source "$OSH"/oh-my-bash.sh
 # Example aliases
 # alias bashconfig="mate ~/.bashrc"
 # alias ohmybash="mate ~/.oh-my-bash"
-
+function yy() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 

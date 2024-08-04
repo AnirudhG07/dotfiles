@@ -193,6 +193,14 @@ eval "$(zoxide init zsh)"
 
 alias cd="z"
 
+function yy() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
 # USEFUL ALIASES
 alias tmux_in='tmux a -t'
 alias tmux_kill='tmux kill-session -t'
