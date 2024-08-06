@@ -84,7 +84,7 @@ suppress_preload = false
 [plugin]
 
 prepend_previewers = [
-  { mime = "text/csv", run = "miller"},
+  { name = "*.csv", run = "rich"},
   { mime = "application/*zip",            run = "ouch" },
 	{ mime = "application/x-tar",           run = "ouch" },
 	{ mime = "application/x-bzip2",         run = "ouch" },
@@ -96,6 +96,7 @@ prepend_previewers = [
   { mime = "audio/*", run = "exifaudio"},
   { mime = "application/x-bittorrent", run = "torrent-preview"},
   { name = "*.ipynb", run = "nbpreview"},
+  { name = "*.json", run = "rich"},
 ]
 fetchers = [
 	# Mimetype
