@@ -231,7 +231,8 @@ alias ppt='presenterm'
 alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
 ./packmol'
 alias v='nvim'
-alias y='yy'
+alias y='yazi'
+alias yy='yy'
 alias :q="exit"
 alias mathworks='ssh anirudhgupta@10.134.13.103'
 alias fuweather="https 'wttr.in?format=%C+|+%t' | tail -n 1; sketchybar --reload"
