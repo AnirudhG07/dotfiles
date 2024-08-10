@@ -84,7 +84,7 @@ suppress_preload = false
 [plugin]
 
 prepend_previewers = [
-  { name = "*.csv", run = "rich-preview"},
+  { name = "*.csv", run = "miller"},
   { mime = "application/*zip",            run = "ouch" },
 	{ mime = "application/x-tar",           run = "ouch" },
 	{ mime = "application/x-bzip2",         run = "ouch" },
