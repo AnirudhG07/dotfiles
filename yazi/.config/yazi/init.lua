@@ -3,7 +3,7 @@ require("full-border"):setup()
 --require("relative-motions"):setup({ show_numbers = "none", show_motion = true })
 require("starship_prompt"):setup()
 
-require("mactags"):setup()
+require("mactag"):setup()
 
 require("keyjump"):setup({
 	icon_fg = "#fda1a1",
