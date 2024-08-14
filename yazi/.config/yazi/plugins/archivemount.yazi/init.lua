@@ -62,6 +62,7 @@ local function valid_file(path, action)
 	if action == "mount" then
 		-- Extract the file extension
 		local valid_extensions = {
+			".zip",
 			".tar",
 			".tar.gz",
 			".tgz",
@@ -69,17 +70,16 @@ local function valid_file(path, action)
 		}
 
 		-- Function to check if the file extension matches any of the valid extensions
-		local function has_valid_extension(extension)
+		local function has_valid_extension(path)
 			for _, ext in ipairs(valid_extensions) do
-				if extension == ext or extension:find(ext .. "$") then
+				if path:find(ext .. "$") then
 					return true
 				end
 			end
 			return false
 		end
 		-- Extract the file extension, including compound extensions like .tar.gz
-		local extension = path:match("^.+(%..+)$")
-		return has_valid_extension(extension)
+		return has_valid_extension(path)
 	else
 		-- Use os.execute to run a shell command that checks if the path is mounted
 		local check_mount_cmd = "mount | grep '" .. path .. "' 2>/dev/null"
@@ -170,8 +170,11 @@ return {
 			if success then
 				notify("Unmounting successful")
 			end
-			local deleted, err = commad_runner("rm -rf " .. ya.quote(tmp_file))
-			if not deleted then
+
+			local cleanup_args = "rm -rf " .. ya.quote(tmp_file)
+
+			local cleanup, err = commad_runner(cleanup_args)
+			if not cleanup then
 				fail("Cannot delete tmp file %s", tmp_file)
 				return
 			end
