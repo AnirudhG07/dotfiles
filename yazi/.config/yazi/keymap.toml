@@ -573,3 +573,13 @@ run = "plugin custom-shell --args=auto"
 on = ["c", "a"]
 run = "plugin ouch --args=zip"
 desc = "Compress with ouch"
+
+[[manager.prepend_keymap]]
+on = ["m", "a"]
+run = "plugin archivemount --args=mount"
+desc = "Mount selected archive"
+
+[[manager.prepend_keymap]]
+on = ["m", "u"]
+run = "plugin archivemount --args=unmount"
+desc = "Unmount and save changes to original archive"
