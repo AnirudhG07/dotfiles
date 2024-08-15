@@ -190,23 +190,24 @@ return {
 			end
 
 			local cmd_args = "fusermount -u " .. ya.quote(tmp_file)
-			local success, err = commad_runner(cmd_args)
-			if success then
-				notify("Unmounting successful")
-			end
+			local success_message = "Unmounting successful"
 
 			local zip_index = tmp_file:find(".zip.tmp.*")
 			local zip_fn = tmp_file
 			if zip_index then
 				zip_fn = zip_fn:sub(1, zip_index - 1)
 				rename_zip_to_tar(zip_fn)
+				success_message = success_message .. ". Note: Unmounted .zip file is converted to .tar"
 			end
-			local cleanup_args = "rm -rf " .. ya.quote(tmp_file)
 
-			local cleanup, err = commad_runner(cleanup_args)
-			if not cleanup then
+			local success, err = commad_runner(cmd_args)
+			if success then
+				notify(success_message)
+			end
+
+			local deleted, err = os.remove(tmp_file)
+			if not deleted then
 				fail("Cannot delete tmp file %s", tmp_file)
-				return
 			end
 			return
 		end
