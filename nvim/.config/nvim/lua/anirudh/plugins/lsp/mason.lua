@@ -42,17 +42,6 @@ return {
 				"emmet_ls",
 				"prismals",
 				"pyright",
-				"black",
-				"codespell",
-				"cspell",
-				"djlint",
-				"eslint_d",
-				"fixjson",
-				"hadolint",
-				"prettierd",
-				"stylua",
-				"taplo",
-				"write-good",
 			},
 		})
 
