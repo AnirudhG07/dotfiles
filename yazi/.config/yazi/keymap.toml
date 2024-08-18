@@ -388,6 +388,11 @@ run  = "plugin jump-to-char"
 desc = "Jump to char"
 
 [[manager.prepend_keymap]]
+on = [ "f" ,"a"]
+run = "plugin file-actions --args='around '"
+desc= "Perform actions on selected files"
+
+[[manager.prepend_keymap]]
 on   = [ "c","h" ]
 run  = "plugin cheatshh"
 desc = "Yazi cheatshh"
