@@ -452,8 +452,8 @@ on  = [ "e", "e" ]
 run = ["select --state=none", "rename --hovered --force --cursor=before_ext", "select --state=none"]
 desc  = "Test plugin"
 [[manager.prepend_keymap]]
-on  = [ "'", ";" ]
-run = "plugin custom-shell --args=auto"
+on  = [ "'", "l", "g" ]
+run = 'plugin custom-shell --args="custom zsh \"lazygit\""'
 
 ## Mactagging
 [[manager.prepend_keymap]]
@@ -494,3 +494,6 @@ desc = "find all files with set color"
 on = ["c", "a"]
 run = "plugin ouch --args=zip"
 desc = "Compress with ouch"
+[[manager.prepend_keymap]] 
+on = "<C-y>"
+run = ["plugin system-clipboard"]
