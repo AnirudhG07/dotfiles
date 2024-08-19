@@ -1,21 +1,17 @@
 local function splitAndGetFirst(inputstr, sep)
-	if sep == nil then
-		sep = "%s"
-	end
-	local sepStart, sepEnd = string.find(inputstr, sep)
-	if sepStart then
-		return string.sub(inputstr, 1, sepStart - 1)
-	end
-	return inputstr
+    if sep == nil then
+        sep = "%s"
+    end
+    local sepStart, sepEnd = string.find(inputstr, sep)
+    if sepStart then
+        return string.sub(inputstr, 1, sepStart - 1)
+    end
+    return inputstr
 end
 
-local state = ya.sync(function()
-	return tostring(cx.active.current.cwd)
-end)
+local state = ya.sync(function() return tostring(cx.active.current.cwd) end)
 
-local function fail(s, ...)
-	ya.notify({ title = "Fzf", content = string.format(s, ...), timeout = 5, level = "error" })
-end
+local function fail(s, ...) ya.notify { title = "fzf", content = string.format(s, ...), timeout = 5, level = "error" } end
 
 local function entry(_, args)
 	local _permit = ya.hide()
@@ -23,14 +19,11 @@ local function entry(_, args)
 	local shell_value = os.getenv("SHELL"):match(".*/(.*)")
 	local cmd_args = ""
 
-	local preview_cmd =
-		[===[line={2} && begin=$( if [[ $line -lt 7 ]]; then echo $((line-1)); else echo 6; fi ) && bat --highlight-line={2} --color=always --line-range $((line-begin)):$((line+10)) {1}]===]
+	local preview_cmd = [===[line={2} && begin=$( if [[ $line -lt 7 ]]; then echo $((line-1)); else echo 6; fi ) && bat --highlight-line={2} --color=always --line-range $((line-begin)):$((line+10)) {1}]===]
 	if shell_value == "fish" then
-		preview_cmd =
-			[[set line {2} && set begin ( test $line -lt 7  &&  echo (math "$line-1") || echo  6 ) && bat --highlight-line={2} --color=always --line-range (math "$line-$begin"):(math "$line+10") {1}]]
+		preview_cmd = [[set line {2} && set begin ( test $line -lt 7  &&  echo (math "$line-1") || echo  6 ) && bat --highlight-line={2} --color=always --line-range (math "$line-$begin"):(math "$line+10") {1}]]
 	elseif shell_value == "nu" then
-		preview_cmd =
-			[[let line = ({2} | into int); let begin = if $line < 7 { $line - 1 } else { 6 }; bat --highlight-line={2} --color=always --line-range $'($line - $begin):($line + 10)' {1}]]
+		preview_cmd = [[let line = ({2} | into int); let begin = if $line < 7 { $line - 1 } else { 6 }; bat --highlight-line={2} --color=always --line-range $'($line - $begin):($line + 10)' {1}]]
 	end
 
 	if args[1] == "fzf" then
@@ -46,7 +39,7 @@ local function entry(_, args)
 				--preview-window 'up,60%' \
 				--nth '3..'
 		]]
-	elseif args[1] == "rg" and (shell_value == "bash" or shell_value == "zsh") then
+	elseif args[1] == "rg" and (shell_value == "bash" or shell_value == "zsh")  then
 		cmd_args = [[
 			RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
 			fzf --ansi --disabled \
@@ -67,21 +60,14 @@ local function entry(_, args)
 			.. preview_cmd
 			.. [[' --preview-window 'up,60%' --nth '3..']]
 	else
-		cmd_args = [[rg --color=always --line-number --no-heading --smart-case '' | fzf --ansi --preview=']]
-			.. preview_cmd
-			.. [[' --delimiter=':' --preview-window='up:60%' --nth='3..']]
+		cmd_args = [[rg --color=always --line-number --no-heading --smart-case '' | fzf --ansi --preview=']] .. preview_cmd .. [[' --delimiter=':' --preview-window='up:60%' --nth='3..']]
 	end
 
-	local child, err = Command(shell_value)
-		:args({ "-c", cmd_args })
-		:cwd(cwd)
-		:stdin(Command.INHERIT)
-		:stdout(Command.PIPED)
-		:stderr(Command.INHERIT)
-		:spawn()
+	local child, err =
+		Command(shell_value):args({"-c", cmd_args}):cwd(cwd):stdin(Command.INHERIT):stdout(Command.PIPED):stderr(Command.INHERIT):spawn()
 
 	if not child then
-		return fail("Spawn `rfzf` failed with error code %s. Do you have it installed?", err)
+		return fail("Spawn `fzf` failed with error code %s. Do you have it installed?", err)
 	end
 
 	local output, err = child:wait_with_output()
@@ -93,7 +79,7 @@ local function entry(_, args)
 
 	local target = output.stdout:gsub("\n$", "")
 
-	local file_url = splitAndGetFirst(target, ":")
+    local file_url = splitAndGetFirst(target,":")
 
 	if file_url ~= "" then
 		ya.manager_emit(file_url:match("[/\\]$") and "cd" or "reveal", { file_url })

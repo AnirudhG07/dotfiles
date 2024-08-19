@@ -1,9 +1,9 @@
 local function info(content)
-	return ya.notify({
+	return ya.notify {
 		title = "Diff",
 		content = content,
 		timeout = 5,
-	})
+	}
 end
 
 local selected_url = ya.sync(function()

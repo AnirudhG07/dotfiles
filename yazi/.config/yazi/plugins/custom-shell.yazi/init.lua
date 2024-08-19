@@ -1,21 +1,3 @@
-local selected_files = ya.sync(function()
-	-- get selected/hovered files, where first selected file is url_begin
-	local tab, urls, url_begin = cx.active, "", ""
-	for _, u in pairs(tab.selected) do
-		if urls == "" then
-			urls = ya.quote(tostring(u))
-			url_begin = urls
-		else
-			urls = urls .. " " .. ya.quote(tostring(u))
-		end
-	end
-	if urls == "" and tab.current.hovered then
-		urls = ya.quote(tostring(tab.current.hovered.url))
-		url_begin = urls
-	end
-	return urls, url_begin
-end)
-
 local function shell_choice(shell_val)
 	-- input is in lowercase always
 	local alt_name_map = {
@@ -43,7 +25,7 @@ local function shell_choice(shell_val)
 	if shell_info then
 		return shell_info.shell_val, shell_info.supporter
 	else
-		return nil, nil
+		return nil, "-c"
 	end
 end
 
@@ -60,7 +42,7 @@ local function manage_extra_args(args)
 		end
 	end
 
-	return block, confirm, orphan, ya.target_os() ~= "windows"
+	return block, confirm, orphan
 end
 
 local function entry(_, args)
@@ -93,7 +75,6 @@ local function entry(_, args)
 	else
 		cmd = args[3]
 	end
-	ya.notify({ title = "Shell", content = cmd, timeout = 1 })
 
 	if event == 1 then
 		ya.manager_emit("shell", {
