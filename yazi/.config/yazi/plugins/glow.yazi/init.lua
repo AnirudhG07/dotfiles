@@ -2,16 +2,16 @@ local M = {}
 
 function M:peek()
 	local child = Command("glow")
-		:args({
-			"--style",
-			"dark",
-			"--width",
-			tostring(self.area.w),
-			tostring(self.file.url),
-		})
-		:stdout(Command.PIPED)
-		:stderr(Command.PIPED)
-		:spawn()
+			:args({
+				"--style",
+				"dark",
+				"--width",
+				tostring(self.area.w),
+				tostring(self.file.url),
+			})
+			:stdout(Command.PIPED)
+			:stderr(Command.PIPED)
+			:spawn()
 
 	if not child then
 		return self:fallback_to_builtin()

@@ -179,6 +179,8 @@ _fzf_comprun() {
     *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
   esac
 }
+
+export YAZI_CONFIG_HOME=~/dotfiles/yazi/.config/yazi
 # ----- Bat (better cat) -----
 
 export BAT_THEME=tokyonight_night

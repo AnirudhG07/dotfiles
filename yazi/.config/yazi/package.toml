@@ -1,0 +1,5 @@
+[plugin]
+deps = [{ use = "AnirudhG07/cheatshh", rev = "9add1de" }, { use = "kirasok/torrent-preview", rev = "76970b6" }, { use = "dedukun/relative-motions", rev = "73f5542" }, { use = "AnirudhG07/nbpreview", rev = "1a16fb9" }, { use = "Sonico98/exifaudio", rev = "6205460" }, { use = "Reledia/glow", rev = "536185a" }, { use = "Reledia/miller", rev = "75f0002" }]
+
+[flavor]
+deps = []

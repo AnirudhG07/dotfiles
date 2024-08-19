@@ -1,46 +1,25 @@
 local M = {}
 
 function GetPath(str)
-	local sep = "/"
+	local sep = '/'
 	if ya.target_family() == "windows" then
-		sep = "\\"
+		sep = '\\'
 	end
-	return str:match("(.*" .. sep .. ")")
+    return str:match("(.*"..sep..")")
 end
 
 function Exiftool(...)
 	local child = Command("exiftool")
 		:args({
-			"-q",
-			"-q",
-			"-S",
-			"-Title",
-			"-SortName",
-			"-TitleSort",
-			"-TitleSortOrder",
-			"-Artist",
-			"-SortArtist",
-			"-ArtistSort",
-			"-PerformerSortOrder",
-			"-Album",
-			"-SortAlbum",
-			"-AlbumSort",
-			"-AlbumSortOrder",
-			"-AlbumArtist",
-			"-SortAlbumArtist",
-			"-AlbumArtistSort",
-			"-AlbumArtistSortOrder",
-			"-Genre",
-			"-TrackNumber",
-			"-Year",
-			"-Duration",
-			"-SampleRate",
-			"-AudioSampleRate",
-			"-AudioBitrate",
-			"-AvgBitrate",
-			"-Channels",
-			"-AudioChannels",
-			tostring(...),
+			"-q", "-q", "-S", "-Title", "-SortName",
+			"-TitleSort", "-TitleSortOrder", "-Artist",
+			"-SortArtist", "-ArtistSort", "-PerformerSortOrder",
+			"-Album", "-SortAlbum", "-AlbumSort", "-AlbumSortOrder",
+			"-AlbumArtist", "-SortAlbumArtist", "-AlbumArtistSort",
+			"-AlbumArtistSortOrder", "-Genre", "-TrackNumber",
+			"-Year", "-Duration", "-SampleRate", 
+			"-AudioSampleRate", "-AudioBitrate", "-AvgBitrate",
+			"-Channels", "-AudioChannels", tostring(...),
 		})
 		:stdout(Command.PIPED)
 		:stderr(Command.NULL)
@@ -50,11 +29,10 @@ end
 
 function Mediainfo(...)
 	local file, cache_dir = ...
-	local template = cache_dir .. "mediainfo.txt"
+	local template = cache_dir.."mediainfo.txt"
 	local child = Command("mediainfo")
 		:args({
-			"--Output=file://" .. template,
-			tostring(file),
+			"--Output=file://"..template, tostring(file)
 		})
 		:stdout(Command.PIPED)
 		:stderr(Command.NULL)
@@ -76,7 +54,7 @@ function M:peek()
 	if not status or child == nil then
 		status, child = pcall(Exiftool, self.file.url)
 		if not status or child == nil then
-			local error = ui.Line({ ui.Span("Make sure exiftool is installed and in your PATH") })
+			local error = ui.Line { ui.Span("Make sure exiftool is installed and in your PATH") }
 			local p = ui.Paragraph(self.area, { error }):wrap(ui.Paragraph.WRAP)
 			ya.preview_widgets(self, { p })
 			return
@@ -99,8 +77,8 @@ function M:peek()
 			if m_title ~= "" and m_tag ~= "" then
 				local ti = ui.Span(m_title):bold()
 				local ta = ui.Span(m_tag)
-				table.insert(metadata, ui.Line({ ti, ta }))
-				table.insert(metadata, ui.Line({}))
+				table.insert(metadata, ui.Line{ti, ta})
+				table.insert(metadata, ui.Line{})
 			end
 		end
 	until i >= self.skip + limit
@@ -111,12 +89,12 @@ function M:peek()
 	local cover_width = self.area.w / 2 - 5
 	local cover_height = (self.area.h / 4) + 3
 
-	local bottom_right = ui.Rect({
+	local bottom_right = ui.Rect {
 		x = self.area.right - cover_width,
 		y = self.area.bottom - cover_height,
 		w = cover_width,
 		h = cover_height,
-	})
+	}
 
 	if self:preload() == 1 then
 		ya.image_show(cache, bottom_right)
@@ -152,16 +130,16 @@ function Prettify(metadata)
 		AvgBitrate = "Average Bitrate:",
 		AudioSampleRate = "Sample Rate:",
 		SampleRate = "Sample Rate:",
-		AudioChannels = "Channels:",
+		AudioChannels = "Channels:"
 	}
 
 	for k, v in pairs(substitutions) do
-		metadata = metadata:gsub(tostring(k) .. ":", v, 1)
+		metadata = metadata:gsub(tostring(k)..":", v, 1)
 	end
 
 	-- Separate the tag title from the tag data
-	local t = {}
-	for str in string.gmatch(metadata, "([^" .. ":" .. "]+)") do
+	local t={}
+	for str in string.gmatch(metadata , "([^"..":".."]+)") do
 		if str ~= "\n" then
 			table.insert(t, str)
 		else
@@ -172,9 +150,10 @@ function Prettify(metadata)
 	-- Add back semicolon to title, rejoin tag data if it happened to contain a semicolon
 	local title, tag_data = "", ""
 	if t[1] ~= nil then
-		title, tag_data = t[1] .. ":", table.concat(t, ":", 2)
+		title, tag_data = t[1]..":", table.concat(t, ":", 2)
 	end
 	return title, tag_data
+
 end
 
 function M:seek(units)
@@ -218,7 +197,7 @@ Channels: %Channel(s)%"\
 
 	-- Write the mediainfo template file into yazi's cache dir
 	local cache_dir = GetPath(tostring(cache))
-	fs.write(Url(cache_dir .. "mediainfo.txt"), mediainfo_template)
+	fs.write(Url(cache_dir.."mediainfo.txt"), mediainfo_template)
 
 	local output = Command("exiftool")
 		:args({ "-b", "-CoverArt", "-Picture", tostring(self.file.url) })
