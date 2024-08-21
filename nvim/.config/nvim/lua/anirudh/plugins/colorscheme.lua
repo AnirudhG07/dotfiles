@@ -32,6 +32,7 @@ return {
 					colors.fg_gutter = fg_gutter
 					colors.fg_sidebar = fg_dark
 				end,
+				plugins = { markdown = true },
 			})
 			-- load the colorscheme here
 			vim.cmd("colorscheme tokyonight")
