@@ -3,13 +3,7 @@ require("full-border"):setup()
 --require("relative-motions"):setup({ show_numbers = "none", show_motion = true })
 require("starship_prompt"):setup()
 
-require("keyjump"):setup({
-	icon_fg = "#fda1a1",
-})
--- Symlink
---require("git-status"):setup({
---	style = "linemode", -- beside or linemode
---})
+require("git"):setup({})
 
 function Status:name()
 	local h = cx.active.current.hovered

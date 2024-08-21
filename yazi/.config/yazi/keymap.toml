@@ -535,24 +535,6 @@ desc = "Recursively enter parent directory, skipping parents with only a single 
 #run = "plugin relative-motions"
 #desc = "Trigger a new relative motion"
 
-# Keyjump.yazi
-[[manager.prepend_keymap]]
-on = ["i", "k"]
-run = "plugin keyjump --args=keep"
-desc = "Keyjump (Keep mode)"
-[[manager.prepend_keymap]]
-on = ["i", "n"]
-run = "plugin keyjump"
-desc = "Keyjump (Normal mode)"
-[[manager.prepend_keymap]]
-on = ["i", "s"]
-run = "plugin keyjump --args=select"
-desc = "Keyjump (Select mode)"
-[[manager.prepend_keymap]]
-on = ["i", "g"]
-run = "plugin keyjump --args=global"
-desc = "Keyjump (Global mode)"
-
 ## Drag and Drop functionality using Finder
 [[manager.prepend_keymap]]
 on = "<C-n>"
@@ -582,4 +564,9 @@ desc = "Mount selected archive"
 [[manager.prepend_keymap]]
 on = ["m", "u"]
 run = "plugin archivemount --args=unmount"
-desc = "Unmount and save changes to original archive"
+desc = "unmount and save changes to original archive"
+
+[[manager.prepend_keymap]]
+on = ["i"]
+run = "plugin easyjump"
+desc = "Easyjump anywhere in the CWD"
