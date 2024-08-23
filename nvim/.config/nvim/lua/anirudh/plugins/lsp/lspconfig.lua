@@ -123,9 +123,9 @@ return {
 				})
 			end,
 
-			["ruff_lsp"] = function()
+			["ruff"] = function()
 				-- configure ruff language server
-				lspconfig["ruff_lsp"].setup({
+				lspconfig["ruff"].setup({
 					on_attach = on_attach_ruff,
 					init_options = {
 						settings = {
