@@ -42,6 +42,8 @@ return {
 				"emmet_ls",
 				"prismals",
 				"pyright",
+				"rust_analyzer",
+				"ruff server",
 			},
 		})
 
@@ -49,10 +51,11 @@ return {
 			ensure_installed = {
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
-				"isort", -- python formatter
-				"black", -- python formatter
-				"pylint",
-				"eslint_d",
+				"ruff-lsp", -- python formatter
+				"gopls", -- go formatter
+				"goimports",
+				"rust-analyzer", -- rust formatter
+				"eslint_d", -- eslint formatter
 			},
 		})
 	end,
