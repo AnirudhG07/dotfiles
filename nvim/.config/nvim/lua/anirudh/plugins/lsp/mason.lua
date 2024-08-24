@@ -40,7 +40,6 @@ return {
 				"emmet_ls",
 				"pyright",
 				"rust_analyzer",
-				"ruff server",
 			},
 		})
 

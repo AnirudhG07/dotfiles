@@ -18,8 +18,8 @@ title_format = "Yazi: {cwd}"
 
 [preview]
 tab_size = 2
-max_width = 600
-max_height = 900
+max_width = 1200
+max_height = 1800
 cache_dir = ""
 image_delay = 30
 image_filter = "triangle"
@@ -133,7 +133,6 @@ prepend_previewers = [
     { mime = "audio/*", run = "exifaudio" },
     { mime = "application/x-bittorrent", run = "torrent-preview" },
     { name = "*.ipynb", run = "nbpreview" },
-    { name = "*.json", run = "rich-preview" },
 ]
 fetchers = [
     # Mimetype
