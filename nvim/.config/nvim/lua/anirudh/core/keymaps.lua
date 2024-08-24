@@ -1,5 +1,6 @@
 -- set leader key to space
 vim.g.mapleader = " "
+vim.g.maplocalleader = ","
 
 local keymap = vim.keymap -- for conciseness
 
@@ -29,3 +30,9 @@ keymap.set("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close current tab" 
 keymap.set("n", "<leader>tn", "<cmd>tabn<CR>", { desc = "Go to next tab" }) --  go to next tab
 keymap.set("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" }) --  go to previous tab
 keymap.set("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" }) --  move current buffer to new tab
+keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true })
+keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
+
+-- local leader mappings
+keymap.set("n", "<localleader>g", "<cmd>GrugFar<CR>", { desc = "Open Grug Find and Replace" }) -- quit
+keymap.set("n", "<localleader>k", "<cmd>Legendary<CR>", { desc = "Legendary keybind finder" }) -- quit
