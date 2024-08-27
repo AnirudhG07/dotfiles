@@ -48,6 +48,8 @@ return {
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
 				"ruff", -- python formatter
+				"black",
+				"mypy",
 				"gopls", -- go formatter
 				"goimports",
 				"rust-analyzer", -- rust formatter
