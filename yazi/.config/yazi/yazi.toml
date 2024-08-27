@@ -17,6 +17,7 @@ mouse_events = ["click", "scroll", "touch", "move", "drag"]
 title_format = "Yazi: {cwd}"
 
 [preview]
+wrap = "yes"
 tab_size = 2
 max_width = 1200
 max_height = 1800
