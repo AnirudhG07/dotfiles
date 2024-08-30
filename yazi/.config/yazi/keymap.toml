@@ -407,15 +407,6 @@ on = [ "f" ,"a"]
 run = "plugin file-actions --args='around '"
 desc= "Perform actions on selected files"
 
-[[manager.prepend_keymap]]
-on   = [ "c","h" ]
-run  = "plugin cheatshh"
-desc = "Yazi cheatshh"
-[[manager.prepend_keymap]]
-on   = [ "c","H" ]
-run  = "plugin cheatshh --args=options"
-desc = "Yazi cheatshh"
-
 ## Chmod
 [[manager.prepend_keymap]]
 on   = [ "c", "m" ]
