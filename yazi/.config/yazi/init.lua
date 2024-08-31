@@ -3,7 +3,6 @@ require("full-border"):setup()
 --require("relative-motions"):setup({ show_numbers = "none", show_motion = true })
 require("starship"):setup()
 require("git"):setup({})
-
 require("mactag"):setup({
 	-- You can change the colors of the tags here
 	colors = {
