@@ -446,8 +446,11 @@ on  = [ "e", "e" ]
 run = ["select --state=none", "rename --hovered --force --cursor=before_ext", "select --state=none"]
 desc  = "Test plugin"
 [[manager.prepend_keymap]]
-on  = [ "'", "l", "g" ]
+on  = [ "'", "l"]
 run = 'plugin custom-shell --args="custom zsh \"lazygit\""'
+[[manager.prepend_keymap]]
+on  = [ "'", ";" ]
+run = 'plugin custom-shell --args="zsh"'
 
 ## Mactagging
 [[manager.prepend_keymap]]

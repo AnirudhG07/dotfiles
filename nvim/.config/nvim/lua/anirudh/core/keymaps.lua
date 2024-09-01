@@ -36,3 +36,4 @@ keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
 -- local leader mappings
 keymap.set("n", "<localleader>g", "<cmd>GrugFar<CR>", { desc = "Open Grug Find and Replace" }) -- quit
 keymap.set("n", "<localleader>k", "<cmd>Legendary<CR>", { desc = "Legendary keybind finder" }) -- quit
+keymap.set("n", "<localleader>c", "<cmd>CopilotChat<CR>", { desc = "Open Copilot Chat" }) -- quit
