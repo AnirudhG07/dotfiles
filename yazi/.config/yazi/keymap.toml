@@ -452,6 +452,16 @@ keymap = [
 ## Plugin keymaps
 ## Max Preview
 [[manager.prepend_keymap]]
+on = "A"
+run = "create --dir"
+desc = "Create a directory"
+[[manager.prepend_keymap]]
+on = "<F5>"
+run = "refresh"
+desc = "Refresh the current directory"
+
+
+[[manager.prepend_keymap]]
 on = ["T"]
 run = "plugin --sync max-preview"
 desc = "Maximize or restore preview"
