@@ -21,7 +21,7 @@ Preview file types using `rich` command in Yazi. This plugin allows preview for 
 To install this plugin, simply run-
 
 ```bash
-ya pack -a AnirudhG07/rich-preview.yazi
+ya pack -a AnirudhG07/rich-preview
 ## For linux and MacOS
 git clone https://github.com/AnirudhG07/rich-preview.yazi.git ~/.config/yazi/plugins/rich-preview.yazi
 
@@ -59,6 +59,7 @@ If you would like to use `rich` with more configurations, you can go to `init.lu
 "--force-terminal",
 "--panel=rounded",
 "--guides",
+"--max-width" -- to area of preview
 ```
 
 You can add more, remove and choose themes as you wish. You can set styles or Themes(as mentioned in `rich --help`) by `--theme=your_theme` and similarly for style.

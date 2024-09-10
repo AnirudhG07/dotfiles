@@ -324,6 +324,16 @@ keymap = [
 ]
 ## Plugin keymaps
 [[manager.prepend_keymap]]
+on = ["<F5>"]
+run = "refresh"
+desc = "Refresh the current directory"
+
+[[manager.prepend_keymap]]
+on = ["A"]
+run = "create --dir"
+desc = "Create a directory"
+
+[[manager.prepend_keymap]]
 on = "<C-k>"
 run = "seek -5"
 desc = "Seek up 5 units in the preview"

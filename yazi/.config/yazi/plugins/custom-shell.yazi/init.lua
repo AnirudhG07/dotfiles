@@ -1,3 +1,14 @@
+local selected_or_hovered = ya.sync(function()
+	local tab, paths = cx.active, {}
+	for _, u in pairs(tab.selected) do
+		paths[#paths + 1] = tostring(u)
+	end
+	if #paths == 0 and tab.current.hovered then
+		paths[1] = tostring(tab.current.hovered.url)
+	end
+	return paths
+end)
+
 local function shell_choice(shell_val)
 	-- input is in lowercase always
 	local alt_name_map = {
@@ -63,10 +74,11 @@ local function entry(_, args)
 		shell_val, supp = shell_choice(shell_env)
 	end
 
-	local block, confirm, orphan, unix = manage_extra_args(args)
+	local block, confirm, orphan = manage_extra_args(args)
 	local input_title = shell_value .. " Shell " .. (block and "(block)" or "") .. ": "
+	local paths = selected_or_hovered()
 
-	local cmd, event = "", 1
+	local exec_cmd, cmd, event = shell_val .. " " .. supp .. " ", "", 1
 	if args[1] ~= "custom" then
 		cmd, event = ya.input({
 			title = input_title,
@@ -76,9 +88,18 @@ local function entry(_, args)
 		cmd = args[3]
 	end
 
+	if args[1] == "custom" then
+		exec_cmd = exec_cmd .. ya.quote(cmd .. "; exit", true)
+	elseif shell_val == "fish" then
+		exec_cmd = exec_cmd
+			.. string.format('"set -g 0 %s;set -g argv %s; %s"', paths, cmd:gsub("%$", "\\$"):gsub('"', '\\"'))
+	else -- for other shells
+		exec_cmd = exec_cmd .. string.format('"%s; exit" %s %s', cmd:gsub("%$", "\\$"):gsub('"', '\\"'), paths)
+	end
+
 	if event == 1 then
 		ya.manager_emit("shell", {
-			shell_val .. " " .. supp .. " " .. ya.quote(cmd .. "; exit", true),
+			exec_cmd,
 			block = block,
 			confirm = confirm,
 			orphan = orphan,
