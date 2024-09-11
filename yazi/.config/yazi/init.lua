@@ -5,6 +5,30 @@ require("starship_prompt"):setup()
 
 require("git"):setup({})
 
+-- You can configure your bookmarks by lua language
+local bookmarks = {}
+
+local path_sep = package.config:sub(1, 1)
+local home_path = ya.target_family() == "windows" and os.getenv("USERPROFILE") or os.getenv("HOME")
+table.insert(bookmarks, {
+	tag = "Desktop",
+	path = home_path .. path_sep .. "Desktop" .. path_sep,
+	key = "d",
+})
+
+require("yamb"):setup({
+	-- Optional, the path ending with path seperator represents folder.
+	bookmarks = bookmarks,
+	jump_notify = false,
+	-- Optional, the cli of fzf.
+	cli = "fzf",
+	-- Optional, a string used for randomly generating keys, where the preceding characters have higher priority.
+	keys = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+	-- Optional, the path of bookmarks
+	path = (ya.target_family() == "windows" and os.getenv("APPDATA") .. "\\yazi\\config\\bookmark")
+		or (os.getenv("HOME") .. "/.config/yazi/plugins/yamb.yazi/bookmark"),
+})
+
 function Status:name()
 	local h = cx.active.current.hovered
 	if not h then
