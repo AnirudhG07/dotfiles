@@ -632,3 +632,13 @@ desc = "unmount and save changes to original archive"
 on = ["i"]
 run = "plugin easyjump"
 desc = "Easyjump anywhere in the CWD"
+
+[[manager.prepend_keymap]]
+on = "<C-y>"
+run = ["plugin system-clipboard"]
+desc = "System Clipboard from yazi"
+
+[[manager.prepend_keymap]]
+on = "<A-y>"
+run = ["plugin copy-file-contents"]
+desc = "Copy contents of file"

@@ -1,5 +1,5 @@
 [plugin]
-deps = [{ use = "h-hg/yamb", rev = "950eca9" }]
+deps = [{ use = "h-hg/yamb", rev = "0598b8d" }, { use = "orhnk/system-clipboard", rev = "7775a80" }, { use = "AnirudhG07/plugins-yazi:copy-file-contents", rev = "37c54a2" }]
 
 [flavor]
 deps = []

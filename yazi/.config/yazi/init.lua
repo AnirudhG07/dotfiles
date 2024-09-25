@@ -5,6 +5,12 @@ require("starship_prompt"):setup()
 
 require("git"):setup({})
 
+require("copy-file-contents"):setup({
+	clipboard_cmd = "default",
+	append_char = "\n",
+	notification = true,
+})
+
 -- You can configure your bookmarks by lua language
 local bookmarks = {}
 
