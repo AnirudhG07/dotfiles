@@ -2,16 +2,16 @@ local M = {}
 
 function M:peek()
 	local child = Command("glow")
-		:args({
-			"--style",
-			"dark",
-			"--width",
-			tostring(self.area.w),
-			tostring(self.file.url),
-		})
-		:stdout(Command.PIPED)
-		:stderr(Command.PIPED)
-		:spawn()
+			:args({
+				"--style",
+				"dark",
+				"--width",
+				tostring(self.area.w),
+				tostring(self.file.url),
+			})
+			:stdout(Command.PIPED)
+			:stderr(Command.PIPED)
+			:spawn()
 
 	if not child then
 		return self:fallback_to_builtin()
@@ -57,9 +57,13 @@ function M:seek(units)
 end
 
 function M:fallback_to_builtin()
-	local _, bound = ya.preview_code(self)
+	local err, bound = ya.preview_code(self)
 	if bound then
-		ya.manager_emit("peek", { tostring(bound), only_if = tostring(self.file.url), upper_bound = "" })
+		ya.manager_emit("peek", { bound, only_if = self.file.url, upper_bound = true })
+	elseif err and not err:find("cancelled", 1, true) then
+		ya.preview_widgets(self, {
+			ui.Paragraph(self.area, { ui.Line(err):reverse() }),
+		})
 	end
 end
 

@@ -6,38 +6,13 @@ https://github.com/dedukun/relative-motions.yazi/assets/25795432/04fb186a-5efe-4
 
 ## Requirements
 
-- [Yazi](https://github.com/sxyazi/yazi) v0.2.4+
+- [Yazi](https://github.com/sxyazi/yazi) v0.3.0+
 
 ## Installation
 
-<details>
-<summary>Yazi v0.2.5 and before (manual installation)</summary>
-
 ```sh
-# Linux/macOS
-git clone https://github.com/dedukun/relative-motions.yazi.git ~/.config/yazi/plugins/relative-motions.yazi
-
-# Windows
-git clone https://github.com/dedukun/relative-motions.yazi.git %AppData%\yazi\config\plugins\relative-motions.yazi
-```
-
-</details>
-
-<details>
-<summary>Latest commit in Yazi (package manager)</summary>
-
-```sh
-# Add the plugin
 ya pack -a dedukun/relative-motions
-
-# Install plugin
-ya pack -i
-
-# Update plugin
-ya pack -u
 ```
-
-</details>
 
 ## Configuration
 
@@ -122,10 +97,10 @@ require("relative-motions"):setup({ show_numbers="relative", show_motion = true 
 ```
 
 > [!NOTE]
-> The `show_numbers` and `show_motion` functionalities overwrite [`Current:render`](https://github.com/sxyazi/yazi/blob/e51e8ad789914b2ab4a9485da7aa7fbc7b3bb450/yazi-plugin/preset/components/current.lua#L5)
-> and [`Status:render`](https://github.com/sxyazi/yazi/blob/e51e8ad789914b2ab4a9485da7aa7fbc7b3bb450/yazi-plugin/preset/components/status.lua#L111) respectively.
+> The `show_numbers` and `show_motion` functionalities overwrite [`Current:render`](https://github.com/sxyazi/yazi/blob/ec33085f672e52adb934503d78703b8dd70621a8/yazi-plugin/preset/components/current.lua#L26)
+> and [`Status:children_render`](https://github.com/sxyazi/yazi/blob/ec33085f672e52adb934503d78703b8dd70621a8/yazi-plugin/preset/components/status.lua#L173) respectively.
 > If you have custom implementations for any of this functions
-> you can add the provided `File:number` and `Status:motion` to your implementations, just check [here](https://github.com/dedukun/relative-motions.yazi/blob/main/init.lua#L39) how we are doing things.
+> you can add the provided `Entity:number` and `Status:motion` to your implementations, just check [here](https://github.com/dedukun/relative-motions.yazi/blob/main/init.lua#L126) how we are doing things.
 
 ## Usage
 

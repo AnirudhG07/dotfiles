@@ -1,15 +1,14 @@
 local state = ya.sync(function()
 	return tostring(cx.active.current.cwd)
 end)
-local Shell_value = os.getenv("SHELL"):match(".*/(.*)")
 
 local function fail(s, ...)
 	ya.notify({ title = "Cheatshh", content = string.format(s, ...), timeout = 5, level = "error" })
 end
 
 local function get_selected_option()
-	local command = Shell_value
-		.. [[ -c '
+    local command = [[
+    bash -c '
     OPTIONS=("1" "Add command" "2" "Add group" "3" "Edit Command" "4" "Edit group" "5" "Delete Command" "6" "Delete group")
     CHOICE=$(whiptail --title "Menu" --menu "Choose an option" 15 60 6 \
     "1" "Add command" \
@@ -25,21 +24,23 @@ local function get_selected_option()
         echo "Cancelled"
         exit 1
     fi
-    ']]
-	local handle = io.popen(command, "r") -- Open the process for reading
-	if handle then
-		local output = handle:read("*a") -- Read the entire output of the command
-		handle:close() -- Close the process
-		return output -- Return the captured output
-	else
+    '
+    ]]  -- Command to run your Bash script embedded as a string
+    local handle = io.popen(command, 'r')  -- Open the process for reading
+    if handle then
+        local output = handle:read("*a")  -- Read the entire output of the command
+        handle:close()  -- Close the process
+        return output  -- Return the captured output
+    else
 		fail("Failed to run cheatshh options")
-		return nil
-	end
+        return nil
+    end
 end
 
 local function commad_runner(cmd_args)
 	local cwd = state()
-	local child, err = Command(Shell_value)
+	local shell_value = os.getenv("SHELL"):match(".*/(.*)")
+	local child, err = Command(shell_value)
 		:args({ "-c", cmd_args })
 		:cwd(cwd)
 		:stdin(Command.INHERIT)
@@ -56,9 +57,9 @@ local function commad_runner(cmd_args)
 		return fail("Cannot read `cheatshh` output, error code %s", err), output
 	elseif not output.status.success and output.status.code ~= 130 then
 		return fail("`cheatshh` exited with error code %s", output.status.code), output
-	else
-		return true, output
-	end
+    else
+        return true, output
+    end
 end
 
 local function entry(_, args)
@@ -66,24 +67,23 @@ local function entry(_, args)
 	local cmd_args = ""
 
 	local option_to_cmd_args = {
-		[1] = [[cheatshh -a]],
-		[2] = [[cheatshh -g]],
-		[3] = [[cheatshh -ec]],
-		[4] = [[cheatshh -eg]],
-		[5] = [[cheatshh -dc]],
-		[6] = [[cheatshh -dg]],
+		[1] = "cheatshh -a",
+		[2] = "cheatshh -g",
+		[3] = "cheatshh -ec",
+		[4] = "cheatshh -eg",
+		[5] = "cheatshh -dc",
+		[6] = "cheatshh -dg",
 	}
 
 	if args[1] == nil then
 		cmd_args = [[cheatshh]]
 	elseif args[1] == "options" then
-		local selected_option = get_selected_option()
-		cmd_args = option_to_cmd_args[tonumber(selected_option)] or [[cheatshh]]
+		local selected_option, err = get_selected_option()
+		cmd_args = option_to_cmd_args[selected_option] or nil
 
 		if not cmd_args then
 			return
 		end
-		-- cmd_args = [[cheatshh -a]]
 	end
 	local success, output = commad_runner(cmd_args)
 	if not success then

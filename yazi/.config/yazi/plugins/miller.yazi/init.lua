@@ -2,20 +2,20 @@ local M = {}
 
 function M:peek()
 	local child = Command("mlr")
-		:args({
-			"--icsv",
-			"--opprint",
-			"-C",
-			"--key-color",
-			"darkcyan",
-			"--value-color",
-			"grey70",
-			"cat",
-			tostring(self.file.url),
-		})
-		:stdout(Command.PIPED)
-		:stderr(Command.PIPED)
-		:spawn()
+			:args({
+				"--icsv",
+				"--opprint",
+				"-C",
+				"--key-color",
+				"darkcyan",
+				"--value-color",
+				"grey70",
+				"cat",
+				tostring(self.file.url),
+			})
+			:stdout(Command.PIPED)
+			:stderr(Command.PIPED)
+			:spawn()
 
 	local limit = self.area.h
 	local i, lines = 0, ""
