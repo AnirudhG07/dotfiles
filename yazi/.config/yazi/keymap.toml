@@ -644,6 +644,6 @@ run = ["plugin copy-file-contents"]
 desc = "Copy contents of file"
 
 [[manager.prepend_keymap]]
-on = [ "f" ]
+on = [ "f", "a" ]
 run = "plugin file-actions --args='around '"
 desc= "Perform actions on selected files"
