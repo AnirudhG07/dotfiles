@@ -1,6 +1,6 @@
 # Amazon Q pre block. Keep at the top of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
-task
+#task
 echo -e "\e[1;30mType '#' in beginning for AI command suggestions\e[0m"
 # Q pre block. Keep at the top of this file.
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
