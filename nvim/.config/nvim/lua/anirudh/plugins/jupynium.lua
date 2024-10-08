@@ -1,6 +1,6 @@
 return {
-  "kiyoon/jupynium.nvim",
-  dependencies = {
-    "rcarriga/nvim-notify",
-  },
+	"kiyoon/jupynium.nvim",
+	dependencies = {
+		"rcarriga/nvim-notify",
+	},
 }

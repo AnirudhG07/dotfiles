@@ -37,9 +37,7 @@ return {
 				"tailwindcss",
 				"svelte",
 				"lua_ls",
-				"graphql",
 				"emmet_ls",
-				"prismals",
 				"pyright",
 				"rust_analyzer",
 			},
@@ -50,6 +48,8 @@ return {
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
 				"ruff", -- python formatter
+				"black",
+				"mypy",
 				"gopls", -- go formatter
 				"goimports",
 				"rust-analyzer", -- rust formatter
