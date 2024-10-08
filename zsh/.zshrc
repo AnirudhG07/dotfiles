@@ -64,18 +64,6 @@ export EDITOR=nvim
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
-# Color variables
-red='\033[0;31m'
-green='\033[0;32m'
-yellow='\033[0;33m'
-blue='\033[0;34m'
-magenta='\033[0;35m'
-cyan='\033[0;36m'
-# Clear the color after that
-clear='\033[0m'
-alias colorpalet='echo "red, green, yellow, blue, magenta, cyan"
-echo "Use colour as '
-
 # Uncomment the following line to display red dots whilst waiting for completion.
 # You can also set it to another string to have that shown instead of the default red dots.
 # e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
@@ -324,20 +312,6 @@ say "GOOD MORNING ANIRUDH! HAVE A GREAT DAY TODAY"'
 alias terminal-robot='bash terminal-robot.sh'
 export NEKOPATH="/opt/homebrew/lib/neko"
 alias edex-ui='open -a edex-ui'
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 
 # Q post block. Keep at the bottom of this file.
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
@@ -346,3 +320,4 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
 
 . "$HOME/.cargo/env"
+eval "$(gh copilot alias -- zsh)"
