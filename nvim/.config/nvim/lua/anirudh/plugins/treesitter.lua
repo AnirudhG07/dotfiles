@@ -50,6 +50,7 @@ return {
 				"dockerfile",
 				"php",
 				"python",
+				"rust",
 			},
 			incremental_selection = {
 				enable = true,
