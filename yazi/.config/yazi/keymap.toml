@@ -469,6 +469,9 @@ run = 'plugin custom-shell --args="custom zsh \"lazygit\""'
 [[manager.prepend_keymap]]
 on  = [ "'", ";" ]
 run = 'plugin custom-shell --args="zsh"'
+[[manager.prepend_keymap]]
+on  = [ "'", "h" ]
+run = 'plugin custom-shell --args=history'
 
 ## Mactagging
 [[manager.prepend_keymap]]

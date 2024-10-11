@@ -1,6 +1,6 @@
 # Custom-shell.yazi
 
-A yazi plugin to open your custom-shell as well as run your command commands through your yazi Shell.
+A yazi plugin to open your custom-shell as well as run your command commands through your yazi Shell, and also save your commands to history.
 You can choose any shell and customise keybindings to run any command like nvim, lazygit, cowsay, etc. without inputting the command as well!
 
 ## Previews
@@ -26,6 +26,21 @@ git clone https://github.com/AnirudhG07/custom-shell.yazi.git %AppData%\yazi\con
 Windows user's should check the init.lua file to make sure the paths used are correct.
 
 # Usage
+
+## History Setup
+
+Add the following to your `init.lua` file:
+
+```lua
+require("custom-shell").setup({
+    history_path = "default",
+    save_history = true,
+})
+```
+
+The `default` corresponds to `yazi_cmd_history` file in your `~/.config/yazi/plugins/custom-shell.yazi` directory(and similar for Windows). You can specify any other path if you like to save the history file elsewhere.
+
+The `save_history` option is set to `true` by default, which will enable files to be saved to history. You can disable the behavior by setting it to `false`.
 
 ## Shell Selection
 
@@ -65,11 +80,15 @@ To change these options, you can give the following arguments to the plugin:
 
 Check the keybindings below to see how to set these options.
 
+You can also add `--wait` or `-w` to make it wait for the user to press return key after executing the command. This allows the command output not to disappear immediately after exit and to stay readable on screen. Note that it is up to the command you run to decide whether to wait for user input or not, so this option may or may not be needed.
+
+![wait argument demo](.assets/wait_demo.gif)
+
 ### Keybindings for Custom Shell
 
 Add this to your `keymap.toml` file:
 
-To use the `auto` mode, you can set the keymappings as-
+To use the `auto` mode, you can set the keymappings as:
 
 ```toml
 [[manager.prepend_keymap]]
@@ -78,7 +97,7 @@ run = "plugin custom-shell --args=auto"
 desc = "custom-shell as default"
 ```
 
-To choose a specific shell, you can set the keymappings as-
+To choose a specific shell, you can set the keymappings as:
 
 ```toml
 [[manager.prepend_keymap]]
@@ -87,7 +106,7 @@ run = "plugin custom-shell --args=zsh"
 desc = "custom-shell as default"
 ```
 
-To set extra shell arguments, you can add them as -
+To set extra shell arguments, you can add them as:
 
 ```toml
 [[manager.prepend_keymap]]
@@ -98,13 +117,22 @@ run = "plugin custom-shell --args='zsh --no-block --orphan --no-confirm'"
 desc = "custom-shell as default with specified arguments"
 ```
 
+To choose a specific shell and wait for user to press return key after executing the command:
+
+```toml
+[[manager.prepend_keymap]]
+on = [ "'", ";" ]
+run = "plugin custom-shell --args='zsh --wait'"
+desc = "custom-shell as default, waits for user"
+```
+
 You can input any shell with their shortnames or full names like "Powershell" or "pwsh", "nushell" or "nu", "Kornshell" or "ksh", etc.
 
 ## Custom Commands
 
 Custom-shell.yazi allows you to run your custom commands without inputting them inside yazi. You can set the shell through which you want to run your command as well. This also supports aliases.
 
-To run a command, you can set the keymappings as-
+To run a command, you can set the keymappings as:
 
 ```toml
 [[manager.prepend_keymap]]
@@ -113,7 +141,7 @@ run = "plugin custom-shell --args='custom auto lazygit'"
 desc = "Run lazygit"
 ```
 
-You can also run the commands with extra arguments as -
+You can also run the commands with extra arguments as:
 
 ```toml
 [[manager.prepend_keymap]]
@@ -129,7 +157,27 @@ run = "plugin custom-shell --args='custom nu \"tmux\"'"
 desc = "Run tmux"
 ```
 
-# Features
+To make it wait with a custom command, specify the `--wait` or `-w` arg right after the `custom` keyword, like this:
+
+```toml
+[[manager.prepend_keymap]]
+on = [ "'", "3" ]
+run = "plugin custom-shell --args='custom --wait zsh \"echo hi\" -o'"
+desc = "Run echo hi"
+```
+
+## History
+
+Custom-shell saves the command you have run in a history file. It uses `fzf` to show history and run the selected command. You can set the keymappings to view the history as -
+
+```toml
+[[manager.prepend_keymap]]
+on = [ "'", "h" ]
+run = "plugin custom-shell --args=history"
+desc = "Show Custom-shell history"
+```
+
+## Features
 
 - Open your custom-shell as your default shell like zsh, <°))>< [fish](https://github.com/AnirudhG07/fish.yazi), bash, etc.
 - Usage of aliases is supported.
@@ -137,6 +185,7 @@ desc = "Run tmux"
 - If your shell runs extra commands like printing texts, taskwarrior, newsupdates, etc. when you open the shell, they will not hinder into it's functioning.
 - Run custom commands without inputting them inside yazi.
 - Set extra arguments for the processes to run.
+- Save commands to history and execute them again.
 
 ## Explore Yazi
 

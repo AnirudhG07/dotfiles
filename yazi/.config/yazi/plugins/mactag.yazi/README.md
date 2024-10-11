@@ -4,7 +4,7 @@ Bring macOS's awesome tagging feature to Yazi! The plugin it's only available fo
 
 Authors: [@AnirudhG07](https://github.com/AnirudhG07), and [@sxyazi](https://github.com/sxyazi)
 
-Note that this plugin is still under development.
+https://github.com/user-attachments/assets/7f26dc6d-67a5-4a85-a99e-4671ece9ae56
 
 ## Installation
 
@@ -21,7 +21,16 @@ Add the following to your `~/.config/yazi/init.lua`:
 
 ```lua
 require("mactag"):setup {
-	-- You can change the colors of the tags here
+	-- Keys used to add or remove tags
+	keys = {
+		r = "Red",
+		o = "Orange",
+		y = "Yellow",
+		g = "Green",
+		b = "Blue",
+		p = "Purple",
+	},
+	-- Colors used to display tags
 	colors = {
 		Red    = "#ee7b70",
 		Orange = "#f5bd5c",
@@ -29,7 +38,6 @@ require("mactag"):setup {
 		Green  = "#91fc87",
 		Blue   = "#5fa3f8",
 		Purple = "#cb88f8",
-		Gray   = "#b5b5b9",
 	},
 }
 ```
@@ -50,18 +58,18 @@ run  = "mactag"
 
 ## Usage
 
-This plugin also provides the functionality to add and remove tags. Add following keybindings to your `~/.config/yazi/keymap.toml` to enable it:
+Besides displaying tags attached to files, you can also add or remove tags within Yazi using this plugin.
+
+Add following keybindings to your `~/.config/yazi/keymap.toml` to enable it:
 
 ```toml
 [[manager.prepend_keymap]]
-on   = [ "b", "r" ]
-run  = 'plugin mactag --args="add Red"'
-desc = "Tag selected files with red"
+on   = [ "b", "a" ]
+run  = 'plugin mactag --args="add"'
+desc = "Tag selected files"
 
 [[manager.prepend_keymap]]
-on   = [ "b", "R" ]
-run  = 'plugin mactag --args="remove Red"'
-desc = "Remove red tag from selected files"
+on   = [ "b", "r" ]
+run  = 'plugin mactag --args="remove"'
+desc = "Untag selected files"
 ```
-
-`Red` can be any tag name you like. To add/remove multiple tags at once, use a comma (`,`) to separate them, like `Red,Yellow`.

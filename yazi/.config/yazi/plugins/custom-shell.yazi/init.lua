@@ -1,12 +1,5 @@
-local selected_or_hovered = ya.sync(function()
-	local tab, paths = cx.active, {}
-	for _, u in pairs(tab.selected) do
-		paths[#paths + 1] = tostring(u)
-	end
-	if #paths == 0 and tab.current.hovered then
-		paths[1] = tostring(tab.current.hovered.url)
-	end
-	return paths
+local state_option = ya.sync(function(state, attr)
+	return state[attr]
 end)
 
 local function shell_choice(shell_val)
@@ -18,31 +11,31 @@ local function shell_choice(shell_val)
 	}
 
 	local shell_map = {
-		bash = { shell_val = "bash", supporter = "-ic" },
-		zsh = { shell_val = "zsh", supporter = "-ic" },
-		fish = { shell_val = "fish", supporter = "-c" },
-		pwsh = { shell_val = "pwsh", supporter = "-Command" },
-		sh = { shell_val = "sh", supporter = "-c" },
-		ksh = { shell_val = "ksh", supporter = "-c" },
-		csh = { shell_val = "csh", supporter = "-c" },
-		tcsh = { shell_val = "tcsh", supporter = "-c" },
-		dash = { shell_val = "dash", supporter = "-c" },
-		nu = { shell_val = "nu", supporter = "-ic" },
+		bash = { shell_val = "bash", supporter = "-ic", wait_cmd = "read" },
+		zsh = { shell_val = "zsh", supporter = "-ic", wait_cmd = "read" },
+		fish = { shell_val = "fish", supporter = "-c", wait_cmd = "read" },
+		pwsh = { shell_val = "pwsh", supporter = "-Command", wait_cmd = "Read-Host" },
+		sh = { shell_val = "sh", supporter = "-c", wait_cmd = "read" },
+		ksh = { shell_val = "ksh", supporter = "-c", wait_cmd = "read" },
+		csh = { shell_val = "csh", supporter = "-c", wait_cmd = "$<" },
+		tcsh = { shell_val = "tcsh", supporter = "-c", wait_cmd = "$<" },
+		dash = { shell_val = "dash", supporter = "-c", wait_cmd = "read" },
+		nu = { shell_val = "nu", supporter = "-ic", wait_cmd = "input" },
 	}
 
 	shell_val = alt_name_map[shell_val] or shell_val
 	local shell_info = shell_map[shell_val]
 
 	if shell_info then
-		return shell_info.shell_val, shell_info.supporter
+		return shell_info.shell_val, shell_info.supporter, shell_info.wait_cmd
 	else
-		return nil, "-c"
+		return nil, "-c", "read"
 	end
 end
 
 local function manage_extra_args(args)
 	-- set default values, --custom-shell.yazi does not use --interactive but --confirm.
-	local block, confirm, orphan = true, true, false
+	local block, confirm, orphan, wait = true, true, false, false
 	for _, arg in ipairs(args) do
 		if arg == "-nb" or arg == "--no-block" then
 			block = false
@@ -50,63 +43,181 @@ local function manage_extra_args(args)
 			confirm = false
 		elseif arg == "-o" or arg == "--orphan" then
 			orphan = true
+		elseif arg == "-w" or arg == "--wait" then
+			wait = true
 		end
 	end
 
-	return block, confirm, orphan
+	return block, confirm, orphan, wait
+end
+
+local function manage_additional_title_text(block, wait)
+	local txt = ""
+	if block or wait then
+		txt = "(" .. (block and wait and "block and wait" or block and "block" or "") .. ")"
+	end
+	return txt
+end
+
+local function history_add(history_path, cmd_run)
+	local history_file = history_path
+	local history = {}
+
+	-- Ensure the history file exists
+	local file = io.open(history_file, "a+")
+	if file then
+		file:close()
+	end
+
+	-- Read existing history
+	for line in io.lines(history_file) do
+		-- add line if it is not empty
+		if line:match("%S") then
+			table.insert(history, line)
+		end
+	end
+
+	if cmd_run == nil then
+		return history
+	end
+
+	-- Append the new command to the history if it doesn't already exist
+	local command_exists = false
+	for _, cmd in ipairs(history) do
+		if cmd == cmd_run then
+			command_exists = true
+			break
+		end
+	end
+
+	if not command_exists then
+		file = io.open(history_file, "a")
+		if file then
+			file:write(cmd_run .. "\n")
+			file:close()
+		end
+	end
+
+	return history
+end
+
+local function history_prev(history_path)
+	-- get the history commands
+	local history_cmds = history_add(history_path)
+	if #history_cmds < 1 then
+		ya.notify({ title = "Custom-Shell", content = "History is Empty.", timeout = 3 })
+		return
+	end
+	-- preview the commands list in fzf and return selected cmd
+	for i, cmd in ipairs(history_cmds) do
+		history_cmds[i] = cmd:gsub("'", "'\\''") -- Escape single quotes
+	end
+	local permit = ya.hide()
+
+	local cmd = string.format('%s < "%s"', "fzf", history_path)
+	local handle = io.popen(cmd, "r")
+
+	local his_cmd = ""
+	if handle then
+		-- strip
+		his_cmd = string.gsub(handle:read("*all") or "", "^%s*(.-)%s*$", "%1")
+		handle:close()
+	end
+
+	permit:drop()
+	return his_cmd
 end
 
 local function entry(_, args)
 	local shell_env = os.getenv("SHELL"):match(".*/(.*)")
-	local shell_value = ""
+	local shell_value, cmd, custom_shell_cmd = "", "", ""
 
-	if args[1] == "auto" then
+	local history_path, save_history = state_option("history_path"), state_option("save_history")
+
+	if args[1] == "auto" or args[1] == "history" then
 		shell_value = shell_env:lower()
 	elseif args[1] == "custom" then
-		shell_value = args[2]
-	else
+		if args[2] == "--wait" or args[2] == "-w" then
+			shell_value = args[3]
+			cmd = args[4]
+		else
+			shell_value = args[2]
+			cmd = args[3]
+		end
+	elseif args[1] ~= "history" then
 		shell_value = args[1]:lower()
 	end
 
-	local shell_val, supp = shell_choice(shell_value:lower())
+	local shell_val, supp, wait_cmd = shell_choice(shell_value:lower())
+
+	if args[1] == "history" then
+		local his_cmd = history_prev(history_path)
+		if his_cmd == nil then
+			return
+		end
+		local value, event = ya.input({
+			title = "Custom-Shell History",
+			position = { "top-center", y = 3, w = 40 },
+			value = his_cmd,
+		})
+		if event == 1 then
+			-- this may lead to nested zsh -c "zsh -c 'zsh -c ...'"
+			-- But that's not a problem
+			cmd = value
+		end
+	end
 	if shell_val == nil then
 		ya.notify("Unsupported shell: " .. shell_value .. "Choosing Default Shell: " .. shell_env)
 		shell_val, supp = shell_choice(shell_env)
 	end
 
-	local block, confirm, orphan = manage_extra_args(args)
-	local input_title = shell_value .. " Shell " .. (block and "(block)" or "") .. ": "
-	local paths = selected_or_hovered()
+	local block, confirm, orphan, wait = manage_extra_args(args)
+	local additional_title_text = manage_additional_title_text(block, wait)
+	local input_title = shell_value .. " Shell " .. additional_title_text .. ": "
+	local event = 1
 
-	local exec_cmd, cmd, event = shell_val .. " " .. supp .. " ", "", 1
-	if args[1] ~= "custom" then
+	if args[1] ~= "custom" and args[1] ~= "history" then
 		cmd, event = ya.input({
 			title = input_title,
 			position = { "top-center", y = 3, w = 40 },
 		})
-	else
-		cmd = args[3]
-	end
-
-	if args[1] == "custom" then
-		exec_cmd = exec_cmd .. ya.quote(cmd .. "; exit", true)
-	elseif shell_val == "fish" then
-		exec_cmd = exec_cmd
-			.. string.format('"set -g 0 %s;set -g argv %s; %s"', paths, cmd:gsub("%$", "\\$"):gsub('"', '\\"'))
-	else -- for other shells
-		exec_cmd = exec_cmd .. string.format('"%s; exit" %s %s', cmd:gsub("%$", "\\$"):gsub('"', '\\"'), paths)
 	end
 
 	if event == 1 then
+		local after_cmd = wait and wait_cmd or "exit"
+		-- for history also, this will be added.
+		custom_shell_cmd = shell_val .. " " .. supp .. " " .. ya.quote(cmd .. "; " .. after_cmd, true)
+
 		ya.manager_emit("shell", {
-			exec_cmd,
+			custom_shell_cmd,
 			block = block,
 			confirm = confirm,
 			orphan = orphan,
 		})
+
+		if save_history then
+			if args[1] == "history" then
+				-- to avoid nested "zsh -c 'zsh -c ...'"
+				history_add(history_path, cmd)
+			else
+				history_add(history_path, custom_shell_cmd)
+			end
+		end
 	end
 end
 
 return {
+	setup = function(state, options)
+		local default_history_path = (
+			ya.target_family() == "windows"
+			and os.getenv("APPDATA") .. "\\yazi\\config\\plugins\\custom-shell.yazi\\yazi_cmd_history"
+		) or (os.getenv("HOME") .. "/.config/yazi/plugins/custom-shell.yazi/yazi_cmd_history")
+
+		state.history_path = options.history_path or default_history_path
+		if state.history_path:lower() == "default" then
+			state.history_path = default_history_path
+		end
+		state.save_history = options.save_history and true
+	end,
 	entry = entry,
 }
