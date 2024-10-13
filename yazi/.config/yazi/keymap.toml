@@ -520,3 +520,11 @@ run = ["plugin system-clipboard"]
 on   = [ "i" ]
 run = "plugin easyjump"
 desc = "easyjump"
+
+[[manager.prepend_keymap]]
+on = [ "<C-v>" ]
+run = '''
+  shell --confirm 'qlmanage -p "$@"'
+'''
+desc = "Preview"
+for = "macos"
