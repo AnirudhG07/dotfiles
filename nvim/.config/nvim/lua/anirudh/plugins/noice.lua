@@ -15,6 +15,17 @@ return {
 	},
 	config = function()
 		require("noice").setup({
+			require("lualine").setup({
+				sections = {
+					lualine_x = {
+						{
+							require("noice").api.statusline.mode.get,
+							cond = require("noice").api.statusline.mode.has,
+							color = { fg = "#ff9e64" },
+						},
+					},
+				},
+			}),
 			-- you can enable a preset for easier configuration
 			presets = {
 				bottom_search = false, -- use a classic bottom cmdline for search
@@ -23,14 +34,38 @@ return {
 				inc_rename = false, -- enables an input dialog for inc-rename.nvim
 				lsp_doc_border = true, -- add a border to hover docs and signature help
 			},
-		})
-		require("lualine").setup({
-			sections = {
-				lualine_x = {
-					{
-						require("noice").api.statusline.mode.get,
-						cond = require("noice").api.statusline.mode.has,
-						color = { fg = "#ff9e64" },
+			routes = {
+				{
+					filter = {
+						event = "msg_show",
+						any = {
+							{ find = "%d+L, %d+B" },
+							{ find = "; after #%d+" },
+							{ find = "; before #%d+" },
+							{ find = "%d fewer lines" },
+							{ find = "%d more lines" },
+						},
+					},
+					opts = { skip = true },
+				},
+			},
+			views = {
+				popupmenu = {
+					relative = "editor",
+					position = {
+						row = 26,
+						col = "50%",
+					},
+					size = {
+						width = 60,
+						height = 10,
+					},
+					border = {
+						style = "rounded",
+						padding = { 0, 1 },
+					},
+					win_options = {
+						winhighlight = { Normal = "Normal", FloatBorder = "DiagnosticInfo" },
 					},
 				},
 			},

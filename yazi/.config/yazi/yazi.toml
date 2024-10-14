@@ -135,6 +135,7 @@ prepend_previewers = [
     { mime = "application/x-bittorrent", run = "torrent-preview" },
     { name = "*.ipynb", run = "nbpreview" },
     { name = "*.json", run = "rich-preview" },
+    { name = "*.rst", run = "rich-preview" },
 ]
 fetchers = [
     # Mimetype
