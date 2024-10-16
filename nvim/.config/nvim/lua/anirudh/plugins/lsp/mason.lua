@@ -47,9 +47,9 @@ return {
 			ensure_installed = {
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
-				"ruff", -- python formatter
-				"black",
-				"mypy",
+				"ruff", -- python linter
+				"black", -- python formatter
+				"isort", -- python import formatter
 				"gopls", -- go formatter
 				"goimports",
 				"rust-analyzer", -- rust formatter
