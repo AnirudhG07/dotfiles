@@ -5,14 +5,16 @@ return {
 	dependencies = {
 		"neovim/nvim-lspconfig",
 		"nvim-lua/plenary.nvim",
+		"lewis6991/satellite.nvim",
 		-- you also will likely want nvim-cmp or some completion engine
 	},
 
 	-- see details below for full configuration options
 	opts = {
-		lsp = {
-			on_attach = on_attach,
-		},
+		lsp = {},
 		mappings = true,
+		infoview = {
+			width = 60,
+		},
 	},
 }
