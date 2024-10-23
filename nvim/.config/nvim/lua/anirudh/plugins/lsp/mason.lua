@@ -49,7 +49,7 @@ return {
 				"stylua", -- lua formatter
 				"ruff", -- python formatter
 				"black",
-				"mypy",
+				"isort",
 				"gopls", -- go formatter
 				"goimports",
 				"rust-analyzer", -- rust formatter
