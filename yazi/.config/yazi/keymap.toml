@@ -528,3 +528,7 @@ run = '''
 '''
 desc = "Preview"
 for = "macos"
+[[manager.prepend_keymap]]
+on = "<C-1>"
+run = ["plugin copy-file-contents"]
+desc = "Copy contents of file"

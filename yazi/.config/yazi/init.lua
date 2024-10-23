@@ -8,6 +8,12 @@ require("custom-shell"):setup({
 	history_file = "default",
 })
 
+require("copy-file-contents"):setup({
+	clipboard_cmd = "default",
+	append_char = "\n",
+	notification = true,
+})
+
 function Status:name()
 	local h = cx.active.current.hovered
 	if not h then

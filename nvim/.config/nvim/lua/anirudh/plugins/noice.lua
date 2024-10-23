@@ -15,17 +15,6 @@ return {
 	},
 	config = function()
 		require("noice").setup({
-			require("lualine").setup({
-				sections = {
-					lualine_x = {
-						{
-							require("noice").api.statusline.mode.get,
-							cond = require("noice").api.statusline.mode.has,
-							color = { fg = "#ff9e64" },
-						},
-					},
-				},
-			}),
 			-- you can enable a preset for easier configuration
 			presets = {
 				bottom_search = false, -- use a classic bottom cmdline for search
