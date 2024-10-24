@@ -11,6 +11,7 @@ return {
 		local dap, dapui = require("dap"), require("dapui")
 		dapui.setup()
 
+		require("nvim-dap-virtual-text").setup()
 		-- Setup each nvim-dap
 		require("dap-go").setup()
 		require("dap-python").setup("python3")

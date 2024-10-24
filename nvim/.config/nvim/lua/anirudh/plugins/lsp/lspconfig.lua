@@ -145,16 +145,8 @@ return {
 					end,
 				})
 			end,
-			["rust_analyzer"] = function()
-				-- configure rust_analyzer language server
-				lspconfig["rust_analyzer"].setup({
-					capabilities = capabilities,
-					on_attach = function(client, bufnr)
-						-- Disable hover in favor of Pyright
-						client.server_capabilities.hoverProvider = false
-					end,
-				})
-			end,
+			["rust_analyzer"] = function() end,
+
 			["lua_ls"] = function()
 				-- configure lua server (with special settings)
 				lspconfig["lua_ls"].setup({
