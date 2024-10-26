@@ -38,7 +38,6 @@ return {
 				"svelte",
 				"lua_ls",
 				"emmet_ls",
-				"pyright",
 				"rust_analyzer",
 			},
 		})
