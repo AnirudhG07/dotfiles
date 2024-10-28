@@ -32,6 +32,9 @@ keymap.set("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" }) 
 keymap.set("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" }) --  move current buffer to new tab
 keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true })
 keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
-keymap.set("n", "<localleader>g", "<cmd>GrugFar<CR>", { desc = "Grug Find and Replace" })
-keymap.set("n", "<localleader>l", "<cmd>Legendary<CR>", { desc = "Legendary Keybinding Open" })
-keymap.set("n", "<leader>cc", "<cmd>CopilotChat<CR>", { desc = "Copilot Chat Open" })
+
+-- local leader mappings
+keymap.set("n", "<localleader>g", "<cmd>GrugFar<CR>", { desc = "Open Grug Find and Replace" }) -- quit
+keymap.set("n", "<localleader>k", "<cmd>Legendary<CR>", { desc = "Legendary keybind finder" }) -- quit
+keymap.set("n", "<leader>cc", "<cmd>CopilotChat<CR>", { desc = "Open Copilot Chat" }) -- quit
+keymap.set("n", "<localleader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
