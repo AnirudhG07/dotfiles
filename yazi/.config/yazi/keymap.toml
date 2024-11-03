@@ -532,3 +532,15 @@ for = "macos"
 on = "<C-1>"
 run = ["plugin copy-file-contents"]
 desc = "Copy contents of file"
+
+[[manager.prepend_keymap]]
+on = [ "g", "r" ]
+run = '''
+	shell 'ya pub dds-cd --str "$(git rev-parse --show-toplevel)"' --confirm
+'''
+
+[[manager.prepend_keymap]]
+on = "<C-p>"
+run = '''
+  shell 'qlmanage -p "$@"' --confirm
+'''
