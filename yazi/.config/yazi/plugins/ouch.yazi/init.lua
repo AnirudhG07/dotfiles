@@ -8,7 +8,7 @@ function M:peek()
       :spawn()
   local limit = self.area.h
   local file_name = string.match(tostring(self.file.url), ".*[/\\](.*)")
-  local lines = string.format("\x1b[2m📁 %s\x1b[0m\n", file_name)
+  local lines = string.format("📁 \x1b[2m%s\x1b[0m\n", file_name)
   local num_lines = 1
   local num_skip = 0
   repeat
@@ -36,7 +36,7 @@ function M:peek()
       { tostring(math.max(0, self.skip - (limit - num_lines))), only_if = tostring(self.file.url), upper_bound = "" }
     )
   else
-    ya.preview_widgets(self, { ui.Paragraph.parse(self.area, lines) })
+    ya.preview_widgets(self, { ui.Text(lines):area(self.area) })
   end
 end
 
@@ -112,6 +112,8 @@ end
 
 function M:entry(args)
   local default_fmt = args[1]
+
+  ya.manager_emit("escape", { visual = true })
 
   -- Get the files that need to be compressed and infer a default archive name
   local paths, default_name = get_compression_target()

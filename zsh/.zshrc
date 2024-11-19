@@ -173,8 +173,8 @@ export YAZI_CONFIG_HOME=~/dotfiles/yazi/.config/yazi
 
 export BAT_THEME=tokyonight_night
 
-eval $(thefuck --alias)
-eval $(thefuck --alias shit)
+#eval $(thefuck --alias)
+#eval $(thefuck --alias shit)
 # Postgress@16 path 
 export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 # ---- Zoxide (better cd) ----
@@ -224,6 +224,7 @@ alias v='nvim'
 alias y='yazi'
 alias yy='yy'
 alias :q="exit"
+alias python="python3"
 alias mathworks='ssh anirudhgupta@10.134.13.103'
 alias fuweather="https 'wttr.in?format=%C+|+%t' | tail -n 1; sketchybar --reload"
 ####################################################################

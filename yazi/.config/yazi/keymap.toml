@@ -494,14 +494,14 @@ run = 'plugin custom-shell --args=history'
 
 ## Mactagging
 [[manager.prepend_keymap]]
-on   = [ "b", "r" ]
-run  = 'plugin mactag --args="add Red"'
-desc = "Tag selected files with red"
+on   = [ "b", "a" ]
+run  = 'plugin mactag --args="add"'
+desc = "Tag selected files"
 
 [[manager.prepend_keymap]]
-on   = [ "b", "R" ]
-run  = 'plugin mactag --args="remove Red"'
-desc = "Remove red tag from selected files"
+on   = [ "b", "r" ]
+run  = 'plugin mactag --args="remove"'
+desc = "Untag selected files"
 [[manager.prepend_keymap]]
 on = ["b", "a"]
 run = "plugin mactags --args=add"
