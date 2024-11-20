@@ -9,7 +9,7 @@ sort_sensitive = false
 sort_reverse = false
 sort_dir_first = true
 sort_translit = false
-linemode = "custom"
+linemode = "none"
 show_hidden = true
 show_symlink = true
 scrolloff = 5
@@ -178,6 +178,16 @@ previewers = [
     # Fallback
     { name = "*", run = "file" },
 ]
+
+[[plugin.prepend_fetchers]]
+id   = "git"
+name = "*"
+run  = "git"
+
+[[plugin.prepend_fetchers]]
+id   = "git"
+name = "*/"
+run  = "git"
 
 [input]
 cursor_blink = false
