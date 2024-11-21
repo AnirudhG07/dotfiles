@@ -35,12 +35,12 @@ local function setup(st, opts)
 	end, 500)
 end
 
-local function fetch(self, args)
+local function fetch(self, job)
 	-- TODO: remove this once Yazi 0.4 is released
-	args = args or self
+	job = job or self
 
 	local paths = {}
-	for _, file in ipairs(args.files) do
+	for _, file in ipairs(job.files) do
 		paths[#paths + 1] = tostring(file.url)
 	end
 
@@ -75,7 +75,7 @@ local cands = ya.sync(function(st)
 	return t
 end)
 
-local function entry(_, args)
+local function entry(self, args)
 	assert(args[1] == "add" or args[1] == "remove", "Invalid action")
 	ya.manager_emit("escape", { visual = true })
 
@@ -94,7 +94,7 @@ local function entry(_, args)
 
 	local status = Command("tag"):args(t):status()
 	if status.success then
-		fetch { files = files }
+		fetch(self, { files = files })
 	end
 end
 

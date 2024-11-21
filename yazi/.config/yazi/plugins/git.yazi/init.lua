@@ -147,18 +147,18 @@ local function setup(st, opts)
 		if not change or signs[change] == "" then
 			return ui.Line("")
 		elseif self._file:is_hovered() then
-			return ui.Line({ ui.Span(" "), ui.Span(signs[change]) })
+			return ui.Line { ui.Span(" "), ui.Span(signs[change]) }
 		else
-			return ui.Line({ ui.Span(" "), ui.Span(signs[change]):style(styles[change]) })
+			return ui.Line { ui.Span(" "), ui.Span(signs[change]):style(styles[change]) }
 		end
 	end, opts.order)
 end
 
-local function fetch(self, args)
+local function fetch(self, job)
 	-- TODO: remove this once Yazi 0.4 is released
-	args = args or self
+	job = job or self
 
-	local cwd = args.files[1].url:parent()
+	local cwd = job.files[1].url:parent()
 	local repo = root(cwd)
 	if not repo then
 		remove(tostring(cwd))
@@ -166,7 +166,7 @@ local function fetch(self, args)
 	end
 
 	local paths = {}
-	for _, f in ipairs(args.files) do
+	for _, f in ipairs(job.files) do
 		paths[#paths + 1] = tostring(f.url)
 	end
 
@@ -192,7 +192,7 @@ local function fetch(self, args)
 		end
 	end
 
-	if args.files[1].cha.is_dir then
+	if job.files[1].cha.is_dir then
 		ya.dict_merge(changed, bubble_up(changed))
 		ya.dict_merge(changed, propagate_down(ignored, cwd, Url(repo)))
 	else
