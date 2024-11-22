@@ -233,15 +233,15 @@ sort_translit  = false
 [log]
 enabled = false
 
-[[plugin.prepend_fetchers]]
-id   = "mactag"
-name = "*"
-run  = "mactag"
-
-[[plugin.prepend_fetchers]]
-id   = "mactag"
-name = "*/"
-run  = "mactag"
+#[[plugin.prepend_fetchers]]
+#id   = "mactag"
+#name = "*"
+#run  = "mactag"
+#
+#[[plugin.prepend_fetchers]]
+#id   = "mactag"
+#name = "*/"
+#run  = "mactag"
 
 [[plugin.prepend_fetchers]]
 id   = "git"
