@@ -1,5 +1,5 @@
 {
-    description = "Anirudh's Nix-darwin System Flake";
+    description = "Anirudh Gupta's Nix-darwin System Flake";
 
     inputs = {
         nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -48,6 +48,22 @@
                 lazygit
             ];
 
+            # home-manager
+            users.users.anirudhgupta = {
+                name = "anirudhgupta";
+                home = "/Users/anirudhgupta";
+                shell = pkgs.zsh;
+            };
+
+            home-manager.users.anirudhgupta = {pkgs, ...}: {
+                home.packages = [];
+                programs.zsh = {
+                    enable = true;
+                };
+
+
+            home.stateVersion = "25.05";
+            };
 
             homebrew = {
                 enable = true;
@@ -87,18 +103,8 @@
     {
         # Build darwin flake using:
         # $ darwin-rebuild build --flake .#simple
-        darwinConfigurations."anirudh" = nix-darwin.lib.darwinSystem {
-            system = "aarch64-darwin";
-            modules = [
-                configuration
-                home-manager.darwinModules.home-manager {
-                    home-manager.useGlobalPkgs = true;
-                    home-manager.useUserPackages = true;
-                }
-            ];
 
-        };
-        darwinConfigurations.Anirudhs-MacBook-Air = nix-darwin.lib.darwinSystem {
+        darwinConfigurations."Anirudhs-MacBook-Air" = nix-darwin.lib.darwinSystem {
             system = "aarch64-darwin";
             modules = [
                 configuration
@@ -112,9 +118,16 @@
                             autoMigrate = true;
                         };
                     }
+                home-manager.darwinModules.home-manager {
+                    home-manager.useGlobalPkgs = true;
+                    home-manager.useUserPackages = true;
+                    home-manager.users.anirudhgupta = {
+                        imports = [ ./home.nix ];
+                    };
+                }
             ];
         };
 
-        darwinPackages = self.darwinConfigurations."anirudh".pkgs;
+        darwinPackages = self.darwinConfigurations."Anirudhs-MacBook-Air".pkgs;
     };
 }
