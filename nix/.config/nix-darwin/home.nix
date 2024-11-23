@@ -5,7 +5,7 @@
 
 {
   home.username = "anirudhgupta";
-  home.homeDirectory = "/Users/anirudhgupta";
+  #home.homeDirectory = ../../../;
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
 # Makes sense for user specific applications that shouldn't be available system-wide
@@ -15,20 +15,20 @@
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
   home.file = {
-    ".zshrc".source = "${config.home.homeDirectory}/dotfiles/zsh/.zshrc";
-    #".config/yazi".source = "${config.home.homeDirectory}/dotfiles/yazi";
-    #".p10k.zsh".source = "${config.home.homeDirectory}/dotfiles/p10k.zsh";
-    #".config/starship".source = "${config.home.homeDirectory}/dotfiles/starship;
-    #".config/borders".source = "${config.home.homeDirectory}/dotfiles/borders;
-    #".config/nvim".source = "${config.home.homeDirectory}/dotfiles/nvim;
-    #".config/nix".source = "${config.home.homeDirectory}/dotfiles/nix;
-    #".config/nix-darwin".source = "${config.home.homeDirectory}/dotfiles/nix-darwin;"
-    #".config/tmux".source = "${config.home.homeDirectory}/dotfiles/tmux;
-    #".config/aerospace".source = "${config.home.homeDirectory}/dotfiles/aerospace;
-    # ".config/yabai".source = "${config.home.homeDirectory}/dotfiles/yabai;
-    # ".config/ghostty".source = "${config.home.homeDirectory}/dotfiles/ghostty;
-    # ".config/sketchybar".source = "${config.home.homeDirectory}/dotfiles/sketchybar;
-    # ".config/skhd".source = "${config.home.homeDirectory}/dotfiles/skhd;
+    ".zshrc".source = ../../../zsh/.zshrc;
+    ".config/yazi".source = ../../../yazi/.config/yazi;
+    ".p10k.zsh".source = ../../../p10k.zsh/.p10k.zsh;
+    ".config/starship".source = ../../../starship/.config/starship.toml;
+    ".config/borders".source = ../../../borders/.config/borders;
+    ".config/nvim".source = ../../../nvim/.config/nvim;
+    ".config/nix".source = ../../../nix/.config/nix;
+    ".config/nix-darwin".source = ../../../nix/.config/nix-darwin;
+    ".config/tmux".source = ../../../tmux/.tmux.conf;
+    ".config/aerospace".source = ../../../aerospace/.config/aerospace;
+    # ".config/yabai".source = "../../../yabai;
+    # ".config/ghostty".source = "../../../ghostty;
+    # ".config/sketchybar".source = "../../../sketchybar;
+    # ".config/skhd".source = "../../../skhd;
   };
 
   home.sessionVariables = {
