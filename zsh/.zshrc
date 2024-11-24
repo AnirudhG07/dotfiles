@@ -188,6 +188,11 @@ function yy() {
 	fi
 	rm -f -- "$tmp"
 }
+
+
+########## NIX ################
+alias home-manager-switch="home-manager -f ~/dotfiles/nix/.config/nix-darwin/home.nix switch"
+
 # USEFUL ALIASES
 alias tmux_in='tmux a -t'
 alias tmux_kill='tmux kill-session -t'
@@ -196,8 +201,6 @@ alias e="exit"
 alias ls='eza --color=always --git --no-filesize --no-user --no-permissions --tree --level=1'
 alias iisc='cd /Volumes/Anirudh/IISc'
 alias home='cd /Volumes/Anirudh'
-alias omzsh='nvim ~/.zshrc'
-alias szsh='source ~/.zshrc'
 alias pipi='pip install'
 alias pylib='cd /opt/homebrew/lib'
 alias brewin='brew install'

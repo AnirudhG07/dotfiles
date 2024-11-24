@@ -36,8 +36,8 @@
 
             environment.systemPackages = with pkgs; [
                 neovim
-                tmux
                 stow
+                tmux
                 fzf
                 zoxide
                 ripgrep
@@ -46,6 +46,7 @@
                 eza
                 gh
                 lazygit
+                jankyborders
             ];
 
             # home-manager
@@ -55,16 +56,6 @@
                 shell = pkgs.zsh;
             };
 
-            home-manager.users.anirudhgupta = {pkgs, ...}: {
-                home.packages = [];
-                programs.zsh = {
-                    enable = true;
-                };
-
-
-            home.stateVersion = "25.05";
-            };
-
             homebrew = {
                 enable = true;
                 brews = [
@@ -72,10 +63,8 @@
                     "tag"
                     "starship"
                 ];
-                casks = [
-                ];
-                masApps = {
-                };
+                casks = [];
+                masApps = {};
                 onActivation.cleanup = "zap";
             };
 
@@ -108,13 +97,12 @@
             system = "aarch64-darwin";
             modules = [
                 configuration
-                    nix-homebrew.darwinModules.nix-homebrew
+                nix-homebrew.darwinModules.nix-homebrew
                     {
                         nix-homebrew = {
                             enable = true;
                             enableRosetta = true;
                             user = "anirudhgupta";
-
                             autoMigrate = true;
                         };
                     }
@@ -122,7 +110,12 @@
                     home-manager.useGlobalPkgs = true;
                     home-manager.useUserPackages = true;
                     home-manager.users.anirudhgupta = {
+                        programs.zsh = {
+                            enable = true;
+                        };
+
                         imports = [ ./home.nix ];
+                        home.stateVersion = "25.05";
                     };
                 }
             ];
