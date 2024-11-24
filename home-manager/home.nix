@@ -1,0 +1,1 @@
+/Users/anirudhgupta/dotfiles/nix/.config/nix-darwin/home.nix

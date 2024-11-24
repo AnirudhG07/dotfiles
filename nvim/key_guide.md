@@ -1,1 +1,0 @@
-../../dotfiles/nvim/.config/nvim/key_guide.md
