@@ -191,7 +191,10 @@ function yy() {
 
 
 ########## NIX ################
-alias home-manager-switch="home-manager -f ~/dotfiles/nix/.config/nix-darwin/home.nix switch"
+alias hms="home-manager switch"
+alias nix-cg="nix-collect-garbage"
+alias nix-drb="darwin-rebuild switch --flake ~/dotfiles/nix/.config/nix-darwin"
+eval "$(direnv hook zsh)"
 
 # USEFUL ALIASES
 alias tmux_in='tmux a -t'

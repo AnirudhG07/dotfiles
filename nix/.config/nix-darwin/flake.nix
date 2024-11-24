@@ -47,6 +47,9 @@
                 gh
                 lazygit
                 jankyborders
+                poppler
+                imagemagick
+                ffmpeg
             ];
 
             # home-manager
@@ -84,7 +87,10 @@
 
             # The platform the configuration will be used on.
 
-            programs.zsh.enable = true;  # default shell on catalina
+            programs.zsh = {
+                enable = true;
+            };
+  
             nixpkgs.hostPlatform = "aarch64-darwin";
             security.pam.enableSudoTouchIdAuth = true;
         };
@@ -92,12 +98,11 @@
     {
         # Build darwin flake using:
         # $ darwin-rebuild build --flake .#simple
-
         darwinConfigurations."Anirudhs-MacBook-Air" = nix-darwin.lib.darwinSystem {
             system = "aarch64-darwin";
             modules = [
                 configuration
-                nix-homebrew.darwinModules.nix-homebrew
+                    nix-homebrew.darwinModules.nix-homebrew
                     {
                         nix-homebrew = {
                             enable = true;
@@ -106,13 +111,13 @@
                             autoMigrate = true;
                         };
                     }
-                home-manager.darwinModules.home-manager {
-                    home-manager.useGlobalPkgs = true;
-                    home-manager.useUserPackages = true;
-                    home-manager.users.anirudhgupta = {
-                        programs.zsh = {
-                            enable = true;
-                        };
+            home-manager.darwinModules.home-manager {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.anirudhgupta = {
+                    programs.zsh = {
+                        enable = true;
+                    };
 
                         imports = [ ./home.nix ];
                         home.stateVersion = "25.05";
