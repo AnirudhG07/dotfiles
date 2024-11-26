@@ -50,15 +50,16 @@ require("yamb"):setup({
 })
 
 function Status:name()
-	local h = cx.active.current.hovered
+	local h = self._tab.current.hovered
 	if not h then
-		return ui.Span("")
+		return ui.Line({})
 	end
+	local prefix = h:prefix()
 	local linked = ""
 	if h.link_to ~= nil then
 		linked = " -> " .. tostring(h.link_to)
 	end
-	return ui.Span(" " .. h.name .. linked)
+	return ui.Line(" " .. tostring(prefix) .. tostring(h.name) .. linked)
 end
 
 -- Header name
