@@ -45,11 +45,6 @@ key-mapping.preset = 'qwerty'
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 on-focus-changed = "move-mouse window-lazy-center"
 
-
-after-startup-command = [
-  'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=6.0'
-]
-
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
 # - Constant:     gaps.outer.top = 8
@@ -61,8 +56,8 @@ after-startup-command = [
 inner.horizontal = 12
 inner.vertical =   12
 outer.left =       12
-outer.bottom =     12
-outer.top =        12
+outer.bottom =     15
+outer.top =        15
 outer.right =      12
 
 # 'main' binding mode declaration
