@@ -148,6 +148,8 @@ source ~/fzf-git.sh/fzf-git.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+#
+BAT_THEME="Catppuccin Mocha"
 
 # PREVIEW SETTINGS
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
