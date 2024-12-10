@@ -1,4 +1,3 @@
-
 -- stylua: ignore
 local SINGLE_LABLES = {
 	"p", "b", "e", "t", "a", "o", "i", "n", "s", "r", "h", "l", "d", "c",
@@ -315,12 +314,12 @@ local toggle_ui = ya.sync(function(st)
 			return ui.Line({ ui.Span(SINGLE_LABLES[pos] .. " "):fg(st.opt_icon_fg) })
 		end
 	end
-	st.entity_lable_id = Entity:children_add(entity_lable, 1001)
+	st.entity_lable_id = Entity:children_add(entity_lable, 2001)
 
 	local status_ej = function(self)
 		local style = self:style()
 		return ui.Line({
-			ui.Span("[EJ] "):style(style),
+			ui.Span("[EJ] "):style(style.main),
 		})
 	end
 	st.status_ej_id = Status:children_add(status_ej, 1001, Status.LEFT)
