@@ -1,0 +1,18 @@
+keybind = super+shift+comma=reload_config
+
+# Themeing
+theme = "tokyonight"
+font-size = 14
+
+font-family = "MesloLGS NF"
+background-opacity = 0.93
+
+macos-option-as-alt = left
+window-decoration = true
+clipboard-read = "allow"
+clipboard-paste-protection = false
+keybind = global:cmd+/=toggle_quick_terminal
+
+shell-integration-features = cursor,no-sudo,no-title
+
+auto-update = check
