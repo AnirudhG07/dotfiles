@@ -4,7 +4,7 @@ keybind = super+shift+comma=reload_config
 theme = "tokyonight"
 font-size = 14
 
-font-family = "MesloLGS NF"
+font-family = "MesloLGS NF Regular"
 background-opacity = 0.93
 
 macos-option-as-alt = left
