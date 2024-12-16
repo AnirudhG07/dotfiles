@@ -5,14 +5,14 @@ return {
 	---@type snacks.Config
 	opts = {
 		bigfile = { enabled = true },
-		dashboard = {
-			enabled = true,
-		},
+		dashboard = { enabled = true },
 		notifier = {
 			enabled = false,
 			timeout = 3000,
 		},
 		quickfile = { enabled = true },
+		zen = { enabled = true },
+		scroll = { enabled = true },
 		statuscolumn = { enabled = true },
 		words = { enabled = true },
 		gitbrowse = { enabled = true },
@@ -21,6 +21,8 @@ return {
 				wo = { wrap = true }, -- Wrap notifications
 			},
 		},
+		indent = { enabled = true },
+		toggle = { enabled = true },
 	},
 	keys = {
 		{
@@ -129,6 +131,12 @@ return {
 			end,
 			desc = "Prev Reference",
 			mode = { "n", "t" },
+		},
+		{
+			"<leader>zn",
+			function()
+				Snacks.zen.zen()
+			end,
 		},
 		{
 			"<leader>N",

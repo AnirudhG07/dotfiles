@@ -8,7 +8,7 @@ return {
 				{ section = "startup" },
 				{
 					section = "terminal",
-					cmd = "pokemon-colorscripts -r",
+					cmd = "krabby random",
 					random = 10,
 					pane = 2,
 					indent = 4,
