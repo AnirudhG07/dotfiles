@@ -1,1 +1,4 @@
 zsh -ic 'lazygit; exit'
+zsh -ic '; exit'
+
+zsh -ic 'ls; read'

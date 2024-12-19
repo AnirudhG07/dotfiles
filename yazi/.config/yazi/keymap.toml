@@ -163,7 +163,7 @@ on  = [ "'", "l"]
 run = 'plugin custom-shell --args="custom zsh \"lazygit\""'
 [[manager.prepend_keymap]]
 on  = [ "'", ";" ]
-run = 'plugin custom-shell --args="zsh"'
+run = 'plugin custom-shell --args="custom zsh \"ls\" -w"'
 [[manager.prepend_keymap]]
 on  = [ "'", "h" ]
 run = 'plugin custom-shell --args=history'
@@ -241,7 +241,14 @@ run = '''
 '''
 
 [[manager.prepend_keymap]]
-on = [ "g", "r" ]
+on = [ "g", "b"]
 run = '''
-	shell 'ya pub dds-cd --str "$(git rev-parse --show-toplevel)"'
+    shell 'gh browse .'
 '''
+desc = "Browse repo on github"
+[[manager.prepend_keymap]]
+on = [ "g", "f"]
+run = '''
+    shell 'gh browse $(git ls-files $0) --branch=$(git branch --show-current)'
+'''
+desc = "Browse file on github"
