@@ -29,12 +29,18 @@ source "${ZINIT_HOME}/zinit.zsh"
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # Add in zsh plugins
-zinit light zsh-users/zsh-syntax-highlighting
+#zinit light zsh-users/zsh-syntax-highlighting
+zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
-zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
 
+# Zsh vim mode
+zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
+# For postponing loading `fzf`
+zinit ice lucid wait
+zinit snippet OMZP::fzf
+ZVM_VI_HIGHLIGHT_BACKGROUND=blue              # Color name
 # Add in snippets
 zinit snippet OMZP::sudo
 zinit snippet OMZP::command-not-found

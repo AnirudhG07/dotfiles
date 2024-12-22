@@ -113,6 +113,7 @@ alt-8 = 'workspace 8'
 alt-9 = 'workspace 9'
 alt-b = 'workspace B'
 alt-e = 'workspace E'
+alt-d = 'workspace D'
 alt-m = 'workspace M'
 alt-w = 'workspace W'
 alt-p = 'workspace P'
@@ -131,6 +132,7 @@ alt-shift-8 = 'move-node-to-workspace 8'
 alt-shift-9 = 'move-node-to-workspace 9'
 alt-shift-b = 'move-node-to-workspace B'
 alt-shift-e = 'move-node-to-workspace E'
+alt-shift-d = 'move-node-to-workspace D'
 alt-shift-w = 'move-node-to-workspace W'
 alt-shift-m = 'move-node-to-workspace M'
 alt-shift-t = 'move-node-to-workspace T'
@@ -196,9 +198,14 @@ run = "move-node-to-workspace V"
 if.app-id = 'com.apple.Music'
 run = "move-node-to-workspace M"
 [[on-window-detected]]
-if.app-id = 'net.whatsapp.WhatsApp'
+if.app-id = 'net.whatsapp.whatsapp'
 run = "move-node-to-workspace W"
-
+[[on-window-detected]]
+if.app-id = 'com.electron.dockerdesktop'
+run = "move-node-to-workspace D"
+[[on-window-detected]]
+if.app-id = 'md.obsidian'
+run = "move-node-to-workspace E"
 ## Floating windows
 [[on-window-detected]]
 if.app-id = 'com.macpaw.CleanMyMac4'
