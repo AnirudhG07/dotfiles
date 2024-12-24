@@ -1,6 +1,3 @@
-# Amazon Q pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
-
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -31,33 +28,26 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 # Add in zsh plugins
 #zinit light zsh-users/zsh-syntax-highlighting
 zinit light zdharma-continuum/fast-syntax-highlighting
+zinit light zsh-users/zsh-history-substring-search
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
+zinit light hlissner/zsh-autopair
 
-# Zsh vim mode
-zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
-# For postponing loading `fzf`
-zinit ice lucid wait
-zinit snippet OMZP::fzf
-ZVM_VI_HIGHLIGHT_BACKGROUND=blue              # Color name
 # Add in snippets
 zinit snippet OMZP::sudo
 zinit snippet OMZP::command-not-found
 
 # Load completions
-autoload -Uz compinit && compinit
-
 zinit cdreplay -q
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Keybindings
-bindkey -e
-bindkey '^p' history-search-backward
-bindkey '^n' history-search-forward
-bindkey '^[w' kill-region
+# History substring search
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
 
 # History
 HISTSIZE=5000
@@ -100,39 +90,22 @@ export PATH=$PATH:$GOPATH/bin
 
 HIST_STAMPS="dd.mm.yyyy"
 
-_fzf_compgen_path() {
-  fd --hidden --exclude .git . "$1"
-}
+zstyle ':completion:*' rehash true
+if [[ ! -f ~/.zcompdump ]]; then
+    compinit
+else
+    compinit -C
+fi
 
-# Use fd to generate the list for directory completion
-_fzf_compgen_dir() {
-  fd --type=d --hidden --exclude .git . "$1"
-}
 source ~/fzf-git.sh/fzf-git.sh
+
+
 
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
 BAT_THEME="Catppuccin Mocha"
 
-# PREVIEW SETTINGS
-export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
-export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
-
-# Advanced customization of fzf options via _fzf_comprun function
-# - The first argument to the function is the name of the command.
-# - You should make sure to pass the rest of the arguments to fzf.
-_fzf_comprun() {
-  local command=$1
-  shift
-
-  case "$command" in
-    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
-    export|unset) fzf --preview "eval 'echo $'{}"         "$@" ;;
-    ssh)          fzf --preview 'dig {}'                   "$@" ;;
-    *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
-  esac
-}
 
 export YAZI_CONFIG_HOME=~/dotfiles/yazi/.config/yazi
 # ----- Bat (better cat) -----
@@ -268,11 +241,4 @@ alias gm='echo "GOOD MORNING ANIRUDH! HAVE A GREAT DAY TODAY!"
 say "GOOD MORNING ANIRUDH! HAVE A GREAT DAY TODAY"'
 alias edex-ui='open -a edex-ui'
 
-# Q post block. Keep at the bottom of this file.
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-# Amazon Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
-
 . "$HOME/.cargo/env"
-eval "$(gh copilot alias -- zsh)"
