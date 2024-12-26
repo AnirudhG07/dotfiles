@@ -49,7 +49,6 @@
                 jankyborders
                 poppler
                 imagemagick
-                ffmpeg
             ];
 
             # home-manager
@@ -66,7 +65,9 @@
                     "tag"
                     "starship"
                 ];
-                casks = [];
+                casks = [
+                    "clop"
+                ];
                 masApps = {};
                 onActivation.cleanup = "zap";
             };
