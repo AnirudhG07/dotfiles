@@ -34,13 +34,13 @@ local function shell_choice(shell_val)
 end
 
 local function manage_extra_args(job)
-	-- set default values
-	local block, interactive, orphan, wait = true, true, false, false
+	-- set default values, --custom-shell.yazi does not use --interactive but --confirm.
+	local block, confirm, orphan, wait = true, true, false, false
 	for _, arg in ipairs(job.args) do
 		if arg == "-nb" or arg == "--no-block" then
 			block = false
-		elseif arg == "-ni" or arg == "--no-interactive" then
-			interactive = false
+		elseif arg == "-nc" or arg == "--no-confirm" then
+			confirm = false
 		elseif arg == "-o" or arg == "--orphan" then
 			orphan = true
 		elseif arg == "-w" or arg == "--wait" then
@@ -48,7 +48,7 @@ local function manage_extra_args(job)
 		end
 	end
 
-	return block, interactive, orphan, wait
+	return block, confirm, orphan, wait
 end
 
 local function manage_additional_title_text(block, wait)
@@ -171,12 +171,12 @@ local function entry(_, job)
 		shell_val, supp = shell_choice(shell_env)
 	end
 
-	local block, interactive, orphan, wait = manage_extra_args(job)
+	local block, confirm, orphan, wait = manage_extra_args(job)
 	local additional_title_text = manage_additional_title_text(block, wait)
 	local input_title = shell_value .. " Shell " .. additional_title_text .. ": "
 	local event = 1
 
-	if job.args[1] ~= "custom" and job.args[1] ~= "history" then
+	if job.args[1] ~= "custom" and args[1] ~= "history" then
 		cmd, event = ya.input({
 			title = input_title,
 			position = { "top-center", y = 3, w = 40 },
@@ -191,7 +191,7 @@ local function entry(_, job)
 		ya.manager_emit("shell", {
 			custom_shell_cmd,
 			block = block,
-			interactive = interactive,
+			confirm = confirm,
 			orphan = orphan,
 		})
 

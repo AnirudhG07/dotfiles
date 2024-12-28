@@ -167,7 +167,9 @@ run = 'plugin custom-shell --args="custom zsh \"ls\" -w"'
 [[manager.prepend_keymap]]
 on  = [ "'", "h" ]
 run = 'plugin custom-shell --args=history'
-
+[[manager.prepend_keymap]]
+on  = [ "'", "t" ]
+run = 'plugin custom-shell --args="custom zsh \"echo hi\" -w -o"'
 ## Mactagging
 [[manager.prepend_keymap]]
 on   = [ "b", "a" ]
