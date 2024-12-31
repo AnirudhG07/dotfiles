@@ -163,13 +163,13 @@ on  = [ "'", "l"]
 run = 'plugin custom-shell --args="custom zsh \"lazygit\""'
 [[manager.prepend_keymap]]
 on  = [ "'", ";" ]
-run = 'plugin custom-shell --args="custom zsh \"ls\" -w"'
+run = 'plugin custom-shell --args="custom zsh \"echo hi\" --orphan"'
 [[manager.prepend_keymap]]
 on  = [ "'", "h" ]
 run = 'plugin custom-shell --args=history'
 [[manager.prepend_keymap]]
 on  = [ "'", "t" ]
-run = 'plugin custom-shell --args="custom zsh \"echo hi\" -w -o"'
+run = 'plugin custom-shell --args="auto --interactive"'
 ## Mactagging
 [[manager.prepend_keymap]]
 on   = [ "b", "a" ]
