@@ -13,28 +13,6 @@ require("copy-file-contents"):setup({
 	append_char = "\n",
 	notification = true,
 })
-
-require("mactag"):setup({
-	-- Keys used to add or remove tags
-	keys = {
-		r = "Red",
-		o = "Orange",
-		y = "Yellow",
-		g = "Green",
-		b = "Blue",
-		p = "Purple",
-	},
-	-- Colors used to display tags
-	colors = {
-		Red = "#ee7b70",
-		Orange = "#f5bd5c",
-		Yellow = "#fbe764",
-		Green = "#91fc87",
-		Blue = "#5fa3f8",
-		Purple = "#cb88f8",
-	},
-})
-
 -- You can configure your bookmarks by lua language
 local bookmarks = {}
 require("yamb"):setup({
@@ -46,7 +24,7 @@ require("yamb"):setup({
 	-- Optional, a string used for randomly generating keys, where the preceding characters have higher priority.
 	keys = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	-- Optional, the path of bookmarks
-	path = "/Users/anirudhgupta/dotfiles/yazi/.config/yazi/plugins/yamb.yazi/bookmarks",
+	path = "/home/anirudhgupta/dotfiles/yazi/.config/yazi/plugins/yamb.yazi/bookmarks",
 })
 
 function Status:name()
