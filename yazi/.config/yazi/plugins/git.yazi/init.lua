@@ -154,11 +154,8 @@ local function setup(st, opts)
 	end, opts.order)
 end
 
-local function fetch(self, args)
-	-- TODO: remove this once Yazi 0.4 is released
-	args = args or self
-
-	local cwd = args.files[1].url:parent()
+local function fetch(_, job)
+	local cwd = job.files[1].url:parent()
 	local repo = root(cwd)
 	if not repo then
 		remove(tostring(cwd))
@@ -166,7 +163,7 @@ local function fetch(self, args)
 	end
 
 	local paths = {}
-	for _, f in ipairs(args.files) do
+	for _, f in ipairs(job.files) do
 		paths[#paths + 1] = tostring(f.url)
 	end
 
@@ -178,7 +175,7 @@ local function fetch(self, args)
 		:stdout(Command.PIPED)
 		:output()
 	if not output then
-		ya.err("Cannot spawn git command, error code " .. tostring(err))
+		ya.err("Cannot spawn git command, error: " .. err)
 		return 0
 	end
 
@@ -192,7 +189,7 @@ local function fetch(self, args)
 		end
 	end
 
-	if args.files[1].cha.is_dir then
+	if job.files[1].cha.is_dir then
 		ya.dict_merge(changed, bubble_up(changed))
 		ya.dict_merge(changed, propagate_down(ignored, cwd, Url(repo)))
 	else

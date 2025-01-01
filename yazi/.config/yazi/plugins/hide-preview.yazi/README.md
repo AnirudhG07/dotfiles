@@ -17,7 +17,7 @@ Add this to your `~/.config/yazi/keymap.toml`:
 ```toml
 [[manager.prepend_keymap]]
 on   = "T"
-run  = "plugin --sync hide-preview"
+run  = "plugin hide-preview"
 desc = "Hide or show preview"
 ```
 
@@ -35,3 +35,7 @@ end
 
 In the example above, when it detects that you're [using Yazi in nvim](https://yazi-rs.github.io/docs/resources#vim), the
 preview is hidden by default - you can always press `T` (or any key you've bound) to display it again.
+
+## License
+
+This plugin is MIT-licensed. For more information check the [LICENSE](LICENSE) file.

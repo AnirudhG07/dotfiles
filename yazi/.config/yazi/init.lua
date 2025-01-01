@@ -3,25 +3,40 @@ require("full-border"):setup()
 --require("relative-motions"):setup({ show_numbers = "none", show_motion = true })
 require("starship"):setup()
 
+require("custom-shell"):setup({
+	save_history = true,
+	history_file = "default",
+})
 require("git"):setup()
-
 require("copy-file-contents"):setup({
 	clipboard_cmd = "default",
 	append_char = "\n",
 	notification = true,
 })
 
--- You can configure your bookmarks by lua language
-local bookmarks = {}
-
-local path_sep = package.config:sub(1, 1)
-local home_path = ya.target_family() == "windows" and os.getenv("USERPROFILE") or os.getenv("HOME")
-table.insert(bookmarks, {
-	tag = "Desktop",
-	path = home_path .. path_sep .. "Desktop" .. path_sep,
-	key = "d",
+require("mactag"):setup({
+	-- Keys used to add or remove tags
+	keys = {
+		r = "Red",
+		o = "Orange",
+		y = "Yellow",
+		g = "Green",
+		b = "Blue",
+		p = "Purple",
+	},
+	-- Colors used to display tags
+	colors = {
+		Red = "#ee7b70",
+		Orange = "#f5bd5c",
+		Yellow = "#fbe764",
+		Green = "#91fc87",
+		Blue = "#5fa3f8",
+		Purple = "#cb88f8",
+	},
 })
 
+-- You can configure your bookmarks by lua language
+local bookmarks = {}
 require("yamb"):setup({
 	-- Optional, the path ending with path seperator represents folder.
 	bookmarks = bookmarks,
@@ -31,32 +46,33 @@ require("yamb"):setup({
 	-- Optional, a string used for randomly generating keys, where the preceding characters have higher priority.
 	keys = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	-- Optional, the path of bookmarks
-	path = (ya.target_family() == "windows" and os.getenv("APPDATA") .. "\\yazi\\config\\bookmark")
-		or (os.getenv("HOME") .. "/.config/yazi/plugins/yamb.yazi/bookmark"),
+	path = "/Users/anirudhgupta/dotfiles/yazi/.config/yazi/plugins/yamb.yazi/bookmarks",
 })
 
 function Status:name()
-	local h = cx.active.current.hovered
+	local h = self._tab.current.hovered
 	if not h then
-		return ui.Span("")
+		return ui.Line({})
 	end
+	local prefix = h:prefix()
 	local linked = ""
 	if h.link_to ~= nil then
 		linked = " -> " .. tostring(h.link_to)
 	end
-	return ui.Span(" " .. h.name .. linked)
+	return ui.Line(" " .. tostring(prefix) .. tostring(h.name) .. linked)
 end
 
--- header name
-Header:children_add(function()
+-- Header name
+function header_host()
 	if ya.target_family() ~= "unix" then
 		return ui.Line({})
 	end
-	return ui.Span(ya.user_name() .. "@yazi" .. ":"):fg("blue")
-end, 500, Header.LEFT)
+	return ui.Span(ya.user_name() .. "@yazi" .. ": "):fg("blue")
+end
 
+Header:children_add(header_host, 500, Header.LEFT)
 -- group of files and username at the bottom
-Status:children_add(function()
+function Status_owner()
 	local h = cx.active.current.hovered
 	if h == nil or ya.target_family() ~= "unix" then
 		return ui.Line({})
@@ -68,4 +84,6 @@ Status:children_add(function()
 		ui.Span(ya.group_name(h.cha.gid) or tostring(h.cha.gid)):fg("magenta"),
 		ui.Span(" "),
 	})
-end, 500, Status.RIGHT)
+end
+
+Status:children_add(Status_owner, 500, Status.RIGHT)

@@ -39,7 +39,7 @@ local render_motion_setup = ya.sync(function(_)
 
 	Status.motion = function() return ui.Span("") end
 
-	Status.children_render = function(self, side)
+	Status.children_redraw = function(self, side)
 		local lines = {}
 		if side == self.RIGHT then
 			lines[1] = self:motion(self)
@@ -51,7 +51,7 @@ local render_motion_setup = ya.sync(function(_)
 	end
 
 	-- TODO: check why it doesn't work line this
-	-- Status:children_add(Status.motion, 100, Status.RIGHT)
+	-- Status:children_add(function() return ui.Span("") end, 1000, Status.RIGHT)
 end)
 
 local render_motion = ya.sync(function(_, motion_num, motion_cmd)
@@ -66,15 +66,15 @@ local render_motion = ya.sync(function(_, motion_num, motion_cmd)
 
 		local motion_span
 		if not motion_cmd then
-			motion_span = ui.Span(string.format("  %3d ", motion_num)):style(style)
+			motion_span = ui.Span(string.format("  %3d ", motion_num))
 		else
-			motion_span = ui.Span(string.format(" %3d%s ", motion_num, motion_cmd)):style(style)
+			motion_span = ui.Span(string.format(" %3d%s ", motion_num, motion_cmd))
 		end
 
 		return ui.Line {
-			ui.Span(THEME.status.separator_open):fg(style.bg),
-			motion_span,
-			ui.Span(THEME.status.separator_close):fg(style.bg),
+			ui.Span(THEME.status.separator_open):fg(style.main.bg),
+			motion_span:style(style.main),
+			ui.Span(THEME.status.separator_close):fg(style.main.bg),
 			ui.Span(" "),
 		}
 	end
@@ -107,7 +107,7 @@ local render_numbers = ya.sync(function(_, mode)
 		end
 	end
 
-	Current.render = function(self)
+	Current.redraw = function(self)
 		local files = self._folder.window
 		if #files == 0 then
 			return self:empty()
@@ -123,16 +123,15 @@ local render_numbers = ya.sync(function(_, mode)
 
 		local entities, linemodes = {}, {}
 		for i, f in ipairs(files) do
-			linemodes[#linemodes + 1] = Linemode:new(f):render()
+			linemodes[#linemodes + 1] = Linemode:new(f):redraw()
 
 			local entity = Entity:new(f)
-			entities[#entities + 1] = ui.ListItem(ui.Line { Entity:number(i, f, hovered_index), entity:render() })
-				:style(entity:style())
+			entities[#entities + 1] = ui.Line({ Entity:number(i, f, hovered_index), entity:redraw() }):style(entity:style())
 		end
 
 		return {
-			ui.List(self._area, entities),
-			ui.Paragraph(self._area, linemodes):align(ui.Paragraph.RIGHT),
+			ui.List(entities):area(self._area),
+			ui.Text(linemodes):area(self._area):align(ui.Text.RIGHT),
 		}
 	end
 end)
@@ -211,11 +210,12 @@ local get_active_tab = ya.sync(function(_) return cx.tabs.idx end)
 -----------------------------------------------
 
 return {
-	entry = function(_, args)
+	entry = function(_, job)
 		local initial_value
 
+		local args = job.args
 		-- this is checking if the argument is a valid number
-		if args then
+		if #args > 0 then
 			initial_value = tostring(tonumber(args[1]))
 			if initial_value == "nil" then
 				return

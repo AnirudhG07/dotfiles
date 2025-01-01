@@ -2,10 +2,11 @@
 
 Preview file types using `rich` command in Yazi. This plugin allows preview for various filetypes including -
 
-- markdown
+- Markdown
 - Jupyter notebook
 - JSON
 - CSV
+- RestructuredText
 
 ## Previews/Screenshots
 
@@ -13,7 +14,7 @@ Preview file types using `rich` command in Yazi. This plugin allows preview for 
 
 ## Requirements
 
-- [Yazi](https://github.com/sxyazi/yazi) v0.3 or higher.
+- [Yazi](https://github.com/sxyazi/yazi) v0.4 or higher.
 - [rich-cli](https://github.com/Textualize/rich) v13.7.1 or higher.
 
 ## Installation
@@ -41,6 +42,7 @@ Add the below to your `yazi.toml` file to allow the respective file to previewed
 prepend_previewers = [
     { name = "*.csv", run = "rich-preview"}, # for csv files
     { name = "*.md", run = "rich-preview" }, # for markdown (.md) files
+    { name = "*.rst", run = "rich-preview"}, # for restructured text (.rst) files
     { name = "*.ipynb", run = "rich-preview"}, # for jupyter notebooks (.ipynb)
     { name = "*.json", run = "rich-preview"}, # for json (.json) files
 #    { name = "*.lang_type", run = "rich-preview"} # for particular language files eg. .py, .go., .lua, etc.

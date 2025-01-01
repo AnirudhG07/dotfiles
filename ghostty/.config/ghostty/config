@@ -1,0 +1,24 @@
+keybind = super+shift+comma=reload_config
+
+# Themeing
+theme = "tokyonight"
+font-size = 14
+
+font-family = "MesloLGS NF"
+background-opacity = 0.93
+
+macos-icon = custom-style
+macos-icon-frame = beige
+macos-icon-ghost-color = white
+macos-icon-screen-color = purple,maroon
+
+## Options
+macos-option-as-alt = left
+window-decoration = true
+clipboard-read = "allow"
+clipboard-paste-protection = false
+keybind = global:cmd+/=toggle_quick_terminal
+
+shell-integration-features = no-cursor,no-sudo,no-title
+
+auto-update = check

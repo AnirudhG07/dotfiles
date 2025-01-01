@@ -101,6 +101,7 @@ rules = [
 ]
 [flavor]
 use = "catppuccin-mocha"
+dark = "catppuccin-mocha"
 
 [icon]
 files = [

@@ -23,16 +23,13 @@ esac
 cd ${parentPath}
 
 # 分别压缩
-if [[ ${compression_mode} == 'separate' ]]; then
+if [[ ${compression_mode} == 'separate' ]];then
 	# 执行压缩
 	for file in ${relativePath//$'\n'/$IFS}; do
 		# 删除最后的/左边的所有
 		packName="${file##*/}"
-		# 判断是否是文件
-		if [[ -f "${file}" ]]; then
-			# 删除最后的.右边的所有
-			packName="${packName%.*}"
-		fi
+		# 删除最后的.右边的所有
+		packName="${packName%.*}"
 		zip -r "${packName}".zip "${file}"
 	done
 # 整体打包
@@ -41,10 +38,8 @@ else
 	if [[ ${choice_mode} == 'single' ]];then
 		# 删除最后的/左边的所有
 		packName="${arrSelection[0]##*/}"
-		if [[ -f "${arrSelection[0]}" ]]; then
-			# 删除最后的.右边的所有
-			packName="${packName%.*}"
-		fi
+		# 删除最后的.右边的所有
+		packName="${packName%.*}"
 	# 多项整体打包取父路径名字
 	else
 		packName="${parentName}"
