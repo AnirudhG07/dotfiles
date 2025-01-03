@@ -1,5 +1,10 @@
 ## Plugin keymaps
 [[manager.prepend_keymap]]
+on   = "!"
+run  = 'shell "$SHELL" --block'
+desc = "Open shell here"
+
+[[manager.prepend_keymap]]
 on = ["<F5>"]
 run = "refresh"
 desc = "Refresh the current directory"
@@ -26,12 +31,6 @@ desc = "Maximize or restore preview"
 on   = [ "B" ]
 run  = "plugin hide-preview"
 desc = "hide preview window"
-
-## SHell Opener
-[[manager.prepend_keymap]]
-on   = [ "<C-s>" ]
-run  = 'shell "$SHELL" --block --confirm'
-desc = "Open shell here"
 
 [[manager.prepend_keymap]]
 on  = [ "k" ]

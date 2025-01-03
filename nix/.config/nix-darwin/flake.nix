@@ -41,12 +41,12 @@
                 fzf
                 zoxide
                 ripgrep
+                jankyborders
                 fd
                 bat
                 eza
                 gh
                 lazygit
-                jankyborders
                 poppler
                 imagemagick
             ];
@@ -66,7 +66,6 @@
                     "starship"
                 ];
                 casks = [
-                    "clop"
                 ];
                 masApps = {};
                 onActivation.cleanup = "zap";

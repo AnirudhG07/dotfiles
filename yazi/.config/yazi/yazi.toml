@@ -31,7 +31,7 @@ open = [
 [plugin]
 
 prepend_previewers = [
-    { name = "*.csv", run = "miller" },
+    { name = "*.csv", run = "rich-preview" },
     { mime = "application/*zip", run = "ouch" },
     { mime = "application/x-tar", run = "ouch" },
     { mime = "application/x-bzip2", run = "ouch" },
@@ -42,7 +42,7 @@ prepend_previewers = [
     { name = "*.{pdb,pqr}", run = "code" },
     { mime = "audio/*", run = "exifaudio" },
     { mime = "application/x-bittorrent", run = "torrent-preview" },
-    { name = "*.ipynb", run = "nbpreview" },
+    { name = "*.ipynb", run = "rich-preview" },
     { name = "*.json", run = "rich-preview" },
     { name = "*.rst", run = "rich-preview" },
 ]

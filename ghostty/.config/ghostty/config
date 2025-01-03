@@ -19,6 +19,6 @@ clipboard-read = "allow"
 clipboard-paste-protection = false
 keybind = global:cmd+/=toggle_quick_terminal
 
-shell-integration-features = no-cursor,no-sudo,no-title
+shell-integration-features = no-cursor,sudo,no-title
 
 auto-update = check
