@@ -47,8 +47,8 @@
                 eza
                 gh
                 lazygit
-                poppler
                 imagemagick
+                direnv
             ];
 
             # home-manager

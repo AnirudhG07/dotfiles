@@ -134,14 +134,7 @@ alias e="exit"
 alias ls='eza --color=always --git --no-filesize --no-user --no-permissions --tree --level=1'
 alias iisc='cd /Volumes/Anirudh/IISc'
 alias home='cd /Volumes/Anirudh'
-alias pipi='pip install'
-alias pylib='cd /opt/homebrew/lib'
-alias brewin='brew install'
-alias basic_compiler='echo "This is link of compiler given by CTF. It may or maynot work. 
-If it doesnt work, delete this alias."
-socat file:`tty`,rawer tcp:basic-01.2023-bq.ctfcompetition.com:1337'
 alias ncdu='ncdu --color dark'
-alias btop='btop'
 alias df='duf'
 alias ctf='cd /Volumes/Anirudh/Coding/ctf'
 alias cmds='tldr --list | fzf --preview "tldr {1} --color" --preview-window=right,70% | xargs tldr'
@@ -154,15 +147,12 @@ alias lg='lazygit'
 alias vm='ssh -i /Applications/awsvm1.pem  ec2-user@ec2-13-200-254-231.ap-south-1.compute.amazonaws.com'
 alias c='clear'
 alias ppt='presenterm'
-alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
-./packmol'
 alias v='nvim'
 alias y='yazi'
 alias yy='yy'
 alias :q="exit"
 alias python="python3"
 alias mathworks='ssh anirudhgupta@10.134.13.103'
-alias fuweather="https 'wttr.in?format=%C+|+%t' | tail -n 1; sketchybar --reload"
 ####################################################################
 
 # USELESS ALIASES

@@ -4,6 +4,10 @@
 { config, pkgs, ... }:
 
 {
+    imports = [
+        ./home-packages.nix
+    ];
+
     home.username = "anirudhgupta";
     home.homeDirectory = "/Users/anirudhgupta";
     home.stateVersion = "25.05"; # Please read the comment before changing.
