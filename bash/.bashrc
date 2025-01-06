@@ -169,8 +169,6 @@ alias e="exit"
 alias ls='eza --color=always --git --no-filesize --no-user --no-permissions --tree --level=1'
 alias omzsh='nvim ~/.zshrc'
 alias szsh='source ~/.zshrc'
-alias pipi='pip install'
-alias brewin='brew install'
 alias ncdu='ncdu --color dark'
 alias btop='btop'
 alias df='duf'
@@ -180,15 +178,6 @@ alias lg='lazygit'
 alias c='clear'
 alias ppt='presenterm'
 alias v='nvim'
-function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-	bash -ic "/home/anirudhgupta/yazi/target/release/yazi $@" --cwd-file="$tmp"
-	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
-}
-alias yazi='bash -ic "/home/anirudhgupta/yazi/target/release/yazi $@"'
 alias q="exit"
 alias tmux='tmux -u -u'
 ####################################################################
@@ -274,22 +263,7 @@ moo'
 alias cool='echo "I know right!"'
 alias gm='echo "GOOD MORNING ANIRUDH! HAVE A GREAT DAY TODAY!"
 say "GOOD MORNING ANIRUDH! HAVE A GREAT DAY TODAY"'
-alias terminal-robot='bash terminal-robot.sh'
 alias edex-ui='open -a edex-ui'
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/anirudhgupta/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/anirudhgupta/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/anirudhgupta/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/anirudhgupta/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 [[ ${BLE_VERSION-} ]] && ble-attach
 . "$HOME/.cargo/env"

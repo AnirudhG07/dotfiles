@@ -181,7 +181,7 @@ export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 eval "$(zoxide init zsh)"
 
 alias cd="z"
-
+alias y="yazi"
 function yy() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
 	yazi "$@" --cwd-file="$tmp"
@@ -200,39 +200,18 @@ alias iisc='cd /Volumes/Anirudh/IISc'
 alias home='cd /Volumes/Anirudh'
 alias omzsh='nvim ~/.zshrc'
 alias szsh='source ~/.zshrc'
-alias pipi='pip install'
-alias pylib='cd /opt/homebrew/lib'
-alias brewin='brew install'
-alias basic_compiler='echo "This is link of compiler given by CTF. It may or maynot work. 
-If it doesnt work, delete this alias."
-socat file:`tty`,rawer tcp:basic-01.2023-bq.ctfcompetition.com:1337'
 alias ncdu='ncdu --color dark'
 alias btop='btop'
 alias df='duf'
-alias ctf='cd /Volumes/Anirudh/Coding/ctf'
 alias cmds='tldr --list | fzf --preview "tldr {1} --color" --preview-window=right,70% | xargs tldr'
 alias tmux='tmux -u'
-alias ghidra='/Applications/ghidra_11.0.3_PUBLIC/ghidraRun'
-alias jadx='/Applications/jadx/bin/jadx-gui'
-alias barpsuite='open /Applications/Burp\ Suite\ Community\ Edition.app'
 alias wget="aria2c"
 alias lg='lazygit'
-alias vm='ssh -i /Applications/awsvm1.pem  ec2-user@ec2-13-200-254-231.ap-south-1.compute.amazonaws.com'
 alias c='clear'
 alias ppt='presenterm'
-alias packmol='cd /Volumes/Anirudh/IISc/igem/packmol-20.14.4-docs1
-./packmol'
 alias v='nvim'
-function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-	bash -ic "/home/anirudhgupta/yazi/target/release/yazi $@" --cwd-file="$tmp"
-	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
-}
-alias yazi='bash -ic "/home/anirudhgupta/yazi/target/release/yazi $@"'
 alias q="exit"
+alias hms="home-manager switch"
 ####################################################################
 
 # USELESS ALIASES
