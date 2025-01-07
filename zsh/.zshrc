@@ -180,6 +180,8 @@ export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 # ---- Zoxide (better cd) ----
 eval "$(zoxide init zsh)"
 
+eval "$(tv init zsh)"
+
 alias cd="z"
 alias y="yazi"
 function yy() {

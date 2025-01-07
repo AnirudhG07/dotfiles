@@ -21,5 +21,6 @@
     ruff
     rustup
     tldr
+    television
   ];
 }
