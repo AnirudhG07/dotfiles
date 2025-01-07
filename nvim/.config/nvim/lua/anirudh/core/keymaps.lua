@@ -36,3 +36,5 @@ keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
 -- local leader mappings
 keymap.set("n", "<localleader>g", "<cmd>GrugFar<CR>", { desc = "Open Grug Find and Replace" }) -- quit
 keymap.set("n", "<leader>cc", "<cmd>CopilotChat<CR>", { desc = "Open Copilot Chat" }) -- quit
+
+keymap.set("i", "<C-w>", "<Plug>(copilot-accept-word)", { desc = "copilot-accept-word" })

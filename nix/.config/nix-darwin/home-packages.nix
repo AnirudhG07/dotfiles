@@ -17,8 +17,6 @@
     fabric-ai
     ffmpeg
     glow
-    go
-    lua
     ncdu
     ouch
     rich-cli
@@ -26,5 +24,12 @@
     rustup
     tldr
     ueberzugpp
+
+    # languages
+    go
+    lua
+    lean4
+    ## Rust
+
   ];
 }
