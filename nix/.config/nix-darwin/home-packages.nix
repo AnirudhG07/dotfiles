@@ -8,22 +8,23 @@
     obsidian
 
     # CLI tools
-    _7zz
-    aria2
-    btop
-    chafa
-    coreutils
-    delta
-    fabric-ai
-    ffmpeg
-    glow
-    ncdu
-    ouch
-    rich-cli
-    ruff
-    rustup
-    tldr
-    ueberzugpp
+    _7zz 
+    aria2 # wget replacement
+    btop # Better top
+    chafa # For terminal image preview
+    coreutils # GNU core utilities
+    delta # Git diff viewer
+    fabric-ai # terminal AI utility
+    ffmpeg # image/video processing
+    glow # markdown viewer
+    ncdu # disk usage analyzer
+    ouch # archive manager
+    rich-cli # rich previewing
+    ruff # python linter
+    rustup # rust toolchain manager
+    tldr # Too Long; Didn't Read
+    ueberzugpp # image previewer
+    television # Better fzf
 
     # languages
     go

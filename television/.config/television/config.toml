@@ -1,0 +1,12 @@
+[shell_integration.commands]
+
+"v" = "files"
+"nvim" = "files"
+
+[[cable_channel]]
+name = "zsh-history"
+source_command = "tail -r $HOME/.zsh_history"
+
+
+[previewers.file]
+theme = "tokyonight_night"
