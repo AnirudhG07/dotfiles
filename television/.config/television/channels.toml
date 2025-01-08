@@ -1,0 +1,14 @@
+# Dotfiles
+[[cable_channel]]
+name = "dotfiles"
+source_command = "fd -t f . $HOME/.config"
+preview_command = ":files:"
+
+# Shell history
+[[cable_channel]]
+name = "zsh-history"
+source_command = "sed '1!G;h;$!d' $HOME/.zsh_history | cut -d\";\" -f 2-"
+
+[[cable_channel]]
+name = "bash-history"
+source_command = "sed '1!G;h;$!d' $HOME/.bash_history"
