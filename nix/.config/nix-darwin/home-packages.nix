@@ -20,16 +20,22 @@
     ncdu # disk usage analyzer
     ouch # archive manager
     rich-cli # rich previewing
-    ruff # python linter
     rustup # rust toolchain manager
     tldr # Too Long; Didn't Read
     ueberzugpp # image previewer
     television # Better fzf
+    krabby # Pokemons
 
     # languages
+    ## Python
+    python313
+    uv # package manager
+    ruff # python linter
+
     go
     lua
-    lean4
+    ## Lean4
+    elan
     ## Rust
 
   ];
