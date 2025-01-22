@@ -38,3 +38,4 @@ keymap.set("n", "<localleader>g", "<cmd>GrugFar<CR>", { desc = "Open Grug Find a
 keymap.set("n", "<leader>cc", "<cmd>CopilotChat<CR>", { desc = "Open Copilot Chat" }) -- quit
 
 keymap.set("i", "<C-w>", "<Plug>(copilot-accept-word)", { desc = "copilot-accept-word" })
+keymap.set("n", "<leader>cm", "<cmd>CodeCompanionChat<CR>", { desc = "Open Code Companion Chat" })
