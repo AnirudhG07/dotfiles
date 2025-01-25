@@ -36,19 +36,10 @@
 
             environment.systemPackages = with pkgs; [
                 neovim
-                stow
-                tmux
                 fzf
-                zoxide
-                ripgrep
-                jankyborders
-                fd
-                bat
-                eza
+                stow
                 gh
                 lazygit
-                imagemagick
-                direnv
             ];
 
             # home-manager

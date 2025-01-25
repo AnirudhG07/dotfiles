@@ -12,6 +12,9 @@ macos-icon-frame = beige
 macos-icon-ghost-color = white
 macos-icon-screen-color = purple,maroon
 
+## Shader. Check out here: https://github.com/m-ahdal/ghostty-shaders
+custom-shader = shaders/bloom.glsl
+
 ## Options
 macos-option-as-alt = left
 window-decoration = true
@@ -22,3 +25,7 @@ keybind = global:cmd+/=toggle_quick_terminal
 shell-integration-features = no-cursor,sudo,no-title
 
 auto-update = check
+
+## Auto run tmux when opening ghostty
+command = zsh --login -c "if command -v tmux >/dev/null 2>&1; then tmux attach || tmux; else zsh; fi"
+

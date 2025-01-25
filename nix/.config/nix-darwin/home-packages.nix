@@ -2,6 +2,16 @@
 
   nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
+    ## CORE Utilities
+    tmux
+    zoxide
+    ripgrep
+    fd
+    bat
+    eza
+    imagemagick
+    direnv
+
     # Desktop apps
     aerospace
     obsidian
