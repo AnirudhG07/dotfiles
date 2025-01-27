@@ -27,5 +27,5 @@ shell-integration-features = no-cursor,sudo,no-title
 auto-update = check
 
 ## Auto run tmux when opening ghostty
-command = zsh --login -c "if command -v tmux >/dev/null 2>&1; then tmux attach || tmux; else zsh; fi"
+# command = zsh --login -c "if command -v tmux >/dev/null 2>&1; then tmux attach || tmux; else zsh; fi"
 

@@ -30,52 +30,52 @@ hash = "2d6d77583162aaf0a599e7a3091b5878"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:hide-preview"
-rev = "71c4fc2"
+rev = "8ed2537"
 hash = "5be5885898ca9df783bdec0d402bf4b0"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "71c4fc2"
-hash = "a61bb2d21a08bf1d18f0a549e5eb1475"
+rev = "8ed2537"
+hash = "882ed23839778f82dc137248979c8681"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:max-preview"
-rev = "71c4fc2"
+rev = "8ed2537"
 hash = "9bc26d10d2f6e2aa93b10905b1b76979"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/starship"
-rev = "9c37d37"
-hash = "63522f9e5675f0f14835297af16b9462"
+rev = "af8bf6f"
+hash = "3e56b7665569519e3fc54b02868627c4"
 
 [[plugin.deps]]
 use = "AnirudhG07/custom-shell"
-rev = "2f3d7a6"
+rev = "32cea3d"
 hash = "bf2dfe68c5dff1dbb898013e4545507e"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "71c4fc2"
+rev = "8ed2537"
 hash = "4c7e8fd0266eedee7b619d966bd2d025"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:diff"
-rev = "71c4fc2"
+rev = "8ed2537"
 hash = "284f6694e3b1a4afd686acf1052acd90"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:jump-to-char"
-rev = "71c4fc2"
+rev = "8ed2537"
 hash = "72c66a0b3d60f8377eb9db5e1d8b60b2"
 
 [[plugin.deps]]
 use = "ndtoan96/ouch"
-rev = "b869886"
-hash = "6bc9e0b2139467c8d2cc6c5fb954206c"
+rev = "083d564"
+hash = "1e4c0ac1fca31a23412324710193358a"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "71c4fc2"
+rev = "8ed2537"
 hash = "ea24edab4a62c94dbd205adfb6f2c08d"
 
 [[plugin.deps]]
@@ -90,17 +90,17 @@ hash = "cf5dd83835d615a41e28158f903be3cc"
 
 [[plugin.deps]]
 use = "AnirudhG07/rich-preview"
-rev = "8be4d27"
+rev = "6752254"
 hash = "c9a3d0731e7d7340e2c6d6126b1f3aa3"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mactag"
-rev = "71c4fc2"
+rev = "8ed2537"
 hash = "3fee7f91058b2be662623cffcc9b0a10"
 
 [[plugin.deps]]
 use = "AnirudhG07/plugins-yazi:copy-file-contents"
-rev = "11167e1"
+rev = "52ee2ba"
 hash = "27c50e6bc15c09096505b805b238ade0"
 
 [[plugin.deps]]
@@ -110,12 +110,12 @@ hash = "faf1b817347b5b46c96039dab538694b"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "71c4fc2"
+rev = "8ed2537"
 hash = "e9cf1bfc03de7fee0f1d4260da0d1dfd"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "71c4fc2"
+rev = "8ed2537"
 hash = "c1a2739e9ef2d837030ccb4267be3ed1"
 
 [[plugin.deps]]
@@ -125,5 +125,5 @@ hash = "5c395bf9b8ef3d4701ac9bdbc963c4c1"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
-rev = "fc8eeaa"
-hash = "407710c2af9621a8351453e637d6c870"
+rev = "fd85060"
+hash = "c40e434318a8ceffd01842f8dfb2390e"
