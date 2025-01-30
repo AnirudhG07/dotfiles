@@ -34,6 +34,7 @@
     ueberzugpp # image previewer
     television # Better fzf
     krabby # Pokemons
+    lazydocker # Docker from CLI
 
     # languages
     ## Python
