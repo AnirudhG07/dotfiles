@@ -254,3 +254,13 @@ run = '''
     shell 'gh browse $(git ls-files $0) --branch=$(git branch --show-current)'
 '''
 desc = "Browse file on github"
+
+[[manager.prepend_keymap]]
+on   = [ "m", "a" ]
+run  = "plugin archivemount --args=mount"
+desc = "Mount selected archive"
+
+[[manager.prepend_keymap]]
+on   = [ "m", "u" ]
+run  = "plugin archivemount --args=unmount"
+desc = "Unmount and save changes to original archive"
