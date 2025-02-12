@@ -5,3 +5,7 @@ zsh -ic 'ls; read'
 zsh -ic 'echo hi; exit'
 zsh -ic 'echo hi; read'
 zsh -ic 'ls; exit'
+zsh -ic 'echo hi;exit'
+zsh -ic 'lazygit;exit'
+
+

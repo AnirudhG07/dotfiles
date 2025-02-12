@@ -1,3 +1,5 @@
+--- @since 25.2.7
+
 local update = ya.sync(function(st, tags)
 	for path, tag in pairs(tags) do
 		st.tags[path] = #tag > 0 and tag or nil
@@ -43,7 +45,7 @@ local function fetch(_, job)
 
 	local output, err = Command("tag"):args(paths):stdout(Command.PIPED):output()
 	if not output then
-		return ya.err("Cannot spawn tag command, error: " .. err)
+		return true, Err("Cannot spawn `tag` command, error: %s", err)
 	end
 
 	local i, tags = 1, {}
@@ -61,7 +63,7 @@ local function fetch(_, job)
 	end
 
 	update(tags)
-	return 1
+	return true
 end
 
 local cands = ya.sync(function(st)

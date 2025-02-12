@@ -34,19 +34,19 @@ desc = "hide preview window"
 
 [[manager.prepend_keymap]]
 on  = [ "k" ]
-run = "plugin arrow --args=-1"
+run = "plugin arrow -1"
 
 [[manager.prepend_keymap]]
 on  = [ "j" ]
-run = "plugin arrow --args=1"
+run = "plugin arrow 1"
 
 [[manager.prepend_keymap]]
 on  = [ "K" ]
-run = "plugin parent-arrow --args=-1"
+run = "plugin parent-arrow -1"
 
 [[manager.prepend_keymap]]
 on  = [ "J" ]
-run = "plugin parent-arrow --args=1"
+run = "plugin parent-arrow 1"
 
 [[manager.prepend_keymap]]
 on   = [ "<C-p>" ]
@@ -55,51 +55,51 @@ desc = "Paste into the hovered directory or CWD"
 
 [[manager.prepend_keymap]]
 on = [ "u", "a" ]
-run = "plugin yamb --args=save"
+run = "plugin yamb save"
 desc = "Add bookmark"
 
 [[manager.prepend_keymap]]
 on = [ "u", "g" ]
-run = "plugin yamb --args=jump_by_key"
+run = "plugin yamb jump_by_key"
 desc = "Jump bookmark by key"
 
 [[manager.prepend_keymap]]
 on = [ "u", "G" ]
-run = "plugin yamb --args=jump_by_fzf"
+run = "plugin yamb jump_by_fzf"
 desc = "Jump bookmark by fzf"
 
 [[manager.prepend_keymap]]
 on = [ "u", "d" ]
-run = "plugin yamb --args=delete_by_key"
+run = "plugin yamb delete_by_key"
 desc = "Delete bookmark by key"
 
 [[manager.prepend_keymap]]
 on = [ "u", "D" ]
-run = "plugin yamb --args=delete_by_fzf"
+run = "plugin yamb delete_by_fzf"
 desc = "Delete bookmark by fzf"
 
 [[manager.prepend_keymap]]
 on = [ "u", "A" ]
-run = "plugin yamb --args=delete_all"
+run = "plugin yamb delete_all"
 desc = "Delete all bookmarks"
 
 [[manager.prepend_keymap]]
 on = [ "u", "r" ]
-run = "plugin yamb --args=rename_by_key"
+run = "plugin yamb rename_by_key"
 desc = "Rename bookmark by key"
 
 [[manager.prepend_keymap]]
 on = [ "u", "R" ]
-run = "plugin yamb --args=rename_by_fzf"
+run = "plugin yamb rename_by_fzf"
 desc = "Rename bookmark by fzf"
 
 [[manager.prepend_keymap]]
 on   = [ "f","G" ]
-run  = "plugin fg --args='rg'"
+run  = "plugin fg 'rg'"
 desc = "find file by content (ripgrep match)"
 [[manager.prepend_keymap]]
 on   = [ "f","f" ]
-run  = "plugin fg --args='fzf'"
+run  = "plugin fg 'fzf'"
 desc = "find file by filename"
 [[manager.prepend_keymap]]
 on   = [ "f","g" ]
@@ -132,11 +132,11 @@ desc = "Diff the selected with the hovered file"
 
 [[manager.prepend_keymap]]
 on = [ "l" ]
-run = "plugin bypass --args=smart_enter"
+run = "plugin bypass smart_enter"
 desc = "Recursively enter child directory, skipping children with only a single subdirectory"
 [[manager.prepend_keymap]]
 on = [ "H" ]
-run = "plugin bypass --args=reverse"
+run = "plugin bypass reverse"
 desc = "Recursively enter parent directory, skipping parents with only a single subdirectory"
 
 #[[manager.prepend_keymap]]
@@ -159,16 +159,16 @@ run = ["select --state=none", "rename --hovered --force --cursor=before_ext", "s
 desc  = "Test plugin"
 [[manager.prepend_keymap]]
 on  = [ "'", "l"]
-run = 'plugin custom-shell --args="custom zsh \"lazygit\""'
+run = 'plugin custom-shell -- custom zsh "lazygit"'
 [[manager.prepend_keymap]]
 on  = [ "'", ";" ]
-run = 'plugin custom-shell --args="custom zsh \"echo hi\" --orphan"'
+run = 'plugin custom-shell -- custom zsh "echo hi" --orphan'
 [[manager.prepend_keymap]]
 on  = [ "'", "h" ]
-run = 'plugin custom-shell --args=history'
+run = 'plugin custom-shell history'
 [[manager.prepend_keymap]]
 on  = [ "'", "t" ]
-run = 'plugin custom-shell --args="auto --interactive"'
+run = 'plugin custom-shell -- auto --interactive'
 ## Mactagging
 [[manager.prepend_keymap]]
 on   = [ "b", "a" ]
@@ -206,7 +206,7 @@ desc = "find all files with set color"
 
 [[manager.prepend_keymap]]
 on = ["c", "a"]
-run = "plugin ouch --args=zip"
+run = "plugin ouch zip"
 desc = "Compress with ouch"
 [[manager.prepend_keymap]] 
 on = "<C-y>"
