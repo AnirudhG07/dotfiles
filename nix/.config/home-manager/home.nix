@@ -17,7 +17,7 @@
         zsh
         git
         neovim
-        yazi
+        # yazi
         tmux
         bat
         gh

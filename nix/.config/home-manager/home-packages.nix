@@ -34,9 +34,7 @@
 
     # languages
     ## Python
-    python313
-    python313Packages.pip
-    uv # package manager
+    # uv # package manager
     ruff # python linter
 
     go
@@ -44,6 +42,6 @@
     ## Lean4
     elan
     ## Rust
-    rustup # rust toolchain manager
+    # rustup # rust toolchain manager
     ];
 }
