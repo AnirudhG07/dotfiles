@@ -1,27 +1,27 @@
 [[plugin.deps]]
 use = "kirasok/torrent-preview"
-rev = "169cafc"
-hash = "3d01b0e54ed4e79c6db69fd80402efeb"
+rev = "4ca5996"
+hash = "6af40ce6b2cd849b5fa32de04a598b06"
 
 [[plugin.deps]]
 use = "dedukun/relative-motions"
-rev = "0d9c8cf"
-hash = "561ad872c77b95360c2657c5e8d395ed"
+rev = "8103065"
+hash = "9f13f0740fa3a0c18e47ec6fb62ddfaa"
 
 [[plugin.deps]]
 use = "AnirudhG07/nbpreview"
-rev = "1d85745"
+rev = "f8879b3"
 hash = "d378328e5d0a1b9fb9f04ab3aade4575"
 
 [[plugin.deps]]
 use = "Sonico98/exifaudio"
-rev = "d794614"
-hash = "a8e15d3c21c02a5af41d46ed04778a02"
+rev = "7ff7141"
+hash = "666ccba55119fba4c25b8ad354b2855c"
 
 [[plugin.deps]]
 use = "Reledia/glow"
-rev = "5ce76dc"
-hash = "52e5f5c602962e7cbf874da28f52ba45"
+rev = "c76bf4f"
+hash = "a6b78bf9af5390e3a85a6951fbb7b93"
 
 [[plugin.deps]]
 use = "Reledia/miller"
@@ -29,44 +29,34 @@ rev = "40e0265"
 hash = "2d6d77583162aaf0a599e7a3091b5878"
 
 [[plugin.deps]]
-use = "yazi-rs/plugins:hide-preview"
-rev = "8945e54"
-hash = "55904f17e1053cfb91dacd9015a99f9d"
-
-[[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "8945e54"
-hash = "ae9e1d0c6bfd68cdebc98cc684c22b45"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:max-preview"
-rev = "8945e54"
-hash = "15b2ff7f6563c14d5b2e93b3e9da35de"
+rev = "92f78dc"
+hash = "1f3dad061209081a6b04dd6ff2cb06c7"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/starship"
-rev = "d1cd0a3"
-hash = "d1fee6d0f74cb52d4e031dc6b9207f31"
+rev = "6c639b4"
+hash = "5614c46d5de76623c283d415bfac8025"
 
 [[plugin.deps]]
 use = "AnirudhG07/custom-shell"
-rev = "90d5f32"
-hash = "ceff6f5ab188bc4acc83ccf55f94d4d0"
+rev = "6b4550a"
+hash = "43019cca17a4d7b41746c2e0a6b8f33f"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "8945e54"
-hash = "f28138c2e11e87962b66d583fef724c3"
+rev = "92f78dc"
+hash = "2f1053f89d1a301a648ab181d0948e38"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:diff"
-rev = "8945e54"
+rev = "92f78dc"
 hash = "7a08e303167d5b655c06da6d570f0333"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:jump-to-char"
-rev = "8945e54"
-hash = "af11685de39c366ec1137fcbccacdbff"
+rev = "92f78dc"
+hash = "a670c03eb3760812e044a24f94cedc55"
 
 [[plugin.deps]]
 use = "ndtoan96/ouch"
@@ -75,12 +65,12 @@ hash = "ed6c185514109d7c5463f609282b220c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "8945e54"
-hash = "b482f4f2d3c4e0aa3f8db89a95699439"
+rev = "92f78dc"
+hash = "f0c4b41b5d19a3144958383333eff6e7"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/bypass"
-rev = "6c5414f"
+rev = "ecb1f7f"
 hash = "905054b2df08ff79af223e0b6f249fa3"
 
 [[plugin.deps]]
@@ -90,40 +80,50 @@ hash = "cf5dd83835d615a41e28158f903be3cc"
 
 [[plugin.deps]]
 use = "AnirudhG07/rich-preview"
-rev = "6752254"
+rev = "2559e5f"
 hash = "c9a3d0731e7d7340e2c6d6126b1f3aa3"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mactag"
-rev = "8945e54"
-hash = "5f957d83569f0bdb52e0e2d1b8f1e64c"
+rev = "92f78dc"
+hash = "2b3aa04f8c795b6fdc6484fe1c38044f"
 
 [[plugin.deps]]
 use = "AnirudhG07/plugins-yazi:copy-file-contents"
-rev = "9c309b5"
+rev = "524c52c"
 hash = "27c50e6bc15c09096505b805b238ade0"
 
 [[plugin.deps]]
 use = "h-hg/yamb"
-rev = "3f7c51f"
-hash = "e11b980e5635f0fbabd80931b1a1347e"
+rev = "22af003"
+hash = "7cc42012a7c2099f80064d228feb8d44"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "8945e54"
-hash = "771f18427fb75fb19990ce602bb322f4"
+rev = "92f78dc"
+hash = "806cb2842b64e976ba2c65a3e3724518"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "8945e54"
-hash = "aef2b1a805b80cce573bb766f1459d88"
+rev = "92f78dc"
+hash = "7918aab6a71caf31b58411f789195677"
 
 [[plugin.deps]]
 use = "lpnh/fg"
-rev = "3fd438a"
-hash = "892ac513a8aada097d82d98cd6aa9e1f"
+rev = "92edf0b"
+hash = "b0edc5e9b7f44b2d3303e74f785d0bc9"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:toggle-pane"
+rev = "92f78dc"
+hash = "812fd49667ab6823250f0411f8cf793a"
+
+[[plugin.deps]]
+use = "lpnh/fr"
+rev = "92edf0b"
+hash = "b0edc5e9b7f44b2d3303e74f785d0bc9"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
-rev = "fd85060"
-hash = "c40e434318a8ceffd01842f8dfb2390e"
+rev = "b929df6"
+hash = "2ac87e1b3a61f5887472899e86535d29"
