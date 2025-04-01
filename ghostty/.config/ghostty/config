@@ -24,7 +24,7 @@ keybind = global:cmd+/=toggle_quick_terminal
 
 shell-integration-features = no-cursor,sudo,no-title
 
-auto-update = check
+auto-update = download
 
 ## Auto run tmux when opening ghostty
 # command = zsh --login -c "if command -v tmux >/dev/null 2>&1; then tmux attach || tmux; else zsh; fi"

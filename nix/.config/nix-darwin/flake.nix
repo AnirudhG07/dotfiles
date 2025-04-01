@@ -55,6 +55,7 @@
                     "mas"
                     "tag"
                     "starship"
+                    "poppler"
                 ];
                 casks = [
                 ];

@@ -1,12 +1,15 @@
 [shell_integration.commands]
-
 "v" = "files"
 "nvim" = "files"
 
 [[cable_channel]]
 name = "zsh-history"
-source_command = "tail -r $HOME/.zsh_history"
+source_command = "tail -r $HOME/.zsh_history | cut -d\";\" -f 2-"
 
+[[cable_channel]]
+name = "dotfiles"
+source_command = "fd -t f . $HOME/dotfiles"
+preview_command = ":files:"
 
 [previewers.file]
 theme = "tokyonight_night"

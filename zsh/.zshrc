@@ -93,7 +93,7 @@ fi
 
 source ~/fzf-git.sh/fzf-git.sh
 
-eval "$(tv init zsh)"
+# eval "$(tv init zsh)"
 
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
