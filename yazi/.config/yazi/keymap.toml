@@ -109,16 +109,6 @@ on   = [ "f", "c" ]
 run  = "plugin jump-to-char"
 desc = "Jump to char"
 
-[[manager.prepend_keymap]]
-on = [ "f" ,"a"]
-run = "plugin file-actions --args='around '"
-desc= "Perform actions on selected files"
-
-## Chmod
-[[manager.prepend_keymap]]
-on   = [ "c", "m" ]
-run  = "plugin chmod"
-desc = "Chmod on selected files"
 ## diff.yazi
 [[manager.prepend_keymap]]
 on   = [ "<C-d>" ]

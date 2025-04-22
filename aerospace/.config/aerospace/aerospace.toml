@@ -203,9 +203,9 @@ alt-shift-l = ['join-with right', 'mode main']
 [[on-window-detected]]
 if.app-id = 'com.apple.Safari'
 run = "move-node-to-workspace 2"
-[[on-window-detected]]
-if.app-id = 'com.microsoft.VSCode'
-run = "move-node-to-workspace V"
+# [[on-window-detected]]
+# if.app-id = 'com.microsoft.VSCode'
+# run = "move-node-to-workspace V"
 [[on-window-detected]]
 if.app-id = 'com.apple.Music'
 run = "move-node-to-workspace M"
