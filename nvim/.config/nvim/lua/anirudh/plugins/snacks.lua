@@ -23,6 +23,7 @@ return {
 		},
 		indent = { enabled = true },
 		toggle = { enabled = true },
+		image = { enabled = true },
 	},
 	keys = {
 		{
