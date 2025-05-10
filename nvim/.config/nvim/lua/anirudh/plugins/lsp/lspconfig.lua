@@ -75,7 +75,14 @@ return {
 		local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
 		for type, icon in pairs(signs) do
 			local hl = "DiagnosticSign" .. type
-			vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+			-- vim.diagnostic.config(hl, { text = icon, texthl = hl, numhl = "" })
+			vim.diagnostic.config({
+				signs = {
+					text = icon,
+					linehl = hl,
+					numhl = "",
+				},
+			})
 		end
 		local on_attach_ruff = function(client, bufnr)
 			if client.name == "ruff_lsp" then

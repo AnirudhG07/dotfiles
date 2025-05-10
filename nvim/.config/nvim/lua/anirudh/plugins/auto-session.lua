@@ -7,7 +7,7 @@ return {
 			auto_restore_enabled = false,
 			auto_session_suppress_dirs = { "~/", "~/Downloads", "~/Documents", "~/Desktop/" },
 		})
-		session_lens = {
+		local session_lens = {
 			buftypes_to_ignore = {},
 			load_on_setup = true,
 			theme_conf = { border = true },

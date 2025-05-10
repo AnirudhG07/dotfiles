@@ -49,19 +49,19 @@
                 shell = pkgs.zsh;
             };
 
-            homebrew = {
-                enable = true;
-                brews = [
-                    "mas"
-                    "tag"
-                    "starship"
-                    "poppler"
-                ];
-                casks = [
-                ];
-                masApps = {};
-                onActivation.cleanup = "zap";
-            };
+            # homebrew = {
+            #     enable = true;
+            #     brews = [
+            #         "mas"
+            #         "tag"
+            #         "starship"
+            #         "poppler"
+            #     ];
+            #     casks = [
+            #     ];
+            #     masApps = {};
+            #     onActivation.cleanup = "zap";
+            # };
 
 
             system.defaults = {
