@@ -1,3 +1,5 @@
+--- @since 25.3.2
+
 -- For development
 --[[ local function notify(message) ]]
 --[[     ya.notify({ title = "Bypass", content = message, timeout = 5 }) ]]
@@ -82,7 +84,7 @@ return {
     entry = function(_, job)
         -- old version of Yazi will pass args directly, new version passes job. Below code ensures we derive args in both 0.3 and 0.4 Yazi API versions.
         local args = job.args or job
-        local use_smart_enter = args and args[1] == "smart_enter"
+        local use_smart_enter = args and args[1] == "smart-enter"
         local is_reverse = args and args[1] == "reverse"
 
         -- Initial run, should behave like a regular enter/smart-enter/leave
