@@ -3,6 +3,7 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
+		{ "chrisgrieser/nvim-lsp-endhints", event = "LspAttach" },
 		{ "antosha417/nvim-lsp-file-operations", config = true },
 		{ "folke/neodev.nvim", opts = {} },
 	},
@@ -18,6 +19,7 @@ return {
 
 		local keymap = vim.keymap -- for conciseness
 
+		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 			callback = function(ev)

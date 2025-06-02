@@ -1,125 +1,125 @@
 ## Plugin keymaps
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = "!"
 run  = 'shell "$SHELL" --block'
 desc = "Open shell here"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["<F5>"]
 run = "refresh"
 desc = "Refresh the current directory"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["A"]
 run = "create --dir"
 desc = "Create a directory"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = "<C-k>"
 run = "seek -5"
 desc = "Seek up 5 units in the preview"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = "<C-j>"
 run = "seek 5"
 desc = "Seek down 5 units in the preview"
 # Max Preview
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = "B"
 run  = "plugin toggle-pane min-preview"
 desc = "Show or hide the preview pane"
 
 # Hide Preview
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = "T"
 run  = "plugin toggle-pane max-preview"
 desc = "Maximize or restore the preview pane"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "k" ]
 run = "plugin arrow -1"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "j" ]
 run = "plugin arrow 1"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "K" ]
 run = "plugin parent-arrow -1"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "J" ]
 run = "plugin parent-arrow 1"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = [ "<C-p>" ]
 run  = "plugin smart-paste"
 desc = "Paste into the hovered directory or CWD"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "u", "a" ]
 run = "plugin yamb save"
 desc = "Add bookmark"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "u", "g" ]
 run = "plugin yamb jump_by_key"
 desc = "Jump bookmark by key"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "u", "G" ]
 run = "plugin yamb jump_by_fzf"
 desc = "Jump bookmark by fzf"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "u", "d" ]
 run = "plugin yamb delete_by_key"
 desc = "Delete bookmark by key"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "u", "D" ]
 run = "plugin yamb delete_by_fzf"
 desc = "Delete bookmark by fzf"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "u", "A" ]
 run = "plugin yamb delete_all"
 desc = "Delete all bookmarks"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "u", "r" ]
 run = "plugin yamb rename_by_key"
 desc = "Rename bookmark by key"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "u", "R" ]
 run = "plugin yamb rename_by_fzf"
 desc = "Rename bookmark by fzf"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["f", "g"]
 run = "plugin fr rg"
 desc = "Search file by content (rg)"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = [ "f", "s" ]
 run  = "plugin smart-filter"
 desc = "Smart filter"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = [ "f", "c" ]
 run  = "plugin jump-to-char"
 desc = "Jump to char"
 
 ## diff.yazi
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = [ "<C-d>" ]
 run  = "plugin diff"
 desc = "Diff the selected with the hovered file"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "l" ]
 run = "plugin bypass smart_enter"
 desc = "Recursively enter child directory, skipping children with only a single subdirectory"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "H" ]
 run = "plugin bypass reverse"
 desc = "Recursively enter parent directory, skipping parents with only a single subdirectory"
@@ -131,108 +131,108 @@ desc = "Recursively enter parent directory, skipping parents with only a single 
 
 
 ## Drag and Drop functionality using Finder
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "<C-n>" ]
 run = '''
 	shell 'open -R "$1"' --confirm
 '''
 desc = "Open file in Finder to drag and drop"
 ## Testing plugin for understanding
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "e", "e" ]
 run = ["select --state=none", "rename --hovered --force --cursor=before_ext", "select --state=none"]
 desc  = "Test plugin"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "'", "l"]
 run = 'plugin custom-shell -- custom zsh "lazygit"'
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "'", ";" ]
 run = 'plugin custom-shell -- custom zsh "echo hi" --orphan'
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "'", "h" ]
 run = 'plugin custom-shell history'
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on  = [ "'", "t" ]
 run = 'plugin custom-shell -- auto --interactive'
 ## Mactagging
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = [ "b", "a" ]
 run  = 'plugin mactag --args="add"'
 desc = "Tag selected files"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = [ "b", "r" ]
 run  = 'plugin mactag --args="remove"'
 desc = "Untag selected files"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["b", "a"]
 run = "plugin mactags --args=add"
 desc = "Add tagging colors to a file/folder"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["b", "x"]
 run = "plugin mactags --args=remove"
 desc = "removes input tags from all tags to a file/folder"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["b", "d"]
 run = "plugin mactags --args=remove_all"
 desc = "removed all the tags attached to the file/folder"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["b", "s"]
 run = "plugin mactags --args=set"
 desc = "completely replace existing tags with new ones"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["b", "f"]
 run = "plugin mactags --args=find_all"
 desc = "find all files with set color"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["b", "o"]
 run = "plugin mactags --args=display"
 desc = "find all files with set color"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = ["c", "a"]
 run = "plugin ouch zip"
 desc = "Compress with ouch"
-[[manager.prepend_keymap]] 
+[[mgr.prepend_keymap]] 
 on = "<C-y>"
 run = ["plugin system-clipboard"]
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = [ "i" ]
 run = "plugin easyjump"
 desc = "easyjump"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "<C-v>" ]
 run = '''
   shell --confirm 'qlmanage -p "$@"'
 '''
 desc = "Preview"
 for = "macos"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = "<C-1>"
 run = ["plugin copy-file-contents"]
 desc = "Copy contents of file"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "g", "r" ]
 run = '''
 	shell 'ya pub dds-cd --str "$(git rev-parse --show-toplevel)"' --confirm
 '''
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = "<C-p>"
 run = '''
   shell 'qlmanage -p "$@"' --confirm
 '''
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "g", "b"]
 run = '''
     shell 'gh browse .'
 '''
 desc = "Browse repo on github"
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "g", "f"]
 run = '''
     shell 'gh browse $(git ls-files $0) --branch=$(git branch --show-current)'

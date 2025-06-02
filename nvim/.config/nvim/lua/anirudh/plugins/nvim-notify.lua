@@ -3,7 +3,7 @@ return {
 	config = function()
 		require("notify").setup({
 			stages = "fade_in_slide_out",
-			timeout = 500,
+			timeout = 1000,
 			icons = {
 				ERROR = "",
 				WARN = "",

@@ -1,5 +1,5 @@
 # Anything apart from this follows from the default configuration
-[manager]
+[mgr]
 ratio = [1, 3, 4]
 sort_by = "alphabetical"
 sort_dir_first = true

@@ -5,48 +5,48 @@ hash = "666ccba55119fba4c25b8ad354b2855c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "55bf699"
-hash = "1f3dad061209081a6b04dd6ff2cb06c7"
+rev = "63f9650"
+hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/starship"
-rev = "6fde3b2"
-hash = "7ddb7a790746fd91ecdd0350cc5a5d8c"
+rev = "6a0f3f7"
+hash = "d5a74d95c2e8194ac352c5e10e81e64f"
 
 [[plugin.deps]]
 use = "AnirudhG07/custom-shell"
-rev = "6b4550a"
-hash = "43019cca17a4d7b41746c2e0a6b8f33f"
+rev = "c4c2fea"
+hash = "c728f8c1c07fdc803e365071421e9083"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:diff"
-rev = "55bf699"
-hash = "7a08e303167d5b655c06da6d570f0333"
+rev = "63f9650"
+hash = "47865a70cade14a0b9b6bc6a54f16bdb"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:jump-to-char"
-rev = "55bf699"
-hash = "a670c03eb3760812e044a24f94cedc55"
+rev = "63f9650"
+hash = "30fc0b37f03a597b92d387268319450f"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "55bf699"
-hash = "f0c4b41b5d19a3144958383333eff6e7"
+rev = "63f9650"
+hash = "4d82cd9e7534d976f000edf9c0f68d8f"
 
 [[plugin.deps]]
 use = "AnirudhG07/rich-preview"
-rev = "fdcf373"
-hash = "bd1737dd44b202f412122e6a3b378d4c"
+rev = "843c3fa"
+hash = "b4040931f0d2f9670ddb4923e55cd881"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mactag"
-rev = "55bf699"
-hash = "f4ee8d1a119fc869ffcd7e8a71b1469e"
+rev = "63f9650"
+hash = "6e0cbddb97038ea95f04f9de0944c175"
 
 [[plugin.deps]]
 use = "AnirudhG07/plugins-yazi:copy-file-contents"
-rev = "524c52c"
-hash = "27c50e6bc15c09096505b805b238ade0"
+rev = "907e292"
+hash = "a61930b827d8f1ef8fa016409de458ed"
 
 [[plugin.deps]]
 use = "h-hg/yamb"
@@ -55,33 +55,33 @@ hash = "7cc42012a7c2099f80064d228feb8d44"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "55bf699"
-hash = "e0ada736ea676c2bbb3ec705a49526ef"
+rev = "63f9650"
+hash = "bf6f074cd41ee33c3360341d168f9733"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "55bf699"
-hash = "7918aab6a71caf31b58411f789195677"
+rev = "63f9650"
+hash = "a7ab702e1ef0c097defbc976ed34c186"
 
 [[plugin.deps]]
 use = "lpnh/fg"
-rev = "92edf0b"
-hash = "b0edc5e9b7f44b2d3303e74f785d0bc9"
+rev = "5b6bdee"
+hash = "a0e91093c60ddeb1ee68df4ed7cf317a"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:toggle-pane"
-rev = "55bf699"
-hash = "f3853bbdd1da2fad09d059ab5464abfd"
+rev = "63f9650"
+hash = "d5d4f3527592da5fbe77fd6f51815f80"
 
 [[plugin.deps]]
 use = "lpnh/fr"
-rev = "92edf0b"
-hash = "b0edc5e9b7f44b2d3303e74f785d0bc9"
+rev = "5b6bdee"
+hash = "a0e91093c60ddeb1ee68df4ed7cf317a"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "55bf699"
-hash = "5cf6118259765a267f3e2717acc79095"
+rev = "c0ad8a3"
+hash = "2bdc137505b8d9a0cc867a57d0e99b01"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/bypass"
@@ -95,5 +95,5 @@ hash = "5b9dea47776a30946cfbf83232d18fb1"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
-rev = "02f3fc6"
-hash = "2ac87e1b3a61f5887472899e86535d29"
+rev = "657aaf3"
+hash = "662a1b35b98668d4f75746eb37af7fd"

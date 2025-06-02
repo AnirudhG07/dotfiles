@@ -44,6 +44,9 @@
     uv # package manager
     ruff # python linter
 
+    ## Rust
+    rustup
+
     go
     lua
     ## Lean4

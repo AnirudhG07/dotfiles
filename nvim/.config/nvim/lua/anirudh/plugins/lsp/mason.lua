@@ -37,7 +37,7 @@ return {
 				"svelte",
 				"lua_ls",
 				"emmet_ls",
-				"rust_analyzer",
+				-- "rust_analyzer",
 			},
 		})
 
@@ -50,7 +50,7 @@ return {
 				"isort", -- python import formatter
 				"gopls", -- go formatter
 				"goimports",
-				"rust-analyzer", -- rust formatter
+				-- "rust-analyzer", -- rust formatter
 				"eslint_d", -- eslint formatter
 			},
 		})
