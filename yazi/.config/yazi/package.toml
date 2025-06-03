@@ -65,8 +65,8 @@ hash = "a7ab702e1ef0c097defbc976ed34c186"
 
 [[plugin.deps]]
 use = "lpnh/fg"
-rev = "5b6bdee"
-hash = "a0e91093c60ddeb1ee68df4ed7cf317a"
+rev = "6d5e469"
+hash = "d8455f929580ec602b4d0bbd8e96711"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:toggle-pane"
@@ -74,26 +74,26 @@ rev = "63f9650"
 hash = "d5d4f3527592da5fbe77fd6f51815f80"
 
 [[plugin.deps]]
-use = "lpnh/fr"
-rev = "5b6bdee"
-hash = "a0e91093c60ddeb1ee68df4ed7cf317a"
-
-[[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "c0ad8a3"
+rev = "63f9650"
 hash = "2bdc137505b8d9a0cc867a57d0e99b01"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/bypass"
-rev = "85b5e96"
-hash = "db441e5d2a2aad7fcd356440148136f0"
+rev = "c1e5fcf"
+hash = "208e77480824f62558a5b037c8569d61"
 
 [[plugin.deps]]
 use = "ndtoan96/ouch"
-rev = "2496cd9"
-hash = "5b9dea47776a30946cfbf83232d18fb1"
+rev = "10b4627"
+hash = "3ec6a973d506665f1570a9fe08343fd8"
+
+[[plugin.deps]]
+use = "lpnh/fr"
+rev = "6d5e469"
+hash = "d8455f929580ec602b4d0bbd8e96711"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
-rev = "657aaf3"
-hash = "662a1b35b98668d4f75746eb37af7fd"
+rev = "d04a298"
+hash = "288a0dedd5d13b28605cf82c05326dcd"
