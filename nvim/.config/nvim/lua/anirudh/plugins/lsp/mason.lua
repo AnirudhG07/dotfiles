@@ -46,7 +46,7 @@ return {
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
 				"ruff", -- python linter
-				"black", -- python formatter
+				"ty", -- typescript linter
 				"isort", -- python import formatter
 				"gopls", -- go formatter
 				"goimports",

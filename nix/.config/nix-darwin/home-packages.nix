@@ -11,7 +11,7 @@
     bat
     eza
     imagemagick
-    direnv
+    # direnv
 
     # Desktop apps
     aerospace
@@ -37,6 +37,10 @@
     krabby # Pokemons
     lazydocker # Docker from CLI
 
+    ## Jujutsu
+    jujutsu
+    lazyjj
+
     # languages
     ## Python
     python313
@@ -47,6 +51,7 @@
     ## Rust
     rustup
 
+    typst
     go
     lua
     ## Lean4

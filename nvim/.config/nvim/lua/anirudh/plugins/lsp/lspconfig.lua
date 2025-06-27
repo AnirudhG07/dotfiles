@@ -20,6 +20,17 @@ return {
 		local keymap = vim.keymap -- for conciseness
 
 		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+
+		vim.diagnostic.config({
+			virtual_text = {
+				-- source = "always",  -- Or "if_many"
+				prefix = "■", -- Could be '■', '▎', 'x', '●'
+			},
+			severity_sort = true,
+			float = {
+				source = "if_many", -- Or "if_many"
+			},
+		})
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 			callback = function(ev)
@@ -130,12 +141,24 @@ return {
 						},
 					})
 				end,
+				["ty"] = function()
+					-- configure ruff language server
+					lspconfig["ty"].setup({
+						on_attach = on_attach_ruff,
+						init_options = {
+							settings = {
+								-- Any extra CLI arguments for `ty` go here.
+								args = {},
+							},
+						},
+					})
+				end,
+
 				["gopls"] = function()
 					-- configure gopls language server
 					lspconfig["gopls"].setup({
 						capabilities = capabilities,
 						on_attach = function(client, bufnr)
-							-- Disable hover in favor of Pyright
 							client.server_capabilities.hoverProvider = false
 						end,
 					})
