@@ -34,13 +34,7 @@
 
             nixpkgs.config.allowUnfree = true;
 
-            environment.systemPackages = with pkgs; [
-                neovim
-                fzf
-                stow
-                gh
-                lazygit
-            ];
+            environment.systemPackages = [ ];
 
             # home-manager
             users.users.anirudhgupta = {
@@ -49,19 +43,21 @@
                 shell = pkgs.zsh;
             };
 
-            # homebrew = {
-            #     enable = true;
-            #     brews = [
-            #         "mas"
-            #         "tag"
-            #         "starship"
-            #         "poppler"
-            #     ];
-            #     casks = [
-            #     ];
-            #     masApps = {};
-            #     onActivation.cleanup = "zap";
-            # };
+            system.primaryUser = "anirudhgupta";
+
+            homebrew = {
+                enable = true;
+                brews = [
+                    "mas"
+                    "tag"
+                    "starship"
+                    "poppler"
+                ];
+                casks = [
+                ];
+                masApps = {};
+                onActivation.cleanup = "zap";
+            };
 
 
             system.defaults = {
@@ -105,7 +101,6 @@
                     }
             home-manager.darwinModules.home-manager {
                 home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
                 home-manager.users.anirudhgupta = {
                     programs.zsh = {
                         enable = true;
@@ -119,5 +114,10 @@
         };
 
         darwinPackages = self.darwinConfigurations."Anirudhs-MacBook-Air".pkgs;
+
+        homeConfigurations.anirudhgupta = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages."aarch64-darwin";
+            modules = [ ./home.nix ];
+        };
     };
 }

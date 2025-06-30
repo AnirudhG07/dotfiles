@@ -4,6 +4,10 @@
   home.packages = with pkgs; [
     ## CORE Utilities
     neovim
+    fzf
+    stow
+    gh
+    lazygit
     tmux
     zoxide
     ripgrep
@@ -36,6 +40,7 @@
     television # Better fzf
     krabby # Pokemons
     lazydocker # Docker from CLI
+    eget
 
     ## Jujutsu
     jujutsu

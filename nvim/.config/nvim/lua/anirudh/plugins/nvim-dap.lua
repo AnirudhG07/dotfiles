@@ -40,5 +40,8 @@ return {
 		vim.keymap.set("n", "<leader>dd", dap.disconnect, { desc = "Debugger Disconnect" })
 
 		vim.keymap.set("n", "<leader>dO", dapui.open, { desc = "Open DAP UI" })
+
+		vim.cmd("hi DapBreakpointColor guifg=#fa4848")
+		vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DapBreakpointColor", linehl = "", numhl = "" })
 	end,
 }
