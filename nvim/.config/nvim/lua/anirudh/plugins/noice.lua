@@ -34,6 +34,7 @@ return {
 							{ find = "%d fewer lines" },
 							{ find = "%d more lines" },
 							{ find = "CopilotChat.nvim" },
+							{ find = "vim.lsp.util.make_position_param" },
 						},
 					},
 					opts = { skip = true },

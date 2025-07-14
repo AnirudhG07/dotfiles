@@ -64,7 +64,6 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Aliases
-alias ls='ls --color'
 alias vim='nvim'
 alias c='clear'
 
@@ -131,7 +130,7 @@ alias tmux_in='tmux a -t'
 alias tmux_kill='tmux kill-session -t'
 alias config="nvim ~/.config"
 alias e="exit"
-alias ls='eza --color=always --git --no-filesize --no-user --no-permissions --tree --level=0'
+alias ls='eza --color=always --group-directories-first --git --no-filesize --no-user --no-permissions --tree --level=0'
 alias iisc='cd /Volumes/Anirudh/IISc'
 alias home='cd /Volumes/Anirudh'
 alias ncdu='ncdu --color dark'
