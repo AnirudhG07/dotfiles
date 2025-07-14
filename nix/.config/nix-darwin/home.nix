@@ -18,7 +18,7 @@
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
     # plain files is through 'home.file'. I am using stow for instant changes visible. This below WORKS!!!
     home.file = {
-    ".zshrc".source = ../../../zsh/.zshrc;
+    # ".zshrc".source = ../../../zsh/.zshrc;
     #".config/yazi".source = ../../../yazi/.config/yazi;
     #".p10k.zsh".source = ../../../p10k.zsh/.p10k.zsh;
     #".config/starship.toml".source = ../../../starship/.config/starship.toml;
