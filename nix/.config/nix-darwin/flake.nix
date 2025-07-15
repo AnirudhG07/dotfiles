@@ -26,31 +26,32 @@
         };
     };
 
-    outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, ...}:
+    outputs = inputs @ {
+        self,
+        nix-darwin,
+        nixpkgs,
+        home-manager, 
+        nix-homebrew, 
+        homebrew-core, 
+        homebrew-cask, 
+        homebrew-bundle,
+        ...}:
         let
         configuration = { pkgs, config, ... }: {
         # List packages installed in system profile. To search by name, run:
         # $ nix-env -qaP | grep wget
-
-            nixpkgs.config.allowUnfree = true;
-
-            environment.systemPackages = [ ];
-
             # home-manager
             users.users.anirudhgupta = {
                 name = "anirudhgupta";
                 home = "/Users/anirudhgupta";
-                shell = pkgs.zsh;
             };
 
-            system.primaryUser = "anirudhgupta";
-
+            nixpkgs.config.allowUnfree = true;
             homebrew = {
                 enable = true;
                 brews = [
                     "mas"
                     "tag"
-                    "starship"
                     "poppler"
                 ];
                 casks = [
@@ -58,37 +59,18 @@
                 masApps = {};
                 onActivation.cleanup = "zap";
             };
-
-
-            system.defaults = {
-                dock.autohide = true;
-                loginwindow.LoginwindowText = "Hare Krsna Anirudh! Let's get some work done!";
-
-            };
-            # Necessary for using flakes on this system.
-            nix.settings.experimental-features = "nix-command flakes";
-            # Set Git commit hash for darwin-version.
-            system.configurationRevision = self.rev or self.dirtyRev or null;
-
-            # $ darwin-rebuild changelog
-            system.stateVersion = 5;
-
-            # The platform the configuration will be used on.
-
             programs.zsh = {
                 enable = true;
             };
-  
-            nixpkgs.hostPlatform = "aarch64-darwin";
-            security.pam.services.sudo_local.touchIdAuth = true;
         };
-    in
-    {
+    in {
         # Build darwin flake using:
         # $ darwin-rebuild build --flake .#simple
         darwinConfigurations."Anirudhs-MacBook-Air" = nix-darwin.lib.darwinSystem {
+            inherit inputs;
             system = "aarch64-darwin";
             modules = [
+                ./modules
                 configuration
                     nix-homebrew.darwinModules.nix-homebrew
                     {
@@ -99,15 +81,16 @@
                             autoMigrate = true;
                         };
                     }
-            home-manager.darwinModules.home-manager {
-                home-manager.useGlobalPkgs = true;
-                home-manager.users.anirudhgupta = {
-                    programs.zsh = {
-                        enable = true;
-                    };
-
-                        imports = [ ./home.nix ];
-                        home.stateVersion = "25.05";
+                home-manager.darwinModules.home-manager {
+                    home-manager = {
+                        useGlobalPkgs = true;
+                        users.anirudhgupta = {
+                            programs.zsh = {
+                                enable = true;
+                            };
+                            imports = [ ./home-manager/home.nix ];
+                            home.stateVersion = "25.05";
+                        };
                     };
                 }
             ];
@@ -117,7 +100,11 @@
 
         homeConfigurations.anirudhgupta = home-manager.lib.homeManagerConfiguration {
             pkgs = nixpkgs.legacyPackages."aarch64-darwin";
-            modules = [ ./home.nix ];
+            modules = [ ./home-manager/home.nix ];
         };
     };
 }
+
+## Reference repos for nix configs:
+# - https://github.com/amsynist/zero-darwin
+# - https://github.com/uncenter/flake

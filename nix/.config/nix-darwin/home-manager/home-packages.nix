@@ -2,21 +2,6 @@
 
   nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
-    ## CORE Utilities
-    neovim
-    fzf
-    stow
-    gh
-    lazygit
-    tmux
-    zoxide
-    ripgrep
-    fd
-    bat
-    eza
-    imagemagick
-    # direnv
-
     # Desktop apps
     aerospace
     obsidian
@@ -41,6 +26,11 @@
     krabby # Pokemons
     lazydocker # Docker from CLI
     eget
+    imagemagick
+
+    ## Music player
+    mpd
+    rmpc
 
     ## Jujutsu
     jujutsu
