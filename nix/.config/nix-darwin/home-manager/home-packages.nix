@@ -27,6 +27,7 @@
     lazydocker # Docker from CLI
     eget
     imagemagick
+    exiftool
 
     ## Music player
     mpd
