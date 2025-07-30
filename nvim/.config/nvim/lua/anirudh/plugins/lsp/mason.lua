@@ -32,11 +32,7 @@ return {
 			-- list of servers for mason to install
 			ensure_installed = {
 				"html",
-				"cssls",
-				"tailwindcss",
-				"svelte",
 				"lua_ls",
-				"emmet_ls",
 				-- "rust_analyzer",
 			},
 		})
@@ -46,12 +42,11 @@ return {
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
 				"ruff", -- python linter
-				"ty", -- typescript linter
+				"tinymist", -- typst linter
 				"isort", -- python import formatter
 				"gopls", -- go formatter
 				"goimports",
 				-- "rust-analyzer", -- rust formatter
-				"eslint_d", -- eslint formatter
 			},
 		})
 	end,

@@ -4,7 +4,8 @@
   home.packages = with pkgs; [
     # Desktop apps
     aerospace
-    obsidian
+    # obsidian
+    docker
 
     # CLI tools
     _7zz 
@@ -25,17 +26,14 @@
     television # Better fzf
     krabby # Pokemons
     lazydocker # Docker from CLI
-    eget
-    imagemagick
-    exiftool
+    eget # Get binaries from Github 
+    imagemagick # Image Magic!
+    exiftool # Metadata reader
+    fastfetch # config showoff
 
     ## Music player
     mpd
     rmpc
-
-    ## Jujutsu
-    jujutsu
-    lazyjj
 
     # languages
     ## Python
@@ -52,7 +50,6 @@
     lua
     ## Lean4
     elan
-    ## Rust
 
   ];
 }

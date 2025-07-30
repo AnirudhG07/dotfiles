@@ -8,8 +8,8 @@ return {
 				{ section = "startup" },
 				{
 					section = "terminal",
-					cmd = "krabby random",
-					random = 10,
+					cmd = "krabby random --no-mega --no-gmax",
+					random = 1000,
 					pane = 2,
 					indent = 4,
 					height = 30,

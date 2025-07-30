@@ -10,19 +10,22 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
-require("lazy").setup({ { import = "anirudh.plugins" }, { import = "anirudh.plugins.lsp" } }, {
-	colorscheme = {
-		scheme = "tokyonight",
-		config = {
-			darkSidebar = true,
-			darkFloat = true,
+require("lazy").setup(
+	{ { import = "anirudh.plugins" }, { import = "anirudh.plugins.lsp" }, { import = "anirudh.plugins.snacks" } },
+	{
+		colorscheme = {
+			scheme = "tokyonight",
+			config = {
+				darkSidebar = true,
+				darkFloat = true,
+			},
 		},
-	},
-	checker = {
-		enabled = true,
-		notify = false,
-	},
-	change_detection = {
-		notify = false,
-	},
-})
+		checker = {
+			enabled = true,
+			notify = false,
+		},
+		change_detection = {
+			notify = false,
+		},
+	}
+)

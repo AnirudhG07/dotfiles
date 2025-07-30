@@ -201,7 +201,7 @@ alt-shift-l = ['join-with right', 'mode main']
 # run = "move-node-to-workspace 1"
 
 [[on-window-detected]]
-if.app-id = 'com.apple.Safari'
+if.app-id = 'com.kagi.kagimacOS'
 run = "move-node-to-workspace 2"
 [[on-window-detected]]
 if.app-id = 'com.microsoft.VSCode'
