@@ -218,6 +218,9 @@ run = "move-node-to-workspace D"
 [[on-window-detected]]
 if.app-id = 'md.obsidian'
 run = "move-node-to-workspace E"
+[[on-window-detected]]
+if.app-id = 'com.apple.Preview'
+run = 'move-node-to-workspace D'
 ## Floating windows
 [[on-window-detected]]
 if.app-id = 'com.macpaw.CleanMyMac4'
@@ -227,4 +230,7 @@ if.app-id = 'com.apple.Passwords'
 run = 'layout floating'
 [[on-window-detected]]
 if.app-id = 'com.cisco.anyconnect.gui'
+run = 'layout floating'
+[[on-window-detected]]
+if.app-id = 'qemu-system-x86_64'
 run = 'layout floating'

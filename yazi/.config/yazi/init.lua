@@ -35,7 +35,6 @@ require("mactag"):setup({
 	},
 })
 
--- You can configure your bookmarks by lua language
 local bookmarks = {}
 require("yamb"):setup({
 	-- Optional, the path ending with path seperator represents folder.
@@ -49,40 +48,32 @@ require("yamb"):setup({
 	path = "/Users/anirudhgupta/dotfiles/yazi/.config/yazi/plugins/yamb.yazi/bookmarks",
 })
 
-function Status:name()
-	local h = self._tab.current.hovered
-	if not h then
-		return ui.Line({})
+Status:children_add(function(self)
+	local h = self._current.hovered
+	if h and h.link_to then
+		return " -> " .. tostring(h.link_to)
+	else
+		return ""
 	end
-	local linked = ""
-	if h.link_to ~= nil then
-		linked = " -> " .. tostring(h.link_to)
-	end
-	return ui.Line(" " .. h.name .. linked)
-end
+end, 3300, Status.LEFT)
 
--- Header name
-function header_host()
+Header:children_add(function()
 	if ya.target_family() ~= "unix" then
-		return ui.Line({})
+		return ""
 	end
-	return ui.Span(ya.user_name() .. "@yazi" .. ": "):fg("blue")
-end
+	return ui.Span(ya.user_name() .. "@yazi: "):fg("blue")
+end, 500, Header.LEFT)
 
-Header:children_add(header_host, 500, Header.LEFT)
--- group of files and username at the bottom
-function Status_owner()
+Status:children_add(function()
 	local h = cx.active.current.hovered
-	if h == nil or ya.target_family() ~= "unix" then
-		return ui.Line({})
+	if not h or ya.target_family() ~= "unix" then
+		return ""
 	end
 
 	return ui.Line({
 		ui.Span(ya.user_name(h.cha.uid) or tostring(h.cha.uid)):fg("magenta"),
-		ui.Span(":"),
+		":",
 		ui.Span(ya.group_name(h.cha.gid) or tostring(h.cha.gid)):fg("magenta"),
-		ui.Span(" "),
+		" ",
 	})
-end
-
-Status:children_add(Status_owner, 500, Status.RIGHT)
+end, 500, Status.RIGHT)

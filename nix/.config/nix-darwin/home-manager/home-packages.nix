@@ -30,10 +30,11 @@
     imagemagick # Image Magic!
     exiftool # Metadata reader
     fastfetch # config showoff
+    trash-cli # Trash from CLI
 
     ## Music player
-    mpd
-    rmpc
+    # mpd
+    # rmpc
 
     # languages
     ## Python
