@@ -61,7 +61,7 @@ Header:children_add(function()
 	if ya.target_family() ~= "unix" then
 		return ""
 	end
-	return ui.Span(ya.user_name() .. "@yazi: "):fg("blue")
+	return ui.Span(ya.user_name() .. "@yazi"):fg("blue")
 end, 500, Header.LEFT)
 
 Status:children_add(function()

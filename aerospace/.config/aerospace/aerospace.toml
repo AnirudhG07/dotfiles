@@ -126,8 +126,8 @@ alt-e = 'workspace E'
 alt-d = 'workspace D'
 alt-m = 'workspace M'
 alt-w = 'workspace W'
-alt-p = 'workspace P'
-alt-t = 'workspace T'
+alt-c = 'workspace C'
+alt-s = 'workspace S'
 alt-v = 'workspace V'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
@@ -145,8 +145,8 @@ alt-shift-e = 'move-node-to-workspace E'
 alt-shift-d = 'move-node-to-workspace D'
 alt-shift-w = 'move-node-to-workspace W'
 alt-shift-m = 'move-node-to-workspace M'
-alt-shift-p = 'move-node-to-workspace P'
-alt-shift-t = 'move-node-to-workspace T'
+alt-shift-c = 'move-node-to-workspace C'
+alt-shift-s = 'move-node-to-workspace S'
 alt-shift-v = 'move-node-to-workspace V'
 
 alt-shift-f = 'fullscreen'
@@ -195,7 +195,7 @@ alt-shift-l = ['join-with right', 'mode main']
 #if.app-id = 'com.googlecode.iterm2'
 #run = "move-node-to-workspace 1"
 
-
+# Commented since the floating window will mess up
 # [[on-window-detected]]
 # if.app-id = 'com.mitchellh.ghostty'
 # run = "move-node-to-workspace 1"
@@ -205,7 +205,7 @@ if.app-id = 'com.kagi.kagimacOS'
 run = "move-node-to-workspace 2"
 [[on-window-detected]]
 if.app-id = 'com.microsoft.VSCode'
-run = "move-node-to-workspace E"
+run = "move-node-to-workspace D"
 [[on-window-detected]]
 if.app-id = 'com.apple.Music'
 run = "move-node-to-workspace M"
@@ -214,13 +214,16 @@ if.app-id = 'net.whatsapp.WhatsApp'
 run = "move-node-to-workspace W"
 [[on-window-detected]]
 if.app-id = 'com.electron.dockerdesktop'
-run = "move-node-to-workspace D"
-[[on-window-detected]]
-if.app-id = 'md.obsidian'
-run = "move-node-to-workspace E"
+run = "move-node-to-workspace C"
 [[on-window-detected]]
 if.app-id = 'com.apple.Preview'
+run = "move-node-to-workspace E"
+[[on-window-detected]]
+if.app-id = 'md.obsidian'
 run = 'move-node-to-workspace D'
+[[on-window-detected]]
+if.app-id = 'com.microsoft.teams2'
+run = "move-node-to-workspace 3"
 ## Floating windows
 [[on-window-detected]]
 if.app-id = 'com.macpaw.CleanMyMac4'

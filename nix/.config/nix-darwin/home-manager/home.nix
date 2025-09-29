@@ -1,7 +1,7 @@
 # home.nix
 # home-manager switch 
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
     imports = [
@@ -10,9 +10,9 @@
 
     home.username = "anirudhgupta";
     home.homeDirectory = "/Users/anirudhgupta";
-    home.stateVersion = "25.05"; # Please read the comment before changing.
+    home.stateVersion = "25.05";
 
-        # Makes sense for user specific applications that shouldn't be available system-wide
+    # Makes sense for user specific applications that shouldn't be available system-wide
     home.packages = [];
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -53,6 +53,6 @@
                 nix-direnv.enable = true;
         };
 
-        zsh.enable = true; 
+        zsh.enable = lib.mkForce false; 
     };
 }

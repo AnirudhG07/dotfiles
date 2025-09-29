@@ -1,5 +1,6 @@
 {
   imports = [
-    ./borders.nix
+    # ./borders.nix
+    # ./sketchybar.nix
   ];
 }

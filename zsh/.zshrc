@@ -131,7 +131,7 @@ alias tmux_in='tmux a -t'
 alias tmux_kill='tmux kill-session -t'
 alias config="nvim ~/.config"
 alias e="exit"
-alias ls='eza --color=always --group-directories-first --git --tree --level=0'
+alias ls='eza --color=always --group-directories-first --git'
 alias iisc='cd /Volumes/Anirudh/IISc'
 alias home='cd /Volumes/Anirudh'
 alias ncdu='ncdu --color dark'
@@ -152,7 +152,7 @@ alias y='yazi'
 alias yy='yy'
 alias :q="exit"
 alias python="python3"
-alias mathworks='ssh anirudhgupta@10.134.13.103'
+alias drongo_iisc='ssh anirudhgupta@10.134.13.103'
 ####################################################################
 
 # USELESS ALIASES
