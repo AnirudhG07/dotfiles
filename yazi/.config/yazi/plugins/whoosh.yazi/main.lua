@@ -216,12 +216,22 @@ local function truncate_path(path, max_parts)
 			first_part = first_part:sub(1, -2)
 		end
 
-		table.insert(result_parts, first_part)
+		if ya.target_family() ~= "windows" and first_part == "/" then
+			table.insert(result_parts, "")
+		else
+			table.insert(result_parts, first_part)
+		end
+
 		table.insert(result_parts, "…")
 		for i = #parts - max_parts + 2, #parts do
 			table.insert(result_parts, parts[i])
 		end
-		return table.concat(result_parts, separator)
+
+		local out = table.concat(result_parts, separator)
+		if ya.target_family() ~= "windows" then
+			out = out:gsub("^//+", "/")
+		end
+		return out
 	else
 		return normalized_path
 	end
@@ -857,7 +867,7 @@ local create_special_menu_items = function()
 	end
 
 	if filtered_history and #filtered_history > 0 then
-		table.insert(special_items, { desc = "Directory history", on = "<Tab>", path = "__HISTORY__" })
+		table.insert(special_items, { desc = "Directory history", on = ",", path = "__HISTORY__" })
 	end
 
 	if filtered_history and filtered_history[1] then
@@ -1512,22 +1522,68 @@ return {
 		state.initialized_tabs = {}
 
 		ps.sub("cd", function(body)
-			local tab = body.tab or cx.tabs.idx
-			local new_path = normalize_path(tostring(cx.active.current.cwd))
+			local tab_id = nil
+			local tab_ctx = nil
 
-			if not state.initialized_tabs[tab] then
-				state.last_paths[tab] = new_path
-				state.initialized_tabs[tab] = true
+			if body then
+				if body.tab then
+					tab_id = tonumber(body.tab)
+					if tab_id then
+						for i = 1, #cx.tabs do
+							local candidate = cx.tabs[i]
+							if candidate and candidate.id and candidate.id.value == tab_id then
+								tab_ctx = candidate
+								break
+							end
+						end
+					end
+				end
+			end
+
+			local raw_path = nil
+			if body and body.url then
+				raw_path = tostring(body.url)
+			end
+
+			if not tab_ctx then
+				local active_idx = cx.tabs.idx
+				tab_ctx = cx.tabs[active_idx]
+				if tab_ctx and tab_ctx.id then
+					tab_id = tab_id or tab_ctx.id.value
+				end
+				tab_id = tab_id or active_idx
+			end
+
+			if not tab_id then
 				return
 			end
 
-			local previous_path = state.last_paths[tab]
-
-			if previous_path and previous_path ~= new_path then
-				add_to_history(tab, previous_path)
+			if not raw_path and tab_ctx and tab_ctx.current and tab_ctx.current.cwd then
+				raw_path = tostring(tab_ctx.current.cwd)
+			end
+			if not raw_path and cx.active and cx.active.current and cx.active.current.cwd then
+				raw_path = tostring(cx.active.current.cwd)
 			end
 
-			state.last_paths[tab] = new_path
+			if not raw_path or raw_path == "" then
+				return
+			end
+
+			local new_path = normalize_path(raw_path)
+
+			if not state.initialized_tabs[tab_id] then
+				state.last_paths[tab_id] = new_path
+				state.initialized_tabs[tab_id] = true
+				return
+			end
+
+			local previous_path = state.last_paths[tab_id]
+
+			if previous_path and previous_path ~= new_path then
+				add_to_history(tab_id, previous_path)
+			end
+
+			state.last_paths[tab_id] = new_path
 		end)
 	end,
 

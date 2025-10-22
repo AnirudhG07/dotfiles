@@ -2,6 +2,7 @@
   environment = {
     shells = with pkgs; [bash zsh];
     systemPackages = with pkgs; [
+        git
         neovim
         fzf
         stow

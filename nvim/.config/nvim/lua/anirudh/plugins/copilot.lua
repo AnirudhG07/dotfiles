@@ -7,12 +7,12 @@ return {
 		},
 		build = "make tiktoken",
 		opts = {
-			model = "claude-3.7-sonnet",
+			model = "claude-4-sonnet",
 			window = {
 				layout = "float",
 				border = "rounded",
 				title = "Copilot Chat",
-				title_pos = "center",
+				-- title_pos = "center",
 				width = 0.6,
 				height = 0.6,
 				margin = { top = 2, right = 2, bottom = 2, left = 2 },

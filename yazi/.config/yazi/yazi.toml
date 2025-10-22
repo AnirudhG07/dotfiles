@@ -43,6 +43,7 @@ prepend_previewers = [
     { mime = "application/x-bittorrent", run = "torrent-preview" },
     { name = "*.ipynb", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
     { name = "*.json", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
+    # { name = "*.json", run = "rich-preview"},
     { name = "*.rst", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
     { name = "*.csv", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
 ]

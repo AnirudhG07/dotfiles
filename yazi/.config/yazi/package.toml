@@ -5,7 +5,7 @@ hash = "4761fffb60a12d37096c34a356380cdf"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "3996fc74044bc44144b323686f887e1"
 
 [[plugin.deps]]
@@ -20,27 +20,27 @@ hash = "3efc7ddc9bac120c618462eb994edf75"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:diff"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "82376c3381ae915fd799d40f4dd4c6cd"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:jump-to-char"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "ce67445ebb1bf3d97b8e44f50904b2c5"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-filter"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "bcda8eeb3f4013bae156aecabfc745e8"
 
 [[plugin.deps]]
 use = "AnirudhG07/rich-preview"
-rev = "843c3fa"
-hash = "b4040931f0d2f9670ddb4923e55cd881"
+rev = "1eae795"
+hash = "90b1e3a244c84ac3b8e06a3421b20128"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:mactag"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "326eb39db39c855a1d564b777b810f05"
 
 [[plugin.deps]]
@@ -50,22 +50,22 @@ hash = "f8530ee84fee95dbcc26bb1d8d8019c7"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "3cce60031b27cbce80b50f68ca319c0a"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "56fdabc96fc1f4d53c96eb884b02a5be"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:toggle-pane"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "8a7c58225816a163a6e8730c0adafbc8"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "a20327710c3a8d37ee0972128dcb6a31"
 
 [[plugin.deps]]
@@ -80,23 +80,23 @@ hash = "2bd799b42b8e42b8ef100310be71f8d1"
 
 [[plugin.deps]]
 use = "lpnh/fr"
-rev = "3d32e55"
-hash = "f7ab219b58675582ef855a9414dbc659"
+rev = "a60466e"
+hash = "ae6f2fb9ea03527e3a367a9faf2690ac"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "4ee57085277d616acfa0ef1fef37dc00"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:zoom"
-rev = "d1c8baa"
+rev = "9a52857"
 hash = "9dee2bf990ea941ccf67df74bca45468"
 
 [[plugin.deps]]
 use = "WhoSowSee/whoosh"
-rev = "60feac7"
-hash = "51d02a6e8dfb4d2a7fd387a34f068e46"
+rev = "5676bc0"
+hash = "fe190596a791aaf5fc3e7ee223397fa"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
