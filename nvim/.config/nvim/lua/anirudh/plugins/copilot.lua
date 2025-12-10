@@ -7,7 +7,7 @@ return {
 		},
 		build = "make tiktoken",
 		opts = {
-			model = "claude-4-sonnet",
+			-- model = "claude-4-sonnet",
 			window = {
 				layout = "float",
 				border = "rounded",

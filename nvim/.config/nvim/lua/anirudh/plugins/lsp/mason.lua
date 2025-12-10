@@ -33,7 +33,7 @@ return {
 			ensure_installed = {
 				"html",
 				"lua_ls",
-				"jdtls",
+				-- "jdtls",
 				-- "rust_analyzer",
 			},
 		})
@@ -45,8 +45,8 @@ return {
 				"ruff", -- python linter
 				"tinymist", -- typst linter
 				"isort", -- python import formatter
-				"gopls", -- go formatter
-				"goimports",
+				-- "gopls", -- go formatter
+				-- "goimports",
 				-- "rust-analyzer", -- rust formatter
 			},
 		})
