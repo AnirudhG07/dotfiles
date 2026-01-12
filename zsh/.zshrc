@@ -22,6 +22,9 @@ fi
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
+autoload -Uz compinit
+compinit -C
+
 # Add in Powerlevel10k
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
@@ -70,6 +73,7 @@ alias c='clear'
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
+compdef _cd cd # for cd completion smoothly
 
 eval "$(uv generate-shell-completion zsh)"
 DISABLE_AUTO_TITLE="true"
@@ -85,11 +89,6 @@ export PATH=$PATH:$GOPATH/bin
 HIST_STAMPS="dd.mm.yyyy"
 
 zstyle ':completion:*' rehash true
-if [[ ! -f ~/.zcompdump ]]; then
-    compinit
-else
-    compinit -C
-fi
 
 source ~/fzf-git.sh/fzf-git.sh
 
