@@ -1,4 +1,4 @@
---- @since 25.5.31
+--- @since 25.12.29
 
 local shell = os.getenv("SHELL"):match(".*/(.*)")
 local get_cwd = ya.sync(function() return cx.active.current.cwd end)
@@ -13,8 +13,8 @@ local fmt_opts = function(opt)
 	return ""
 end
 
-local get_custom_opts = ya.sync(function(self)
-	local opts = self.custom_opts or {}
+local get_custom_opts = ya.sync(function(state)
+	local opts = state.custom_opts or {}
 
 	return {
 		fzf = fmt_opts(opts.fzf),
@@ -89,10 +89,10 @@ local fzf_from = function(job_args, opts_tbl, major, minor)
 	return table.concat(fzf_tbl, " ")
 end
 
-local function setup(self, opts)
+local function setup(state, opts)
 	opts = opts or {}
 
-	self.custom_opts = {
+	state.custom_opts = {
 		fzf = opts.fzf,
 		rg = opts.rg,
 		bat = opts.bat,
@@ -102,8 +102,7 @@ local function setup(self, opts)
 end
 
 local function entry(_, job)
-	-- TODO: remove fallback after next stable release
-	local _permit = ui.hide and ui.hide() or ya.hide()
+	local _permit = ui.hide()
 
 	local fzf_version, err = Command("fzf"):arg("--version"):output()
 	if err then
@@ -113,23 +112,23 @@ local function entry(_, job)
 
 	local custom_opts = get_custom_opts()
 	local args = fzf_from(job.args[1], custom_opts, tonumber(major), tonumber(minor))
-	local cwd = tostring(get_cwd())
+	local cwd = get_cwd()
 
 	local child, err = Command(shell)
 		:arg({ "-c", args })
-		:cwd(cwd)
+		:cwd(tostring(cwd))
 		:stdin(Command.INHERIT)
 		:stdout(Command.PIPED)
 		:stderr(Command.INHERIT)
 		:spawn()
 
 	if not child then
-		return fail("Command failed with error code %s", err)
+		return fail("Failed to spawn shell, error: %s", err)
 	end
 
 	local output, err = child:wait_with_output()
-	if not output then -- unreachable?
-		return fail("Cannot read command output, error code %s", err)
+	if not output then
+		return fail("Cannot read command output, error: %s", err)
 	elseif output.status.code == 130 then -- interrupted with <ctrl-c> or <esc>
 		return
 	elseif output.status.code == 1 then -- no match
@@ -141,9 +140,12 @@ local function entry(_, job)
 	local target = output.stdout:gsub("\n$", "")
 	if target ~= "" then
 		local colon_pos = string.find(target, ":")
-		local file_url = colon_pos and string.sub(target, 1, colon_pos - 1) or target
-
-		ya.emit("reveal", { file_url })
+		local file_path = colon_pos and string.sub(target, 1, colon_pos - 1) or target
+		local url = Url(file_path)
+		if not url.is_absolute then
+			url = cwd:join(url)
+		end
+		ya.emit("reveal", { url })
 	end
 end
 

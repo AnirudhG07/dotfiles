@@ -6,7 +6,8 @@ local function fail(job, s) ya.preview_widget(job, ui.Text.parse(s):area(job.are
 
 function M:peek(job)
 	local child, err = Command("sh")
-		:arg({ "-c", job.args[1], "sh", tostring(job.file.url) })
+		-- TODO: use `job.file.path` instead
+		:arg({ "-c", job.args[1], "sh", tostring(job.file.cache or job.file.url) })
 		:env("w", job.area.w)
 		:env("h", job.area.h)
 		:stdout(Command.PIPED)
@@ -48,6 +49,7 @@ function M:seek(job) require("code"):seek(job) end
 function M.format(job, lines)
 	local format = job.args.format
 	if format ~= "url" then
+		-- TODO: remove `:gsub("\r", "")`
 		local s = table.concat(lines, ""):gsub("\r", ""):gsub("\t", string.rep(" ", rt.preview.tab_size))
 		return ui.Text.parse(s):area(job.area)
 	end

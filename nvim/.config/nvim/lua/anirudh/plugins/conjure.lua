@@ -1,7 +1,7 @@
 return {
 	{
 		"Olical/conjure",
-		ft = { "racket", "scheme", "python" }, -- etc
+		ft = { "racket", "scheme" }, -- etc
 		lazy = true,
 		init = function()
 			-- Set configuration options here
