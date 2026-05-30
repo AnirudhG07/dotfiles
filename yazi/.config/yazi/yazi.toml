@@ -37,33 +37,13 @@ prepend_previewers = [
     { mime = "application/x-7z-compressed", run = "ouch" },
     { mime = "application/x-rar", run = "ouch" },
     { mime = "application/x-xz", run = "ouch" },
-    { name = "*.md", run  = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'},
-    { name = "*.{pdb,pqr}", run = "code" },
+    { url = "*.md", run  = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'},
+    { url = "*.{pdb,pqr}", run = "code" },
     { mime = "audio/*", run = "exifaudio" },
     { mime = "application/x-bittorrent", run = "torrent-preview" },
-    { name = "*.ipynb", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
-    { name = "*.json", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
+    { url = "*.ipynb", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
+    { url = "*.json", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
     # { name = "*.json", run = "rich-preview"},
-    { name = "*.rst", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
-    { name = "*.csv", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
+    { url = "*.rst", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
+    { url = "*.csv", run = 'piper -- rich -j --left --panel=rounded --guides --line-numbers --force-terminal "$1"'},
 ]
-
-#[[plugin.prepend_fetchers]]
-#id   = "mactag"
-#name = "*"
-#run  = "mactag"
-#
-#[[plugin.prepend_fetchers]]
-#id   = "mactag"
-#name = "*/"
-#run  = "mactag"
-
-[[plugin.prepend_fetchers]]
-id   = "git"
-name = "*"
-run  = "git"
-
-[[plugin.prepend_fetchers]]
-id   = "git"
-name = "*/"
-run  = "git"

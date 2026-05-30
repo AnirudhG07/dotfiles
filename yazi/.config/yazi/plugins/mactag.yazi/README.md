@@ -39,6 +39,8 @@ require("mactag"):setup {
 		Blue   = "#5fa3f8",
 		Purple = "#cb88f8",
 	},
+	-- Order of the color circle showing in the line mode
+	order = 500,
 }
 ```
 
@@ -46,14 +48,16 @@ And register it as fetchers in your `~/.config/yazi/yazi.toml`:
 
 ```toml
 [[plugin.prepend_fetchers]]
-id  = "mactag"
-url = "*"
-run = "mactag"
+id     = "mactag" # Remove if Yazi > v26.1.22
+url    = "*"
+run    = "mactag"
+group  = "mactag"
 
 [[plugin.prepend_fetchers]]
-id  = "mactag"
-url = "*/"
-run = "mactag"
+id     = "mactag" # Remove if Yazi > v26.1.22
+url    = "*/"
+run    = "mactag"
+group  = "mactag"
 ```
 
 ## Usage
@@ -74,7 +78,7 @@ run  = "plugin mactag remove"
 desc = "Untag selected files"
 ```
 
-Note that, the keybindings above are just examples, please tune them up as needed to ensure they don't conflict with your other commands/plugins.
+Note that, the keybindings above are just examples, please tune them up as needed to ensure they don't conflict with your other actions/plugins.
 
 ## License
 
