@@ -275,10 +275,10 @@ desc = "Zoom out hovered file"
 
 # Copy yanked files to the system clipboard
 [[mgr.prepend_keymap]]
-on  = "<C-y>"
+on  = ["f", "y"]
 run = [ "yank", 'plugin clipboard -- --action=copy' ]
 
 # Paste files from the system clipboard into the current directory
 [[mgr.prepend_keymap]]
-on  = "<C-p>"
+on  = ["f", "p"]
 run = [ 'plugin clipboard -- --action=paste' ]

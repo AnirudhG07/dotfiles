@@ -14,7 +14,6 @@
     chafa # For terminal image preview
     coreutils # GNU core utilities
     delta # Git diff viewer
-    fabric-ai # terminal AI utility
     ffmpeg # image/video processing
     glow # markdown viewer
     ncdu # disk usage analyzer
@@ -30,7 +29,6 @@
     imagemagick # Image Magic!
     exiftool # Metadata reader
     fastfetch # config showoff
-    trash-cli # Trash from CLI
 
     ## Music player
     # mpd
@@ -38,8 +36,6 @@
 
     # languages
     ## Python
-    python313
-    python313Packages.pip
     uv # package manager
     ruff # python linter
 
@@ -47,7 +43,6 @@
     rustup
 
     typst
-    go
     lua
     ## Lean4
     elan

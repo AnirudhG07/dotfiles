@@ -1,0 +1,92 @@
+# herdr configuration — ported from ~/dotfiles/tmux/.tmux.conf
+# See `herdr --default-config` and https://herdr.dev/docs/configuration/ for the full reference.
+
+[theme]
+name = "catppuccin"
+
+[terminal]
+# cwd inherits from the source pane, same as tmux's -c '#{pane_current_path}'
+new_cwd = "follow"
+
+[keys]
+# tmux used prefix = C-a instead of the default C-b
+prefix = "ctrl+a"
+
+# tmux: bind - split-window -v (top/bottom split) -> herdr's split_horizontal
+# already defaults to prefix+minus, kept explicit here for clarity
+split_horizontal = "prefix+minus"
+# tmux: bind \ split-window -h (side-by-side split)
+split_vertical = "prefix+\\"
+
+# tmux: bind -r m resize-pane -Z (zoom current pane)
+zoom = "prefix+m"
+
+# tmux: bind r source-file ~/.tmux.conf
+reload_config = "prefix+shift+r"
+
+# tmux: bind j/k/l/h resize-pane -D/-U/-R/-L 5
+# herdr resizes via a mode instead of one-shot binds: enter with prefix+r,
+# then use hjkl to resize, esc/enter to exit.
+resize_mode = "prefix+r"
+
+# tmux: set-window-option -g mode-keys vi (pane focus movement)
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# tmux: bind C-k display-popup -E "lazygit" -w 90% -h 90%
+[[keys.command]]
+key = "ctrl+k"
+type = "popup"
+command = "lazygit"
+width = "90%"
+height = "90%"
+
+# tmux: bind C-m display-popup -E 'rmpc' -w 80% -h 80%
+[[keys.command]]
+key = "ctrl+m"
+type = "popup"
+command = "rmpc"
+width = "80%"
+height = "80%"
+
+# tmux: bind C-g display-popup -E "gemini" -w 90% -h 90%
+[[keys.command]]
+key = "ctrl+g"
+type = "popup"
+command = "gemini"
+width = "90%"
+height = "90%"
+
+# tmux: bind C-t display-popup -E "zsh" -w 75% -h 75%
+[[keys.command]]
+key = "ctrl+t"
+type = "popup"
+command = "zsh"
+width = "75%"
+height = "75%"
+
+# herdr-reviewr (https://github.com/persiyanov/herdr-reviewr) — diff/file-viewer sidebar
+# with pane content preview (changed files, markdown preview, PR view).
+# NOTE: this keybinding only works once the plugin is installed — config.toml has no
+# declarative plugin-registration section, so still run:
+#   herdr plugin install persiyanov/herdr-reviewr
+[[keys.command]]
+key = "ctrl+r"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"
+
+[ui]
+# tmux: set -g mouse on
+mouse_capture = true
+pane_borders = true
+
+show_agent_labels_on_pane_borders = true
+[experimental]
+# tmux: set -g allow-passthrough on (needed for yazi/chafa image preview)
+# herdr's equivalent for image protocol passthrough to the outer terminal
+kitty_graphics = true
+
+[ui.toast]
+delivery = "terminal"

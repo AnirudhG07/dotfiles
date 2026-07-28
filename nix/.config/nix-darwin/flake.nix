@@ -53,6 +53,7 @@
                     "mas"
                     "tag"
                     "poppler"
+                    "herdr"
                 ];
                 casks = [
                 ];
