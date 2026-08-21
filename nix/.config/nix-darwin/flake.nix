@@ -62,6 +62,13 @@
             };
             programs.zsh = {
                 enable = true;
+                # ~/.zshrc (zinit + `compinit -C`) already owns completion init;
+                # these defaults were making /etc/zshrc run a second, unflagged
+                # compinit + bashcompinit + prompt-suse setup on every shell start.
+                enableCompletion = false;
+                enableGlobalCompInit = false;
+                enableBashCompletion = false;
+                promptInit = ""; # p10k replaces this
             };
         };
     in {

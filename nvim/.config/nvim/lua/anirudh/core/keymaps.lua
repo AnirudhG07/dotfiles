@@ -33,8 +33,8 @@ keymap.set("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer
 keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true })
 keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
 
--- local leader mappings
-keymap.set("n", "<localleader>g", "<cmd>GrugFar<CR>", { desc = "Open Grug Find and Replace" }) -- quit
-keymap.set("n", "<leader>cc", "<cmd>CopilotChat<CR>", { desc = "Open Copilot Chat" }) -- quit
+-- <localleader>g mapped :GrugFar, but grug-far.nvim was never installed.
+-- <leader>cc is defined by the CopilotChat spec itself (plugins/copilot.lua),
+-- which also lazy-loads it; defining it here shadowed that.
 
 keymap.set("i", "<C-w>", "<Plug>(copilot-accept-word)", { desc = "copilot-accept-word" })

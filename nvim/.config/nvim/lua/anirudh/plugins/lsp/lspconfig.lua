@@ -3,23 +3,19 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
-		{ "chrisgrieser/nvim-lsp-endhints", event = "LspAttach" },
-		{ "antosha417/nvim-lsp-file-operations", config = true },
-		{ "folke/neodev.nvim", opts = {} },
+		-- neodev.nvim is archived; lazydev is its successor for Neovim >= 0.10
+		{
+			"folke/lazydev.nvim",
+			ft = "lua",
+			opts = {
+				library = {
+					{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+				},
+			},
+		},
 	},
 	config = function()
-		-- import lspconfig plugin
-		local lspconfig = require("lspconfig")
-
-		-- import mason_lspconfig plugin
-		local mason_lspconfig = require("mason-lspconfig")
-
-		-- import cmp-nvim-lsp plugin
-		local cmp_nvim_lsp = require("cmp_nvim_lsp")
-
 		local keymap = vim.keymap -- for conciseness
-
-		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 
 		vim.diagnostic.config({
 			virtual_text = {
@@ -30,7 +26,24 @@ return {
 			float = {
 				source = "if_many", -- Or "if_many"
 			},
+			-- signs.text is keyed by severity. The old loop passed a bare string
+			-- four times, so every severity ended up with the last icon.
+			signs = {
+				text = {
+					[vim.diagnostic.severity.ERROR] = " ",
+					[vim.diagnostic.severity.WARN] = " ",
+					[vim.diagnostic.severity.HINT] = "󰠠 ",
+					[vim.diagnostic.severity.INFO] = " ",
+				},
+				numhl = {
+					[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+					[vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+					[vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+					[vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+				},
+			},
 		})
+
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 			callback = function(ev)
@@ -38,143 +51,103 @@ return {
 				-- See `:help vim.lsp.*` for documentation on any of the below functions
 				local opts = { buffer = ev.buf, silent = true }
 
-				-- set keybinds
-				-- opts.desc = "Show LSP references"
-				-- keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
-				--
-				-- opts.desc = "Go to declaration"
-				-- keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
-				--
-				-- opts.desc = "Show LSP definitions"
-				-- keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
-				--
-				-- opts.desc = "Show LSP implementations"
-				-- keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
-				--
-				-- opts.desc = "Show LSP type definitions"
-				-- keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
+				-- inlay hints are per-buffer; enabling them globally in config()
+				-- ran before any client had attached
+				local client = vim.lsp.get_client_by_id(ev.data.client_id)
+				if client and client:supports_method("textDocument/inlayHint") then
+					vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
+				end
 
 				opts.desc = "See available code actions"
-				keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
+				keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
 
 				opts.desc = "Smart rename"
-				keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
-
-				-- opts.desc = "Show buffer diagnostics"
-				-- keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+				keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
 
 				opts.desc = "Show line diagnostics"
-				keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
+				keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
 
 				opts.desc = "Go to previous diagnostic"
-				keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
+				keymap.set("n", "[d", function()
+					vim.diagnostic.jump({ count = -1, float = true })
+				end, opts)
 
 				opts.desc = "Go to next diagnostic"
-				keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
+				keymap.set("n", "]d", function()
+					vim.diagnostic.jump({ count = 1, float = true })
+				end, opts)
 
 				opts.desc = "Show documentation for what is under cursor"
-				keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
+				keymap.set("n", "K", vim.lsp.buf.hover, opts)
 
 				opts.desc = "Restart LSP"
-				keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+				keymap.set("n", "<leader>rs", "<cmd>LspRestart<CR>", opts)
 			end,
 		})
 
-		-- used to enable autocompletion (assign to every lsp server config)
-		local capabilities = cmp_nvim_lsp.default_capabilities()
+		-- ------------------------------------------------------------------
+		-- Server configuration.
+		--
+		-- mason-lspconfig v2 REMOVED the `handlers` option, so the old
+		-- `mason_lspconfig.setup({ handlers = {...} })` block was dead code --
+		-- none of it ran. Servers are now configured with vim.lsp.config() and
+		-- enabled by mason-lspconfig's `automatic_enable` (see mason.lua).
+		-- ------------------------------------------------------------------
 
-		-- Change the Diagnostic symbols in the sign column (gutter)
-		-- (not in youtube nvim video)
-		local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-		for type, icon in pairs(signs) do
-			local hl = "DiagnosticSign" .. type
-			-- vim.diagnostic.config(hl, { text = icon, texthl = hl, numhl = "" })
-			vim.diagnostic.config({
-				signs = {
-					text = icon,
-					linehl = hl,
-					numhl = "",
+		-- applies to every server
+		vim.lsp.config("*", {
+			capabilities = require("cmp_nvim_lsp").default_capabilities(),
+		})
+
+		vim.lsp.config("lua_ls", {
+			settings = {
+				Lua = {
+					-- make the language server recognize the "vim" global
+					diagnostics = {
+						globals = { "vim" },
+					},
+					completion = {
+						callSnippet = "Replace",
+					},
 				},
-			})
-		end
-		local on_attach_ruff = function(client, bufnr)
-			if client.name == "ruff_lsp" then
-				-- Disable hover in favor of Pyright
+			},
+		})
+
+		vim.lsp.config("ruff", {
+			-- defer hover to pyright
+			on_attach = function(client)
 				client.server_capabilities.hoverProvider = false
-			end
-		end
+			end,
+			init_options = {
+				settings = {
+					-- Any extra CLI arguments for `ruff` go here.
+					args = {},
+				},
+			},
+		})
 
-		mason_lspconfig.setup({
-			handlers = {
-				["ruff"] = function()
-					-- configure ruff language server
-					lspconfig["ruff"].setup({
-						on_attach = on_attach_ruff,
-						init_options = {
-							settings = {
-								-- Any extra CLI arguments for `ruff` go here.
-								args = {},
-							},
-						},
-					})
-				end,
-				["ty"] = function()
-					-- configure ruff language server
-					lspconfig["ty"].setup({
-						on_attach = on_attach_ruff,
-						init_options = {
-							settings = {
-								-- Any extra CLI arguments for `ty` go here.
-								args = {},
-							},
-						},
-					})
-				end,
+		vim.lsp.config("ty", {
+			on_attach = function(client)
+				client.server_capabilities.hoverProvider = false
+			end,
+			init_options = {
+				settings = {
+					-- Any extra CLI arguments for `ty` go here.
+					args = {},
+				},
+			},
+		})
 
-				["gopls"] = function()
-					-- configure gopls language server
-					lspconfig["gopls"].setup({
-						capabilities = capabilities,
-						on_attach = function(client, bufnr)
-							client.server_capabilities.hoverProvider = false
-						end,
-					})
-				end,
-				["rust_analyzer"] = function() end,
+		vim.lsp.config("gopls", {
+			on_attach = function(client)
+				client.server_capabilities.hoverProvider = false
+			end,
+		})
 
-				["clangd"] = function()
-					lspconfig["clangd"].setup({
-						capabilities = capabilities,
-						cmd = {
-							"clangd",
-							"--style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never, ColumnLimit: 80}",
-						},
-					})
-				end,
-
-				["lua_ls"] = function()
-					-- configure lua server (with special settings)
-					lspconfig["lua_ls"].setup({
-						capabilities = capabilities,
-						settings = {
-							Lua = {
-								-- make the language server recognize "vim" global
-								diagnostics = {
-									globals = { "vim" },
-								},
-								completion = {
-									callSnippet = "Replace",
-								},
-							},
-						},
-					})
-				end,
-				-- default handler for installed servers
-				function(server_name)
-					lspconfig[server_name].setup({
-						capabilities = capabilities,
-					})
-				end,
+		vim.lsp.config("clangd", {
+			cmd = {
+				"clangd",
+				"--style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never, ColumnLimit: 80}",
 			},
 		})
 	end,

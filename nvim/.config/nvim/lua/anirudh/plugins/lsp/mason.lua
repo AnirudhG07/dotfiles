@@ -1,24 +1,16 @@
 return {
-	"williamboman/mason.nvim",
+	-- mason moved orgs at v2; williamboman/* still redirects but the canonical
+	-- name avoids a surprise when the redirect eventually goes away.
+	"mason-org/mason.nvim",
 	lazy = false,
-	opts = {
-		auto_install = true,
-	},
 	dependencies = {
-		"williamboman/mason-lspconfig.nvim",
+		"mason-org/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 	},
 
 	config = function()
-		-- import mason
-		local mason = require("mason")
-
-		-- import mason-lspconfig
-		local mason_lspconfig = require("mason-lspconfig")
-		local mason_tool_installer = require("mason-tool-installer")
-
-		-- enable mason and configure icons
-		mason.setup({
+		-- mason.setup() must run before mason-lspconfig.setup()
+		require("mason").setup({
 			ui = {
 				icons = {
 					package_installed = "✓",
@@ -28,7 +20,7 @@ return {
 			},
 		})
 
-		mason_lspconfig.setup({
+		require("mason-lspconfig").setup({
 			-- list of servers for mason to install
 			ensure_installed = {
 				"html",
@@ -36,15 +28,26 @@ return {
 				-- "jdtls",
 				-- "rust_analyzer",
 			},
+			-- mason-lspconfig v2 auto-enables every installed server via
+			-- vim.lsp.enable(). Servers owned by another plugin must be excluded
+			-- or you get two clients attached to the same buffer.
+			automatic_enable = {
+				exclude = {
+					"rust_analyzer", -- owned by rustaceanvim
+					"jdtls", -- would be owned by nvim-java
+					"stylua", -- formatter; already run via conform.nvim
+				},
+			},
 		})
 
-		mason_tool_installer.setup({
+		require("mason-tool-installer").setup({
 			ensure_installed = {
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
 				"ruff", -- python linter
 				"tinymist", -- typst linter
 				"isort", -- python import formatter
+				"tree-sitter-cli", -- required by nvim-treesitter `main` to install parsers
 				-- "gopls", -- go formatter
 				-- "goimports",
 				-- "rust-analyzer", -- rust formatter

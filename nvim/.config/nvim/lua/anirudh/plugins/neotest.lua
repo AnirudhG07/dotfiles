@@ -1,9 +1,9 @@
 return {
 	"nvim-neotest/neotest",
+	keys = { "<leader>nr", "<leader>ns", "<leader>nS", "<leader>nO", "<leader>nt", "<leader>na" },
 	dependencies = {
 		"nvim-neotest/nvim-nio",
 		"nvim-lua/plenary.nvim",
-		"antoinemadec/FixCursorHold.nvim",
 		"nvim-treesitter/nvim-treesitter",
 
 		-- Languages

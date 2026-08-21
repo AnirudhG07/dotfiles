@@ -1,18 +1,17 @@
 -- These are plugins that are just good with defaults.
 return {
-	"nvim-lua/plenary.nvim", -- lua functions that many plugins use
-	"christoomey/vim-tmux-navigator", -- tmux & split window navigation
-	"folke/tokyonight.nvim",
-	"nvim-telescope/telescope.nvim", -- telescope
+	{ "nvim-lua/plenary.nvim", lazy = true }, -- lua functions that many plugins use
+	{ "christoomey/vim-tmux-navigator", event = "VeryLazy" }, -- tmux & split window navigation
+	-- tokyonight is specced in colorscheme.lua (priority 1000)
 	{
 		"MeanderingProgrammer/render-markdown.nvim", -- Markdown rendering
-		event = "VeryLazy",
+		ft = { "markdown", "codecompanion", "Avante" },
 	},
 	{
 		"kevinhwang91/nvim-bqf",
-		event = "VeryLazy",
+		ft = "qf",
 	},
-	"lewis6991/satellite.nvim",
+	{ "lewis6991/satellite.nvim", event = "VeryLazy" },
 	{
 		"szw/vim-maximizer",
 		keys = {

@@ -36,6 +36,8 @@
 
     # languages
     ## Python
+    python313
+    python313Packages.pip
     uv # package manager
     ruff # python linter
 

@@ -1,6 +1,8 @@
 return {
 	"nvim-lualine/lualine.nvim",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+	event = "VeryLazy",
+	-- noice is required at config-time by the lualine_y section below.
+	dependencies = { "nvim-tree/nvim-web-devicons", "folke/noice.nvim" },
 	config = function()
 		local lualine = require("lualine")
 		local lazy_status = require("lazy.status") -- to configure lazy pending updates count

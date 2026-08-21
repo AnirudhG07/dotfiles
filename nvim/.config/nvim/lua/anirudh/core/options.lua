@@ -41,3 +41,28 @@ opt.splitright = true -- split vertical window to the right
 opt.splitbelow = true -- split horizontal window to the bottom
 
 opt.swapfile = false
+
+-- folding (previously configured by nvim-ufo; Neovim 0.12 does this natively).
+-- The actual foldexpr is set per-buffer in plugins/treesitter.lua, so that only
+-- buffers treesitter can parse get treesitter folds.
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldenable = true
+opt.foldcolumn = "1"
+-- table form: the string form is easy to corrupt if a glyph is lost
+opt.fillchars = {
+	eob = " ",
+	fold = " ",
+	foldopen = "\u{25BE}", -- black down-pointing small triangle
+	foldsep = " ",
+	foldclose = "\u{25B8}", -- black right-pointing small triangle
+}
+
+-- LSP logging: lsp.log had grown to 143 MB (html-lsp was spamming validation
+-- errors on every keystroke). Every write also costs I/O on the main loop.
+-- Set to "warn" or "debug" temporarily when actually debugging a server.
+if vim.lsp.log and vim.lsp.log.set_level then
+	vim.lsp.log.set_level(vim.lsp.log.levels.OFF) -- nvim 0.12+
+else
+	vim.lsp.set_log_level("off")
+end

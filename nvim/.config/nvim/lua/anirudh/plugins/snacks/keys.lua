@@ -44,14 +44,14 @@ return {
 			desc = "Git Browse",
 		},
 		{
-			"<leader>gb",
+			"<leader>gm", -- was <leader>gb, shadowed by git_branches below
 			function()
 				Snacks.git.blame_line()
 			end,
 			desc = "Git Blame Line",
 		},
 		{
-			"<leader>gf",
+			"<leader>lf", -- was <leader>gf, shadowed by git_log_file below
 			function()
 				Snacks.lazygit.log_file()
 			end,
@@ -65,7 +65,7 @@ return {
 			desc = "Lazygit",
 		},
 		{
-			"<leader>gl",
+			"<leader>lL", -- was <leader>gl, shadowed by git_log below
 			function()
 				Snacks.lazygit.log()
 			end,
@@ -193,9 +193,17 @@ return {
 		{
 			"<leader>fg",
 			function()
+				Snacks.picker.grep_word()
+			end,
+			desc = "Grep word under cursor",
+			mode = { "n", "x" },
+		},
+		{
+			"<leader>fs",
+			function()
 				Snacks.picker.grep()
 			end,
-			desc = "Grep",
+			desc = "Search for word in files",
 		},
 		{
 			"<leader>fp",
@@ -262,13 +270,6 @@ return {
 			desc = "Git Log File",
 		},
 		-- Grep
-		{
-			"<leader>sb",
-			function()
-				Snacks.picker.lines()
-			end,
-			desc = "Buffer Lines",
-		},
 		{
 			"<leader>sB",
 			function()
@@ -349,7 +350,7 @@ return {
 			desc = "Buffer Diagnostics",
 		},
 		{
-			"<leader>sh",
+			"<leader>fh", -- was <leader>sh, which is your "split horizontally"
 			function()
 				Snacks.picker.help()
 			end,
@@ -391,7 +392,7 @@ return {
 			desc = "Location List",
 		},
 		{
-			"<leader>sm",
+			"<leader>fm", -- was <leader>sm, which is vim-maximizer
 			function()
 				Snacks.picker.marks()
 			end,

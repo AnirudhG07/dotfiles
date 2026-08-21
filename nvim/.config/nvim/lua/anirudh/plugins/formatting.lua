@@ -18,18 +18,19 @@ return {
 				go = { "gofmt" },
 				rust = { "rustfmt" },
 			},
-			format_on_save = {
-				lsp_fallback = true,
-				async = false,
-				timeout_ms = 1000,
+			-- Synchronous format_on_save blocked every :w for up to a second
+			-- while prettier/stylua spawned. format_after_save runs it off the
+			-- write and writes the result back when it lands.
+			format_after_save = {
+				lsp_format = "fallback",
 			},
 		})
 
 		vim.keymap.set({ "n", "v" }, "<leader>mp", function()
 			conform.format({
-				lsp_fallback = true,
+				lsp_format = "fallback",
 				async = false,
-				timeout_ms = 1000,
+				timeout_ms = 3000,
 			})
 		end, { desc = "Format file or range (in visual mode)" })
 	end,

@@ -7,12 +7,13 @@ return {
 		bigfile = { enabled = true },
 		dashboard = { enabled = true },
 		notifier = {
-			enabled = false,
+			enabled = true, -- single owner of vim.notify
 			timeout = 3000,
 		},
 		quickfile = { enabled = true },
 		zen = { enabled = true },
-		scroll = { enabled = true },
+		-- animated smooth-scrolling; the main source of "input feels laggy"
+		scroll = { enabled = false },
 		statuscolumn = { enabled = true },
 		words = { enabled = true },
 		gitbrowse = { enabled = true },
@@ -23,7 +24,8 @@ return {
 		},
 		indent = { enabled = true },
 		toggle = { enabled = true },
-		image = { enabled = true },
+		-- image rendering pulls in snacks.image.placement at startup
+		image = { enabled = false },
 		picker = {
 			enabled = true,
 		},

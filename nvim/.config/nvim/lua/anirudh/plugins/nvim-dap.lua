@@ -1,5 +1,7 @@
 return {
 	"mfussenegger/nvim-dap",
+	-- lazy-key stubs: pressing one loads the plugin, then replays the key
+	keys = { "<leader>db", "<leader>dc", "<leader>dr", "<leader>ds", "<leader>di", "<leader>do", "<leader>dl", "<leader>dd", "<leader>dO" },
 	dependencies = {
 		"rcarriga/nvim-dap-ui", -- UI for nvim-dap
 		"nvim-neotest/nvim-nio", -- Test runner for nvim-dap
@@ -30,7 +32,6 @@ return {
 		end
 
 		vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Debugger Toggle breakpoint" })
-		vim.keymap.set("n", "<leader>dr", dap.repl.open, { desc = "Debugger Open REP" })
 		vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Debugger Continue" })
 		vim.keymap.set("n", "<leader>ds", dap.step_over, { desc = "Debugger Step over" })
 		vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "Debugger Step into" })

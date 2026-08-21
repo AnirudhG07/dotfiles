@@ -1,5 +1,5 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
 		"clone",
@@ -21,11 +21,22 @@ require("lazy").setup(
 			},
 		},
 		checker = {
-			enabled = true,
+			enabled = false, -- was git-fetching all ~70 plugins on startup; use :Lazy check
 			notify = false,
 		},
 		change_detection = {
 			notify = false,
+		},
+		performance = {
+			rtp = {
+				disabled_plugins = {
+					"gzip",
+					"tarPlugin",
+					"tohtml",
+					"tutor",
+					"zipPlugin",
+				},
+			},
 		},
 	}
 )
