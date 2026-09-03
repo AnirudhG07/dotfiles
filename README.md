@@ -17,7 +17,6 @@ The most important component is homebrew. After installing homebrew, I have conf
 - Neovim
 - Tmux
 - Aerospace
-- starship(for yazi)
 - powerlevel10k(p10k)
 
 ## Other tools you can download
@@ -42,7 +41,7 @@ cd dotfiles
 While using stow, you can run -
 
 ```bash
-stow zsh p10k yazi nvim tmux starship nvim aerospace # .etc
+stow zsh p10k yazi nvim tmux nvim aerospace # .etc
 ```
 
 Then simply do the following to install all the plugins:

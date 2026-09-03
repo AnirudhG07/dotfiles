@@ -82,8 +82,12 @@ alias c='clear'
 alias cr='claude -r'
 alias h='herdr'
 
-# Shell integrations (guarded so a fresh box without every tool still starts)
-command -v fzf >/dev/null && eval "$(fzf --zsh)"
+# Shell integrations (guarded so a fresh box / old tool versions still start)
+# fzf >=0.48 has `fzf --zsh` (binds Ctrl-R fuzzy history, Ctrl-T files); older
+# fzf doesn't know --zsh, so only eval it when the flag actually works.
+if command -v fzf >/dev/null 2>&1 && fzf --zsh >/dev/null 2>&1; then
+  eval "$(fzf --zsh)"
+fi
 command -v zoxide >/dev/null && eval "$(zoxide init --cmd cd zsh)"
 compdef _cd cd 2>/dev/null # for cd completion smoothly
 

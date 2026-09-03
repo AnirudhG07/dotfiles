@@ -176,6 +176,20 @@ ensure_uv() {
   has uv && ok "uv ready"
 }
 
+# eget prompts when several release assets match. Build --asset filters so
+# exactly one remains: drop installer packages, and pick glibc vs musl by distro.
+EGET_FILTERS=()
+_build_eget_filters() {
+  EGET_FILTERS=(--asset ^.deb --asset ^.rpm --asset ^.msi --asset ^.apk)
+  if [ "$OS" = linux ]; then
+    if [ "${DISTRO:-}" = alpine ] || [ "$PKG" = apk ]; then
+      EGET_FILTERS+=(--asset musl)      # musl libc systems (Alpine)
+    else
+      EGET_FILTERS+=(--asset ^musl)     # glibc systems (Ubuntu/Debian/Fedora/Arch)
+    fi
+  fi
+}
+
 ensure_eget() {
   has eget && return 0
   # eget grabs binaries straight from GitHub releases — our best no-sudo path
@@ -198,21 +212,116 @@ ensure_cargo() {
   has cargo && ok "cargo ready"
 }
 
-ensure_node() {
-  has node && has npm && return 0
-  if [ -n "$BREW" ]; then run "$BREW" install node && has node && { ok "node ready"; return 0; }; fi
-  if [ "$PKG" = apt ] && [ "$HAVE_SUDO" = 1 ]; then
-    run $SUDO apt-get install -y nodejs npm && has node && { ok "node ready"; return 0; }
+# node manager: nvm (as requested), with brew/apt/fnm as fallback
+ensure_nvm() {
+  export NVM_DIR="$HOME/.nvm"
+  if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+    step "Installing nvm"
+    # PROFILE=/dev/null so nvm's installer doesn't append to our (symlinked) rc
+    run env PROFILE=/dev/null sh -c \
+      'curl -fsSL -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash' </dev/null \
+      || warn "nvm install failed"
   fi
-  # no-sudo / fallback: fnm (single binary) -> LTS node
-  step "Installing Node via fnm"
+  # shellcheck disable=SC1090
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" 2>/dev/null || true
+  if command -v nvm >/dev/null 2>&1; then
+    ok "nvm ready"
+    if ! has node; then
+      info "nvm install --lts"
+      run nvm install --lts >/dev/null 2>&1 && run nvm alias default 'lts/*' >/dev/null 2>&1
+    fi
+  fi
+  has node || _ensure_node_fallback
+  has node && ok "node $(node -v 2>/dev/null) / npm $(npm -v 2>/dev/null)" \
+           || warn "node unavailable (some LSPs may not work)"
+}
+
+_ensure_node_fallback() {
+  has node && return 0
+  if [ -n "$BREW" ]; then run "$BREW" install node && has node && return 0; fi
+  if [ "$PKG" = apt ] && [ "$HAVE_SUDO" = 1 ]; then
+    run $SUDO apt-get install -y nodejs npm && has node && return 0
+  fi
+  info "Installing Node via fnm (fallback)"
   ensure_eget && run eget Schniz/fnm --to "$LOCAL_BIN" 2>/dev/null
   if has fnm; then
     eval "$(fnm env 2>/dev/null)" || true
     run fnm install --lts && run fnm default lts-latest
     eval "$(fnm env 2>/dev/null)" || true
   fi
-  has node && ok "node ready" || warn "Could not install node (some LSPs may be unavailable)"
+}
+
+ensure_node() { has node && has npm && return 0; ensure_nvm; }
+
+ensure_python() {
+  if has python3; then ok "python present ($(python3 -V 2>&1))"; return 0; fi
+  if [ -n "$BREW" ] && run "$BREW" install python && has python3; then ok "python (brew)"; return 0; fi
+  if [ -n "$PKG" ] && [ "$HAVE_SUDO" = 1 ]; then
+    case "$PKG" in
+      apt) pkg_install python3 && pkg_install python3-pip && pkg_install python3-venv ;;
+      *)   pkg_install python3 ;;
+    esac
+    has python3 && { ok "python3 ($PKG)"; return 0; }
+  fi
+  # no-sudo: uv-managed standalone CPython, with python/python3 shims on PATH
+  if ensure_uv; then
+    run uv python install --default 2>/dev/null || run uv python install
+    has python3 && { ok "python via uv"; return 0; }
+  fi
+  warn "Could not install python"
+}
+
+# MesloLGS Nerd Font — glyphs powerlevel10k / yazi / ghostty expect. Installed
+# on both OSes: cask on mac, user font dir + fc-cache on linux.
+install_nerd_font() {
+  step "MesloLGS Nerd Font"
+  if fc-list 2>/dev/null | grep -qiE "MesloLGS|Meslo.*Nerd"; then ok "Meslo Nerd Font already present"; return 0; fi
+  if [ "$OS" = mac ]; then
+    ensure_brew && run "$BREW" install --cask font-meslo-lg-nerd-font && ok "Meslo Nerd Font (brew cask)" \
+      || warn "font install failed"
+    return 0
+  fi
+  local fdir="$HOME/.local/share/fonts"
+  run mkdir -p "$fdir"
+  if run sh -c "curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip -o /tmp/Meslo.zip"; then
+    if has unzip; then
+      run sh -c "unzip -o /tmp/Meslo.zip -d '$fdir' >/dev/null"
+    elif has python3; then
+      run python3 -m zipfile -e /tmp/Meslo.zip "$fdir"
+    else
+      warn "no unzip/python3 to extract font"; return 1
+    fi
+    has fc-cache && run fc-cache -f "$fdir" >/dev/null 2>&1
+    ok "Meslo Nerd Font installed to $fdir"
+  else
+    warn "Meslo font download failed"
+  fi
+}
+
+# Run the target shell once, non-interactively, so its first-run setup completes
+# now instead of on the user's first prompt: zinit clones plugins + builds
+# powerlevel10k (zsh); oh-my-bash is already in place (bash).
+warm_shell() {
+  [ "$DRY_RUN" = 1 ] && { info "(dry-run) would warm up $SHELL_TARGET"; return 0; }
+  if [ "$SHELL_TARGET" = zsh ] && has zsh; then
+    info "Warming up zsh (zinit fetches plugins + powerlevel10k)…"
+    zsh -i -c 'exit' >/dev/null 2>&1 || true
+    ok "zsh ready"
+  elif [ "$SHELL_TARGET" = bash ] && has bash; then
+    info "Warming up bash (oh-my-bash)…"
+    bash -i -c 'exit' >/dev/null 2>&1 || true
+    ok "bash ready"
+  fi
+}
+
+# Final step: drop the user into their fully configured shell (interactive only).
+maybe_exec_shell() {
+  [ "$DRY_RUN" = 1 ] && return 0
+  [ -t 1 ] && [ -t 0 ] || return 0
+  has "$SHELL_TARGET" || return 0
+  printf '\n%s Launching %s — everything is set. (type %sexit%s to leave)\n' \
+    "${C_GRN}▶${C_RST}" "${C_B}$SHELL_TARGET${C_RST}" "$C_B" "$C_RST"
+  exec "$SHELL_TARGET" -i
 }
 
 # native package install (needs sudo)
@@ -281,8 +390,13 @@ install_tool() {
       eget)
         arg="$(_recipe_get eget "$@")" || continue
         ensure_eget || continue
-        info "eget $arg"
-        run eget "$arg" --to "$LOCAL_BIN" && has "$bin" && { ok "$bin (eget)"; return 0; }
+        # recipe may be "owner/repo" or "owner/repo|filter1|filter2" (extra --asset hints)
+        local repo="${arg%%|*}" extra=""
+        case "$arg" in *"|"*) extra="${arg#*|}"; extra="${extra//|/ }";; esac
+        _build_eget_filters
+        info "eget $repo ${EGET_FILTERS[*]} $extra"
+        # shellcheck disable=SC2086
+        run eget "$repo" "${EGET_FILTERS[@]}" $extra --to "$LOCAL_BIN" && has "$bin" && { ok "$bin (eget)"; return 0; }
         ;;
       cargo)
         arg="$(_recipe_get cargo "$@")" || continue
@@ -386,12 +500,11 @@ module_core() {
   install_tool lazygit  brew=lazygit  pacman=lazygit                                            uv=lazygit-py     eget=jesseduffield/lazygit
   install_tool yazi     brew=yazi     pacman=yazi                                               uv=yazi-bin       eget=sxyazi/yazi
   install_tool zoxide   brew=zoxide   apt=zoxide   dnf=zoxide   pacman=zoxide                   eget=ajeetdsouza/zoxide  cargo=zoxide
-  install_tool starship brew=starship pacman=starship                                           eget=starship/starship   cargo=starship
   install_tool delta    brew=git-delta pacman=git-delta                                         eget=dandavison/delta    cargo=git-delta
   install_tool bat      brew=bat      apt=bat      dnf=bat      pacman=bat      zypper=bat      eget=sharkdp/bat  cargo=bat
   install_tool fd       brew=fd       apt=fd-find  dnf=fd-find  pacman=fd       zypper=fd       eget=sharkdp/fd   cargo=fd-find
   install_tool eza      brew=eza      pacman=eza                                                eget=eza-community/eza   cargo=eza
-  install_tool tldr     brew=tealdeer pacman=tealdeer                                           eget=tldr-pages/tlrc     cargo=tealdeer
+  install_tool tldr     brew=tealdeer pacman=tealdeer                                           'eget=tldr-pages/tlrc|--file|tldr'  cargo=tealdeer
 
   # binary-name fixups for distro packages
   link_alias fdfind fd
@@ -403,8 +516,10 @@ module_core() {
 }
 
 module_dev() {
-  step "Dev tooling: uv, gh, claude"
+  step "Dev tooling: uv, python, node/nvm, gh, claude"
   ensure_uv
+  ensure_python
+  ensure_nvm
 
   install_tool gh brew=gh apt=gh dnf=gh pacman=github-cli eget=cli/cli
 
@@ -449,7 +564,7 @@ module_nvim() {
       esac
     elif [ -n "$BREW" ]; then run "$BREW" install gcc; fi
   fi
-  install_tool tree-sitter brew=tree-sitter pacman=tree-sitter-cli npm=tree-sitter-cli cargo=tree-sitter-cli eget=tree-sitter/tree-sitter
+  install_tool tree-sitter brew=tree-sitter pacman=tree-sitter-cli npm=tree-sitter-cli cargo=tree-sitter-cli 'eget=tree-sitter/tree-sitter|--asset|.gz'
   ensure_node
 
   # 3) LSP toolchains that must exist system-wide (mason installs the rest):
@@ -495,8 +610,7 @@ module_ghostty() {
   if [ "$OS" = mac ]; then
     if [ -d "/Applications/Ghostty.app" ] || has ghostty; then ok "Ghostty app present"
     elif confirm "Install Ghostty.app (cask)?" y; then
-      ensure_brew && run "$BREW" install --cask ghostty && \
-        run "$BREW" install --cask font-meslo-lg-nerd-font || true
+      ensure_brew && run "$BREW" install --cask ghostty || true
     fi
   else
     # ensure xterm-ghostty terminfo exists so SSH sessions render correctly
@@ -540,6 +654,10 @@ done
 export PATH
 [ -f "\$HOME/.cargo/env" ] && . "\$HOME/.cargo/env"
 [ -f "\$HOME/.elan/env" ]  && . "\$HOME/.elan/env"
+# node via nvm (fnm as fallback)
+export NVM_DIR="\$HOME/.nvm"
+[ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
+[ -s "\$NVM_DIR/bash_completion" ] && . "\$NVM_DIR/bash_completion"
 command -v fnm >/dev/null 2>&1 && eval "\$(fnm env 2>/dev/null)"
 # portable aliases (work on every machine)
 alias cr='claude -r'
@@ -548,6 +666,16 @@ alias lg='lazygit'
 alias v='nvim'
 alias y='yazi'
 EOF
+  # bash gets fzf's Ctrl-R (fuzzy history) / Ctrl-T here; zsh has it in .zshrc.
+  if [ "$shname" = bash ]; then
+    cat >> "$target" <<'EOF'
+# fzf integration — Ctrl-R fuzzy history, Ctrl-T files (guarded across versions)
+if command -v fzf >/dev/null 2>&1 && fzf --bash >/dev/null 2>&1; then
+  eval "$(fzf --bash)"
+fi
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init --cmd cd bash)"
+EOF
+  fi
   ok "wrote $target"
   # ensure the rc sources it
   local rc="$HOME/.${shname}rc"
@@ -561,8 +689,9 @@ module_shell() {
 
   if [ "$SHELL_TARGET" = zsh ]; then
     has zsh || install_tool zsh brew=zsh apt=zsh dnf=zsh pacman=zsh zypper=zsh apk=zsh
-    # zinit + p10k plugins bootstrap themselves from the .zshrc on first start.
-    deploy_packages zsh p10k.zsh starship
+    # zinit + powerlevel10k bootstrap themselves from the .zshrc on first start;
+    # p10k.zsh carries the prompt config.
+    deploy_packages zsh p10k.zsh
     write_shell_local "$HOME/.zshrc.local" zsh
     # make zsh the login shell if we can
     if [ "$(basename "${SHELL:-}")" != zsh ] && has zsh; then
@@ -603,11 +732,52 @@ module_shell() {
 
   # shared user-level configs, regardless of shell
   deploy_packages nvim yazi
+
+  install_nerd_font
+
+  # run the shell once so plugins/prompt finish installing now, not on first prompt
+  warm_shell
 }
 
 # ============================================================================
 #  Orchestration
 # ============================================================================
+# always-interactive yes/no (ignores --all), default No — for launching things
+# that take over the terminal, where auto-yes would be wrong.
+_ask() {
+  local ans
+  [ -t 0 ] || return 1
+  printf '%s %s [y/N] ' "${C_CYN}?${C_RST}" "$1" >&2
+  read -r ans || return 1
+  case "$ans" in [Yy]*) return 0;; *) return 1;; esac
+}
+
+# After everything is installed, offer to authenticate gh / claude. User picks
+# whichever they want (or neither). Interactive TTY only.
+interactive_account_setup() {
+  [ "$DRY_RUN" = 1 ] && { info "(dry-run) would offer gh / claude account setup"; return 0; }
+  [ -t 0 ] || return 0
+  { has gh || has claude; } || return 0
+
+  step "Account setup — set up whichever you want (or skip)"
+  if has gh; then
+    if gh auth status >/dev/null 2>&1; then
+      ok "GitHub CLI already authenticated"
+    elif _ask "Authenticate GitHub CLI now (runs 'gh auth login')?"; then
+      gh auth login || warn "gh auth login didn't finish — run it again anytime"
+    else
+      info "Skipped gh — run 'gh auth login' later."
+    fi
+  fi
+  if has claude; then
+    if _ask "Set up / log in to Claude Code now (opens 'claude'; exit it to return)?"; then
+      claude || true
+    else
+      info "Skipped claude — run 'claude' later to log in. (alias: cr = claude -r)"
+    fi
+  fi
+}
+
 ALL_MODULES="core dev nvim ghostty herdr shell"
 
 run_module() { case "$1" in
@@ -627,12 +797,12 @@ choose_modules() {
 
   printf '\n%sWhat should I set up?%s\n' "$C_B" "$C_RST" >&2
   cat >&2 <<EOF
-  ${C_GRN}1${C_RST}) core     — yazi lazygit fzf ripgrep fd bat eza zoxide starship delta jq tldr stow
-  ${C_GRN}2${C_RST}) dev      — uv, gh, claude (cr = claude -r)
+  ${C_GRN}1${C_RST}) core     — yazi lazygit fzf ripgrep fd bat eza zoxide delta jq tldr stow
+  ${C_GRN}2${C_RST}) dev      — uv, python, node+nvm, gh, claude (cr = claude -r)
   ${C_GRN}3${C_RST}) nvim     — neovim + treesitter + LSPs (python/lean/C/C++/lua/markdown)
   ${C_GRN}4${C_RST}) ghostty  — config + terminfo
   ${C_GRN}5${C_RST}) herdr    — install + config (h = herdr)
-  ${C_GRN}6${C_RST}) shell    — $SHELL_TARGET + my aliases/configs, stow-deploy
+  ${C_GRN}6${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
   ${C_GRN}a${C_RST}) all of the above   ${C_DIM}(default)${C_RST}
 EOF
   printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 6' or 'a'): " >&2
@@ -691,6 +861,8 @@ main() {
   step "Running modules:${C_B} $mods${C_RST}"
   for m in $mods; do run_module "$m"; done
 
+  interactive_account_setup
+
   step "Done 🎉"
   cat <<EOF
 
@@ -703,6 +875,8 @@ main() {
 
   Configs are symlinked from ${C_B}$DOTFILES_DIR${C_RST}. Re-run this script anytime.
 EOF
+
+  maybe_exec_shell
 }
 
 main "$@"

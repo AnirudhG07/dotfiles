@@ -9,11 +9,6 @@ rev = "c2c16c8"
 hash = "7b625412411be411153886894d9acaf"
 
 [[plugin.deps]]
-use = "Rolv-Apneseth/starship"
-rev = "a837101"
-hash = "635b0feb9215772d22020eb0abf0bb34"
-
-[[plugin.deps]]
 use = "AnirudhG07/custom-shell"
 rev = "3449686"
 hash = "8009873342496fdb042bba09e239eef3"

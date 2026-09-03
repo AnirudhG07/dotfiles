@@ -1,7 +1,6 @@
 require("full-border"):setup()
 -- ~/.config/yazi/init.lua
 --require("relative-motions"):setup({ show_numbers = "none", show_motion = true })
-require("starship"):setup()
 
 require("custom-shell"):setup({
 	save_history = true,

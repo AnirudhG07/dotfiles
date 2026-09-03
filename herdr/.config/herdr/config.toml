@@ -73,8 +73,10 @@ height = "75%"
 # NOTE: this keybinding only works once the plugin is installed — config.toml has no
 # declarative plugin-registration section, so still run:
 #   herdr plugin install persiyanov/herdr-reviewr
+# NOTE: moved OFF ctrl+r on purpose — ctrl+r must stay the shell's history search
+# (fzf) both inside and outside herdr. Toggle reviewr with prefix+e (Ctrl-a then e).
 [[keys.command]]
-key = "ctrl+r"
+key = "prefix+e"
 type = "plugin_action"
 command = "persiyanov.reviewr.toggle"
 
