@@ -8,7 +8,17 @@ fi
 if [[ -f "/opt/homebrew/bin/brew" ]] then
   # If you're using macOS, you'll want this enabled
   eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]] then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+elif [[ -f "$HOME/.linuxbrew/bin/brew" ]] then
+  eval "$($HOME/.linuxbrew/bin/brew shellenv)"
 fi
+
+# user-local bin on PATH by default (guarded so it never duplicates)
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
+
+# machine-local setup written by dotfiles/setup.sh (brew env, PATH, portable aliases)
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
 # Set the directory we want to store zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -69,13 +79,15 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 # Aliases
 alias vim='nvim'
 alias c='clear'
+alias cr='claude -r'
+alias h='herdr'
 
-# Shell integrations
-eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
-compdef _cd cd # for cd completion smoothly
+# Shell integrations (guarded so a fresh box without every tool still starts)
+command -v fzf >/dev/null && eval "$(fzf --zsh)"
+command -v zoxide >/dev/null && eval "$(zoxide init --cmd cd zsh)"
+compdef _cd cd 2>/dev/null # for cd completion smoothly
 
-eval "$(uv generate-shell-completion zsh)"
+command -v uv >/dev/null && eval "$(uv generate-shell-completion zsh)"
 DISABLE_AUTO_TITLE="true"
 
 export VISUAL=nvim 
@@ -90,7 +102,7 @@ HIST_STAMPS="dd.mm.yyyy"
 
 zstyle ':completion:*' rehash true
 
-source ~/fzf-git.sh/fzf-git.sh
+[[ -f ~/fzf-git.sh/fzf-git.sh ]] && source ~/fzf-git.sh/fzf-git.sh
 
 # eval "$(tv init zsh)"
 
@@ -123,7 +135,7 @@ function yy() {
 alias hms="home-manager switch"
 alias nix-cg="nix-collect-garbage"
 alias nix-drb="darwin-rebuild switch --flake ~/dotfiles/nix/.config/nix-darwin"
-eval "$(direnv hook zsh)"
+command -v direnv >/dev/null && eval "$(direnv hook zsh)"
 
 # USEFUL ALIASES
 alias tmux_in='tmux a -t'
@@ -224,4 +236,4 @@ alias gm='echo "GOOD MORNING ANIRUDH! HAVE A GREAT DAY TODAY!"
 say "GOOD MORNING ANIRUDH! HAVE A GREAT DAY TODAY"'
 alias edex-ui='open -a edex-ui'
 
-. "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
