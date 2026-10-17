@@ -1,0 +1,111 @@
+* {
+    /* Catppuccin Mocha */
+    bg:       #1e1e2eee;
+    bg-alt:   #313244ee;
+    fg:       #cdd6f4;
+    fg-alt:   #7f849c;
+    accent:   #89b4fa;
+    yellow:   #f9e2af;
+    urgent:   #f38ba8;
+    border-c: #89b4fa;
+
+    background-color: transparent;
+    text-color: @fg;
+    margin: 0;
+    padding: 0;
+    spacing: 0;
+}
+
+window {
+    width: 620px;
+    background-color: @bg;
+    border: 2px solid;
+    border-color: @border-c;
+    border-radius: 16px;
+    location: center;
+    anchor: center;
+    padding: 0;
+}
+
+inputbar {
+    padding: 16px 20px;
+    spacing: 12px;
+    children: [ prompt, entry ];
+    background-color: @bg-alt;
+    border-radius: 16px 16px 0 0;
+}
+
+prompt {
+    text-color: @accent;
+    font: "JetBrainsMono Nerd Font Bold 13";
+}
+
+entry {
+    placeholder: "Type to search...";
+    placeholder-color: @fg-alt;
+}
+
+message {
+    padding: 10px 20px;
+    background-color: @bg-alt;
+}
+
+textbox {
+    text-color: @fg;
+}
+
+listview {
+    lines: 8;
+    columns: 1;
+    fixed-height: true;
+    padding: 8px 4px;
+    scrollbar: false;
+}
+
+element {
+    padding: 10px 16px;
+    spacing: 12px;
+    border-radius: 8px;
+}
+
+element selected.normal {
+    background-color: @bg-alt;
+    text-color: @accent;
+}
+
+element normal.active {
+    text-color: @accent;
+}
+
+element normal.urgent {
+    text-color: @urgent;
+}
+
+element-icon {
+    size: 28px;
+    vertical-align: 0.5;
+}
+
+element-text {
+    vertical-align: 0.5;
+    highlight: bold underline;
+    text-color: inherit;
+}
+
+mode-switcher {
+    padding: 8px 12px;
+    spacing: 4px;
+    background-color: @bg-alt;
+    border-radius: 0 0 16px 16px;
+}
+
+button {
+    padding: 6px 12px;
+    text-color: @fg-alt;
+    border-radius: 8px;
+}
+
+button selected {
+    text-color: @accent;
+    background-color: @bg;
+}

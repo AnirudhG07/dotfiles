@@ -1,0 +1,34 @@
+configuration {
+    modi: "drun,run,ssh,files:~/.config/rofi/scripts/files.sh,dirs:~/.config/rofi/scripts/directories.sh,clipboard:~/.config/rofi/scripts/clipboard.sh,emoji:~/.config/rofi/scripts/emoji.sh,power:~/.config/rofi/scripts/powermenu.sh";
+    show-icons: true;
+    icon-theme: "Papirus";
+    terminal: "ghostty";
+    drun-display-format: "{name}";
+    disable-history: false;
+    case-sensitive: false;
+    scroll-method: 0;
+    normalize-match: true;
+    font: "JetBrainsMono Nerd Font 12";
+    normal-window: true;
+
+    display-drun: " Apps";
+    display-run: " Run";
+    display-ssh: " SSH";
+    display-files: " Files";
+    display-dirs: " Code";
+    display-clipboard: " Clipboard";
+    display-emoji: " Emoji";
+    display-power: "⏻ Power";
+
+    kb-remove-to-eol: "";
+    kb-accept-entry: "Return,KP_Enter";
+    kb-row-up: "Up,Control+k";
+    kb-row-down: "Down,Control+j";
+    kb-element-next: "Control+n";
+    kb-element-prev: "Control+p";
+    kb-mode-next: "Tab";
+    kb-mode-previous: "ISO_Left_Tab";
+    kb-remove-char-back: "BackSpace";
+}
+
+@theme "~/.config/rofi/theme.rasi"
