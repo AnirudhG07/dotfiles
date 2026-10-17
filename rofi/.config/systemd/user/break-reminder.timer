@@ -1,0 +1,10 @@
+[Unit]
+Description=Hourly break reminder timer
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=120
+
+[Install]
+WantedBy=timers.target

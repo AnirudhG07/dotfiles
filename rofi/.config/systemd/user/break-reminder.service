@@ -1,0 +1,6 @@
+[Unit]
+Description=Hourly break reminder (only when active)
+
+[Service]
+Type=oneshot
+ExecStart=%h/.config/rofi/scripts/break-reminder.sh

@@ -13,3 +13,4 @@ nvim/.config/nvim/lua/anirudh/plugins/autosave.lua
 sketchybarr/.config/sketchybar
 /herdr/.config/herdr/herdr-server.log
 /herdr/.config/herdr/herdr-client.log
+/herdr/.config/herdr/session.json
