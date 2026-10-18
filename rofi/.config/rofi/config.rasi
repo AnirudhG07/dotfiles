@@ -1,5 +1,5 @@
 configuration {
-    modi: "drun,run,ssh,files:~/.config/rofi/scripts/files.sh,dirs:~/.config/rofi/scripts/directories.sh,clipboard:~/.config/rofi/scripts/clipboard.sh,emoji:~/.config/rofi/scripts/emoji.sh,power:~/.config/rofi/scripts/powermenu.sh";
+    modi: "drun,run,ssh,find:~/.config/rofi/scripts/finder.sh,clipboard:~/.config/rofi/scripts/clipboard.sh,emoji:~/.config/rofi/scripts/emoji.sh,power:~/.config/rofi/scripts/powermenu.sh";
     show-icons: true;
     icon-theme: "Papirus";
     terminal: "ghostty";
@@ -14,8 +14,7 @@ configuration {
     display-drun: " Apps";
     display-run: " Run";
     display-ssh: " SSH";
-    display-files: " Files";
-    display-dirs: " Code";
+    display-find: " Find";
     display-clipboard: " Clipboard";
     display-emoji: " Emoji";
     display-power: "⏻ Power";
