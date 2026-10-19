@@ -28,13 +28,14 @@ ROFI="env WAYLAND_DISPLAY= /usr/local/bin/rofi -normal-window"
 bindings=(
     "App Launcher|$ROFI -show drun|<Super>space"
     "Run Prompt|$ROFI -show run -run-command 'ghostty -e zsh -ic \"{cmd}; echo; echo Press enter to close; read\"'|<Super>r"
-    "Find|$ROFI -show find|<Super>d"
+    "Find|bash $HOME/.config/rofi/scripts/finder.sh|<Super>d"
     "Emoji|$ROFI -show emoji|<Super>e"
     "Workspace|env WAYLAND_DISPLAY= bash $HOME/.config/rofi/scripts/workspace.sh|<Super>w"
     "Clipboard|$ROFI -show clipboard|<Super>c"
     "Power Menu|$ROFI -show power|<Super>BackSpace"
     "SSH|$ROFI -show ssh|<Super>s"
     "Break Time|bash $HOME/.config/rofi/scripts/breaktime.sh|<Super>b"
+    "Window Picker|bash $HOME/.config/rofi/scripts/windowpicker.sh|<Super>a"
 )
 
 paths=()
