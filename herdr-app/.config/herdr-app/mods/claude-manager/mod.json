@@ -1,0 +1,5 @@
+{
+  "place": "none",
+  "title": "Claude Manager",
+  "overlay": { "kind": "dialog", "width": 1040, "height": 585 }
+}
