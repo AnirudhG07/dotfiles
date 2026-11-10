@@ -3,8 +3,8 @@
 #  dotfiles/setup.sh  —  Anirudh's one-shot machine bootstrapper
 #
 #  Sets up a fresh macOS or Linux box (with or without sudo) the way I like it:
-#  core CLI tools, neovim + LSPs/treesitter, claude/gh/uv, ghostty, herdr, the
-#  Herdr desktop app + herdr-core (hc), and my shell + configs (symlinked from
+#  core CLI tools, neovim + LSPs/treesitter, claude/gh/uv, ghostty, herdr-core
+#  (hc) + the Herdr desktop app (only if you say yes), and my shell + configs (symlinked from
 #  ~/dotfiles, stow-style).
 #
 #  Usage (straight from the internet — it clones the repo for you):
@@ -642,20 +642,6 @@ module_ghostty() {
   deploy_packages ghostty
 }
 
-module_herdr() {
-  step "Herdr (agent/pane multiplexer)  — alias: h"
-  if has herdr; then ok "herdr already installed"
-  elif [ -n "$BREW" ] && run "$BREW" install herdr && has herdr; then ok "herdr (brew)"
-  else
-    # official install script — prebuilt binary, no compiling / no rust toolchain
-    run sh -c "curl -fsSL https://herdr.dev/install.sh | sh" </dev/null
-    if has herdr; then ok "herdr (install script)"
-    elif { ensure_cargo && run cargo install herdr; } && has herdr; then ok "herdr (cargo, compiled)"
-    else warn "herdr install failed"; fi
-  fi
-  deploy_packages herdr
-}
-
 # ============================================================================
 #  Herdr app: herdr-core (hc) + the desktop app + my layout/mods/keys
 # ============================================================================
@@ -665,7 +651,6 @@ HERDR_RELEASES="https://releases.herdr.dev"
 # nix/.config/nix-darwin/flake.nix, so on such a machine it is installed the nix way.
 is_nix_darwin() { [ "$OS" = mac ] && has darwin-rebuild; }
 is_nixos()      { [ "$OS" = linux ] && [ -e /etc/NIXOS ]; }
-have_display()  { [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; }
 
 herdr_app_installed() {
   has herdr-app || [ -d /Applications/Herdr.app ] || [ -d "$HOME/Applications/Herdr.app" ]
@@ -683,16 +668,15 @@ install_herdr_core() {
   if [ "$DRY_RUN" = 1 ] || has herdr-core || [ -x "$LOCAL_BIN/herdr-core" ]; then ok "herdr-core (hc)"; fi
 }
 
-# Ask before installing the desktop app: a server doesn't want a GUI. Default yes on a Mac, no on Linux.
-# --all installs it on a Mac, and on Linux only when a desktop session is running.
+# The desktop app is installed only when asked for and answered yes: --all and
+# non-interactive runs never install it, and Enter means no.
 want_herdr_app() {
-  if [ "$ASSUME_ALL" = 1 ]; then [ "$OS" = mac ] || have_display; return; fi
+  [ "$ASSUME_ALL" = 1 ] && return 1
   [ -t 0 ] || return 1
-  local def="y" hint="Y/n" ans
-  [ "$OS" = mac ] || { def="n"; hint="y/N"; }
-  printf '%s Install the Herdr desktop app too? %s[%s] ' "${C_CYN}?${C_RST}" "${C_DIM}(skip on servers)${C_RST} " "$hint" >&2
+  local ans
+  printf '%s Install the Herdr desktop app too? %s[y/N] ' "${C_CYN}?${C_RST}" "${C_DIM}(herdr-core is installed either way)${C_RST} " >&2
   read -r ans || return 1
-  case "${ans:-$def}" in [Yy]*) return 0;; *) return 1;; esac
+  case "$ans" in [Yy]*) return 0;; *) return 1;; esac
 }
 
 install_herdr_app_linux() {
@@ -795,7 +779,6 @@ export NVM_DIR="\$HOME/.nvm"
 command -v fnm >/dev/null 2>&1 && eval "\$(fnm env 2>/dev/null)"
 # portable aliases (work on every machine)
 alias cr='claude -r'
-alias h='herdr'
 alias lg='lazygit'
 alias v='nvim'
 alias y='yazi'
@@ -914,14 +897,13 @@ interactive_account_setup() {
   fi
 }
 
-ALL_MODULES="core dev nvim ghostty herdr herdr-app shell"
+ALL_MODULES="core dev nvim ghostty herdr-app shell"
 
 run_module() { case "$1" in
   core)    module_core ;;
   dev)     module_dev ;;
   nvim)    module_nvim ;;
   ghostty) module_ghostty ;;
-  herdr)   module_herdr ;;
   herdr-app) module_herdr_app ;;
   shell)   module_shell ;;
   *) warn "unknown module: $1" ;;
@@ -938,19 +920,18 @@ choose_modules() {
   ${C_GRN}2${C_RST}) dev      — uv, python, node+nvm, gh, claude (cr = claude -r)
   ${C_GRN}3${C_RST}) nvim     — neovim + treesitter + LSPs (python/lean/C/C++/lua/markdown)
   ${C_GRN}4${C_RST}) ghostty  — config + terminfo
-  ${C_GRN}5${C_RST}) herdr    — install + config (h = herdr)
-  ${C_GRN}6${C_RST}) herdr-app — herdr-core (hc) + the desktop app (asks) + my layout, mods, keys
-  ${C_GRN}7${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
+  ${C_GRN}5${C_RST}) herdr-app — herdr-core (hc) + my layout, mods, keys; asks before the desktop app
+  ${C_GRN}6${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
   ${C_GRN}a${C_RST}) all of the above   ${C_DIM}(default)${C_RST}
 EOF
-  printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 7' or 'a'): " >&2
+  printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 6' or 'a'): " >&2
   local ans; read -r ans || true
   ans="${ans:-a}"
   case "$ans" in *a*|"") echo "$ALL_MODULES"; return;; esac
   local out=""
   for n in $ans; do case "$n" in
     1) out="$out core";; 2) out="$out dev";; 3) out="$out nvim";;
-    4) out="$out ghostty";; 5) out="$out herdr";; 6) out="$out herdr-app";; 7) out="$out shell";;
+    4) out="$out ghostty";; 5) out="$out herdr-app";; 6) out="$out shell";;
   esac; done
   echo "${out:-$ALL_MODULES}"
 }
@@ -1007,8 +988,7 @@ main() {
   ${C_GRN}Next steps${C_RST}
     • Restart your terminal (or: ${C_B}exec $SHELL_TARGET${C_RST}) to load everything.
     • ${C_B}nvim${C_RST}  — first launch finishes any remaining plugin/parser installs.
-    • ${C_B}h${C_RST}     — herdr    ${C_DIM}(prefix Ctrl+a, like your old tmux)${C_RST}
-    • ${C_B}herdr-app${C_RST} — desktop app; ${C_B}hc${C_RST} — its terminals CLI  ${C_DIM}(⌘/ shell, ⌘G lazygit, ⌘Y yazi popups)${C_RST}
+    • ${C_B}hc${C_RST}    — herdr-core's CLI; ${C_B}herdr-app${C_RST} — the desktop app, if installed  ${C_DIM}(⌘/ shell, ⌘G lazygit, ⌘Y yazi popups)${C_RST}
     • ${C_B}cr${C_RST}    — claude -r
     • Fonts: install a Nerd Font (MesloLGS NF) on your *local* machine's terminal.
 

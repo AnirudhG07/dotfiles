@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dotfiles — anirudh's terminal setup</title>
-<meta name="description" content="One command sets up a fresh macOS or Linux box — zsh, neovim, herdr, yazi, lazygit and more. With or without sudo.">
+<meta name="description" content="One command sets up a fresh macOS or Linux box — zsh, neovim, herdr-core, yazi, lazygit and more. With or without sudo.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231a1b26'/%3E%3Ctext x='4' y='22' font-family='monospace' font-size='15' font-weight='700' fill='%237aa2f7'%3E$_%3C/text%3E%3C/svg%3E">
 <script>document.documentElement.classList.add('js');try{if(localStorage.getItem('theme')==='day')document.documentElement.dataset.theme='day'}catch(e){}</script>
 <style>
@@ -97,12 +97,11 @@ form label{flex:none}
   <i class="g">2</i>) dev&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— uv, python, node+nvm, gh, claude <i class="d">(cr = claude -r)</i><br>
   <i class="g">3</i>) nvim&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— neovim + treesitter + LSPs <i class="d">(python/lean/C/C++/lua/markdown)</i><br>
   <i class="g">4</i>) ghostty&nbsp;&nbsp;&nbsp;— config + terminfo<br>
-  <i class="g">5</i>) herdr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— install + config <i class="d">(h = herdr, prefix ctrl+a)</i><br>
-  <i class="g">6</i>) herdr-app&nbsp;— herdr-core (<i class="c">hc</i>) + the desktop app <i class="d">(asks)</i> + my layout, mods, keys<br>
-  <i class="g">7</i>) shell&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— zsh + powerlevel10k + my aliases/configs, stow-deployed<br>
+  <i class="g">5</i>) herdr-app&nbsp;— herdr-core (<i class="c">hc</i>) + my layout, mods, keys; asks before the desktop app<br>
+  <i class="g">6</i>) shell&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— zsh + powerlevel10k + my aliases/configs, stow-deployed<br>
   <i class="g">a</i>) all of the above&nbsp;&nbsp;<i class="d">(default)</i>
 </div>
-<div class="l"><i class="c">?</i> Enter choices (e.g. '1 3 7' or 'a'): <i class="bold">a</i></div>
+<div class="l"><i class="c">?</i> Enter choices (e.g. '1 3 6' or 'a'): <i class="bold">a</i></div>
 
 <div class="l gap"><span class="ps"><i class="u">anirudhg07</i><i class="at">@</i><i class="h">dotfiles</i> <i class="p">~</i> <i class="s">$</i></span> ls ~/dotfiles</div>
 <div class="l kv">
@@ -296,8 +295,7 @@ Usage: bash setup.sh [options]<br>
       '<i class="g">dev</i>        uv, python, node+nvm, gh, claude',
       '<i class="g">nvim</i>       neovim + treesitter + LSPs',
       '<i class="g">ghostty</i>    config + terminfo',
-      '<i class="g">herdr</i>      the terminal multiplexer + config',
-      '<i class="g">herdr-app</i>  herdr-core (hc) + desktop app + layout, mods, keys',
+      '<i class="g">herdr-app</i>  herdr-core (hc) + layout, mods, keys  <i class="d">(desktop app only if you say yes)</i>',
       '<i class="g">shell</i>      zsh + powerlevel10k  <i class="d">(bash + oh-my-bash on Linux without sudo)</i>'].join('\n')},
     keys:function(){return [
       '<i class="y">⌘/</i>    popup shell',
@@ -310,7 +308,7 @@ Usage: bash setup.sh [options]<br>
       '<i class="d">───────────────</i>',
       '<i class="b">os</i>        macOS · Linux <i class="d">(sudo or not)</i>',
       '<i class="b">shell</i>     zsh + powerlevel10k · bash + oh-my-bash',
-      '<i class="b">terminal</i>  ghostty · herdr · tmux',
+      '<i class="b">terminal</i>  ghostty · herdr-app · tmux',
       '<i class="b">editor</i>    neovim',
       '<i class="b">files</i>     yazi · television',
       '<i class="b">git</i>       lazygit · delta · gh',
