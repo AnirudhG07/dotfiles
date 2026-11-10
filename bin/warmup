@@ -1,0 +1,121 @@
+#!/usr/bin/env zsh
+# warmup — burn CPU to keep the laptop warm in the cold.
+#
+# Runs a heavy FP + memory workload at lowest priority until the battery
+# reaches the target temperature, scaling workers with how far off it is.
+# Backs off when your own programs need the CPU, and pauses on low battery.
+#
+# usage: warmup [target_C] [max_cores]
+#   target_C   temperature to hold, default 35, capped at 40
+#   max_cores  upper limit on busy workers, default all cores
+
+zmodload zsh/mathfunc
+target=${1:-35}
+ncpu=$(sysctl -n hw.ncpu 2>/dev/null || nproc)
+cores=${2:-$ncpu}
+max=40        # hard safety cap
+ramp=3        # degrees below target at which all workers run
+min_batt=${WARMUP_MIN_BATT:-20}   # pause when unplugged and below this %
+interval=5
+
+(( target > max )) && { echo "target capped at ${max}°C"; target=$max; }
+
+# --- heavy workload, compiled once -------------------------------------------
+burn=${XDG_CACHE_HOME:-$HOME/.cache}/warmup/burn
+if [[ ! -x $burn || $0 -nt $burn ]]; then
+  mkdir -p ${burn:h}
+  cc -O2 -ffp-contract=fast -o $burn -x c - <<'EOF' || { echo "compile failed"; exit 1 }
+#include <stdlib.h>
+#include <string.h>
+typedef float v4 __attribute__((ext_vector_type(4)));
+int main(void) {
+  size_t n = 8u << 20;                      /* 8 MB, larger than cache */
+  char *a = malloc(n), *b = malloc(n);
+  memset(a, 1, n);
+  v4 x[16], m = (v4)0.9999f, c = (v4)1e-4f;
+  for (int i = 0; i < 16; i++) x[i] = (v4)(1.0f + i * 1e-3f);
+  volatile float sink;
+  for (;;) {
+    for (int k = 0; k < 2000000; k++)       /* 16 independent FMA chains */
+      for (int i = 0; i < 16; i++) x[i] = x[i] * m + c;
+    memcpy(b, a, n); memcpy(a, b, n);       /* keep the memory bus busy */
+    sink = x[0].x;
+  }
+}
+EOF
+fi
+
+# --- sensors ------------------------------------------------------------------
+battery_temp() {   # °C
+  if [[ $OSTYPE == darwin* ]]; then
+    local raw=$(ioreg -rn AppleSmartBattery | awk -F' = ' '/"Temperature" =/{print $2; exit}')
+    print $(( raw / 100.0 ))                # hundredths of a degree
+  else
+    local f=(/sys/class/power_supply/BAT*/temp(N) /sys/class/thermal/thermal_zone0/temp(N))
+    local raw=$(<$f[1])
+    (( raw > 1000 )) && print $(( raw / 1000.0 )) || print $(( raw / 10.0 ))
+  fi
+}
+
+battery_low() {    # true when unplugged and below min_batt
+  if [[ $OSTYPE == darwin* ]]; then
+    local s=$(pmset -g batt)
+    [[ $s == *"Battery Power"* ]] || return 1
+    local pct=${${s#*$'\t'}%%\%*}
+  else
+    local d=(/sys/class/power_supply/BAT*(N))
+    [[ -n $d && $(<$d[1]/status) == Discharging ]] || return 1
+    local pct=$(<$d[1]/capacity)
+  fi
+  (( pct < min_batt ))
+}
+
+other_busy_cores() {  # CPU used by everything except our workers, in cores
+  ps -A -o pid=,%cpu= | awk -v ours=" ${pids[*]} " \
+    'index(ours, " " $1 " ") == 0 { s += $2 } END { printf "%d", s / 100 }'
+}
+
+# --- workers ------------------------------------------------------------------
+pids=()
+set_workers() {
+  local want=$1
+  while (( ${#pids} < want )); do
+    nice -n 19 $burn &
+    pids+=($!)
+  done
+  while (( ${#pids} > want )); do
+    kill $pids[-1] 2>/dev/null
+    wait $pids[-1] 2>/dev/null
+    pids[-1]=()
+  done
+}
+
+cleanup() { (( ZSH_SUBSHELL )) && exit; trap - INT TERM EXIT; set_workers 0; kill $caf 2>/dev/null; print; echo "stopped."; exit 0 }
+trap cleanup INT TERM EXIT
+
+if command -v caffeinate >/dev/null; then
+  caffeinate -i -w $$ &   # keep the machine awake while we run
+  caf=$!
+fi
+
+echo "warming to ~${target}°C, up to $cores workers (ctrl-c to stop)"
+while true; do
+  t=$(battery_temp)
+  err=$(( target - t ))
+  if battery_low; then
+    want=0 state="low battery, paused"
+  elif (( err <= 0 )); then
+    want=0 state="at target, idle"
+  else
+    # scale with distance from target: far below -> all cores, close -> few
+    want=$(( int(ceil(cores * (err > ramp ? 1.0 : err / ramp))) ))
+    # leave room for whatever you're running (it's making heat anyway)
+    free=$(( ncpu - $(other_busy_cores) ))
+    (( want > free )) && want=$free
+    (( want < 0 )) && want=0
+    state="heating"
+  fi
+  set_workers $want
+  printf '\r\e[K%5.1f°C → %d°C  %d/%d workers  %s' $t $target ${#pids} $cores $state
+  sleep $interval
+done

@@ -203,14 +203,15 @@ Usage: bash setup.sh [options]<br>
     if(!window.getSelection().toString()) inp.focus();
   });
 
-  // the live prompt: a pretend zsh over the repo's real file tree (files.txt, written at deploy time).
+  // the live prompt: a pretend zsh over the repo's real file tree (GitHub's tree API, read live).
   // It runs nothing — `cat` fetches the real file from GitHub, everything else is simulated here.
   var RAW='https://raw.githubusercontent.com/AnirudhG07/dotfiles/main/';
+  var TREE='https://api.github.com/repos/AnirudhG07/dotfiles/git/trees/main?recursive=1';
   var HOME='/home/anirudhg07', cwd=HOME, oldcwd=HOME, files=null;
   var ENV={HOME:HOME,USER:'anirudhg07',LOGNAME:'anirudhg07',SHELL:'/bin/zsh',EDITOR:'nvim',VISUAL:'nvim',TERM:'xterm-ghostty',LANG:'en_US.UTF-8'};
   var hist=[],hp=0;
-  fetch('files.txt').then(function(r){return r.ok?r.text():''}).then(function(t){
-    files=t.split('\n').filter(Boolean).map(function(f){return HOME+'/dotfiles/'+f});
+  fetch(TREE).then(function(r){return r.ok?r.json():{tree:[]}}).then(function(j){
+    files=(j.tree||[]).filter(function(e){return e.type==='blob'}).map(function(e){return HOME+'/dotfiles/'+e.path});
     files.push(HOME+'/setup.sh');
   }).catch(function(){files=[HOME+'/setup.sh']});
 

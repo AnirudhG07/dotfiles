@@ -1,0 +1,350 @@
+#!/usr/bin/env bash
+##
+# mathlib - Unified Lean4 mathlib management script
+#
+# A single script for managing mathlib symlinks and caching,
+# This is best effort, maybe some people may prefer some different behavior. It only deals with Mathlib and other
+# libraries which gets installed using `lake exe cache get`, will be prompted to you for installing.
+# 
+# This was coded using help of Gemini 
+#
+# Usage:
+#   mathlib init              Initialize mathlib for current project (detects, downloads, links, and gets cache)
+#   mathlib ls                List cached mathlib versions in ~/.mathlib
+#   mathlib rm VERSION        Remove a specific mathlib version from cache
+#   mathlib link [VERSION]    Link mathlib to current project (auto-detects if VERSION omitted)
+#   mathlib unlink            Remove mathlib symlink from project
+#   mathlib version           Show current project's mathlib version
+#   mathlib cleanup           Remove broken symlinks
+#   mathlib help              Show this help
+##
+
+set -euo pipefail
+
+# Configuration
+MATHLIB_ROOT="${HOME}/.mathlib"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+log_info() { echo -e "${BLUE}ℹ${NC} $*"; }
+log_success() { echo -e "${GREEN}✓${NC} $*"; }
+log_warn() { echo -e "${YELLOW}⚠${NC} $*"; }
+log_error() { echo -e "${RED}✗${NC} $*" >&2; }
+
+# Helpers
+ensure_lakefile() {
+    if [[ ! -f "lakefile.toml" ]]; then
+        log_error "lakefile.toml not found in current directory."
+        exit 1
+    fi
+}
+
+get_lean_version() {
+    if [[ ! -f "lean-toolchain" ]]; then
+        return 1
+    fi
+    sed 's/.*://' lean-toolchain || echo ""
+}
+
+get_mathlib_version() {
+    if [[ ! -f "lakefile.toml" ]]; then
+        return 1
+    fi
+    # Search for mathlib block and extract rev
+    grep -B 2 -A 5 'name = "mathlib"' lakefile.toml 2>/dev/null | grep 'rev' | sed -E 's/.*rev = "([^"]+)".*/\1/' | head -1 || echo ""
+}
+
+confirm() {
+    local prompt="$1"
+    local response
+    read -p "$(echo -e "${YELLOW}??${NC} ${prompt} [y/N] ")" response || return 1
+    case "${response}" in
+        [yY][eE][sS]|[yY])
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+# Commands
+
+cmd_init() {
+    ensure_lakefile
+    
+    local version=$(get_mathlib_version)
+    local added_to_toml=false
+    
+    if [[ -z "${version}" ]]; then
+        log_warn "Mathlib dependency not detected in lakefile.toml"
+        version=$(get_lean_version) || { log_error "Could not determine version from lean-toolchain"; exit 1; }
+        log_info "Suggested version (from lean-toolchain): ${version}"
+        
+        if confirm "Add mathlib requirement (rev = \"${version}\") to lakefile.toml?"; then
+            cat >> lakefile.toml << TOML
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "${version}"
+TOML
+            log_success "Updated lakefile.toml"
+            added_to_toml=true
+        else
+            log_info "Proceeding with mathlib ${version} installation without updating lakefile.toml."
+        fi
+    else
+        log_info "Detected mathlib version from lakefile.toml: ${version}"
+        added_to_toml=true
+    fi
+    
+    mkdir -p "${MATHLIB_ROOT}"
+    local cache_path="${MATHLIB_ROOT}/${version}"
+    local local_path=".lake/packages/mathlib"
+    
+    # Logic for existing local mathlib
+    if [[ -d "${local_path}" && ! -L "${local_path}" ]]; then
+        if [[ ! -d "${cache_path}" ]]; then
+            if confirm "Local mathlib directory found. Move it to global cache (~/.mathlib/${version}) and link back?"; then
+                mkdir -p "$(dirname "${cache_path}")"
+                mv "${local_path}" "${cache_path}"
+                log_success "Shifted local mathlib to global cache."
+            fi
+        else
+            if confirm "Mathlib ${version} exists both locally and in global cache. Replace local with link?"; then
+                rm -rf "${local_path}"
+                log_info "Removed local copy to use global version."
+            fi
+        fi
+    fi
+
+    # Ensure in cache
+    if [[ ! -d "${cache_path}" ]]; then
+        log_info "Mathlib ${version} not in global cache. Downloading now..."
+        mkdir -p .lake/packages
+        
+        # If it's not in TOML, 'lake update mathlib' might fail or just do nothing.
+        # But usually we want it to work.
+        if ! lake update mathlib; then
+            log_error "Failed to download mathlib. Please check your internet connection and lakefile."
+            exit 1
+        fi
+        
+        if [[ -d "${local_path}" ]]; then
+            mv "${local_path}" "${cache_path}"
+            log_success "Downloaded and cached version ${version}."
+        else
+            log_error "Download failed: ${local_path} not found after lake update."
+            exit 1
+        fi
+    else
+        log_success "Using cached version ${version}."
+    fi
+
+    # Final linking
+    if [[ ! -L "${local_path}" || "$(readlink -f "${local_path}")" != "${cache_path}" ]]; then
+        if [[ -e "${local_path}" ]]; then
+            rm -rf "${local_path}"
+        fi
+        mkdir -p .lake/packages
+        ln -s "${cache_path}" "${local_path}"
+        log_success "Linked: ${local_path} → ${cache_path}"
+    else
+        log_info "Mathlib ${version} is already correctly linked."
+    fi
+
+    if [[ "${added_to_toml}" == "true" ]]; then
+        if confirm "Do you want to run 'lake exe cache get' to update other packages?"; then
+            if lake exe cache get; then
+                log_success "Oleans are ready. You can now start Lean."
+            else
+                log_warn "Could not fetch all oleans. You may experience slow compilation."
+            fi
+        else
+            log_info "Skipped 'lake exe cache get'."
+        fi
+    else
+        log_warn "Mathlib is not in lakefile.toml; 'lake exe cache get' skipped."
+        log_info "To get oleans later, add mathlib to your lakefile.toml and run 'lake exe cache get'."
+    fi
+    
+    echo
+    log_success "Mathlib initialization complete! All done."
+    return 0
+}
+
+cmd_ls() {
+    log_info "Cached mathlib versions in ${MATHLIB_ROOT}:"
+    if [[ ! -d "${MATHLIB_ROOT}" ]]; then
+        log_info "  (no global mathlib directory)"
+        return 0
+    fi
+    
+    local count=0
+    # Use -1 to list one file per line, and handle empty directory
+    for v in $(ls -1 "${MATHLIB_ROOT}" 2>/dev/null | sort -V || true); do
+        local full_path="${MATHLIB_ROOT}/$v"
+        if [[ -d "${full_path}" ]]; then
+            local size=$(du -sh "${full_path}" 2>/dev/null | cut -f1)
+            printf "  ${CYAN}%-15s${NC} (%s)\n" "${v}" "${size}"
+            count=$((count + 1))
+        fi
+    done
+    if [[ $count -eq 0 ]]; then
+        log_info "  (no cached versions)"
+    fi
+    return 0
+}
+
+cmd_rm() {
+    local version="${1:-}"
+    if [[ -z "${version}" ]]; then
+        log_error "Usage: mathlib rm VERSION"
+        exit 1
+    fi
+    
+    local target="${MATHLIB_ROOT}/${version}"
+    if [[ -d "${target}" ]]; then
+        if confirm "Are you sure you want to remove ${version} from global cache?"; then
+            rm -rf "${target}"
+            log_success "Removed."
+        fi
+    else
+        log_error "Version ${version} not found in cache."
+        exit 1
+    fi
+    return 0
+}
+
+cmd_link() {
+    ensure_lakefile
+    local version="${1:-$(get_mathlib_version)}"
+    if [[ -z "${version}" ]]; then
+        version=$(get_lean_version)
+    fi
+    
+    local cache_path="${MATHLIB_ROOT}/${version}"
+    local local_path=".lake/packages/mathlib"
+
+    if [[ ! -d "${cache_path}" ]]; then
+        if [[ -d "${local_path}" && ! -L "${local_path}" ]]; then
+            if confirm "Requested version ${version} not in cache, but exists locally. Shift to cache and link?"; then
+                mkdir -p "$(dirname "${cache_path}")"
+                mv "${local_path}" "${cache_path}"
+                log_success "Shifted local to cache."
+            else
+                log_error "Aborted. Run 'mathlib init' to download."
+                exit 1
+            fi
+        else
+            log_error "Version ${version} not found in cache. Run 'mathlib init' first."
+            exit 1
+        fi
+    fi
+
+    if [[ -L "${local_path}" && "$(readlink -f "${local_path}")" == "${cache_path}" ]]; then
+        log_info "Version ${version} is already linked."
+        return 0
+    fi
+
+    if confirm "Link mathlib ${version} to this project?"; then
+        if [[ -e "${local_path}" ]]; then
+            rm -rf "${local_path}"
+        fi
+        mkdir -p .lake/packages
+        ln -s "${cache_path}" "${local_path}"
+        log_success "Linked project to ${version}."
+    fi
+    return 0
+}
+
+cmd_unlink() {
+    local project_symlink=".lake/packages/mathlib"
+    if [[ ! -L "${project_symlink}" ]]; then
+        log_warn "No mathlib symlink found."
+        return 0
+    fi
+    rm "${project_symlink}"
+    log_success "Removed symlink."
+    return 0
+}
+
+cmd_version() {
+    if [[ -f "lakefile.toml" ]]; then
+        local version=$(get_mathlib_version)
+        if [[ -z "${version}" ]]; then
+            version=$(get_lean_version)
+        fi
+        echo -e "${CYAN}Project mathlib version:${NC} ${version:-unknown}"
+        if [[ -L .lake/packages/mathlib ]]; then
+            echo -e "${CYAN}Symlink target:${NC} $(readlink -f .lake/packages/mathlib)"
+        else
+            log_warn "mathlib is not symlinked"
+        fi
+    else
+        log_warn "Not in a Lean project (no lakefile.toml found)"
+    fi
+    return 0
+}
+
+cmd_cleanup() {
+    log_info "Cleaning up broken links..."
+    if [[ -L ".lake/packages/mathlib" && ! -e ".lake/packages/mathlib" ]]; then
+        rm ".lake/packages/mathlib"
+        log_success "Removed broken project symlink."
+    else
+        log_info "No broken links found in project."
+    fi
+    return 0
+}
+
+cmd_help() {
+    cat << HELP
+mathlib - Unified Lean4 mathlib management
+
+USAGE:
+  mathlib init              Initialize mathlib (detects local, prompts to shift, links)
+  mathlib ls                List cached mathlib versions in ~/.mathlib
+  mathlib rm VERSION        Remove a specific mathlib version from cache
+  mathlib link [VERSION]    Link mathlib to current project (prompts before linking)
+  mathlib unlink            Remove mathlib symlink from project
+  mathlib version           Show current project's mathlib version
+  mathlib cleanup           Remove broken symlinks
+  mathlib help              Show this help
+
+EXAMPLES:
+  mathlib init              # Shift or download mathlib and link it
+  mathlib ls                # See cached versions
+  mathlib link v4.29.0      # Link a specific cached version
+
+HELP
+}
+
+main() {
+    local cmd="${1:-help}"
+    shift || true
+    case "${cmd}" in
+        init)     cmd_init ;;
+        ls)       cmd_ls ;;
+        rm)       cmd_rm "$@" ;;
+        link)     cmd_link "$@" ;;
+        unlink)   cmd_unlink ;;
+        version)  cmd_version ;;
+        cleanup)  cmd_cleanup ;;
+        help|--help|-h) cmd_help ;;
+        *)
+            log_error "Unknown command: ${cmd}"
+            cmd_help
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
