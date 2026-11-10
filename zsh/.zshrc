@@ -80,7 +80,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 alias vim='nvim'
 alias c='clear'
 alias cr='claude -r'
-alias h='herdr'
+alias h='hc'   # herdr-core: pick a terminal and attach
 
 # Shell integrations (guarded so a fresh box / old tool versions still start)
 # fzf >=0.48 has `fzf --zsh` (binds Ctrl-R fuzzy history, Ctrl-T files); older

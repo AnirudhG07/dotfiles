@@ -53,11 +53,10 @@
                     "mas"
                     "tag"
                     "poppler"
-                    "herdr"
                 ];
-                casks = [
-                    "herdr-app"
-                ];
+                # herdr-core (hc) has no Homebrew or nixpkgs package: setup.sh installs it
+                # (herdr-app module), and the Herdr desktop app only if you say yes there.
+                casks = [];
                 masApps = {};
                 onActivation.cleanup = "zap";
             };

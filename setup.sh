@@ -647,9 +647,6 @@ module_ghostty() {
 # ============================================================================
 HERDR_RELEASES="https://releases.herdr.dev"
 
-# nix-darwin owns this Mac's apps: herdr-app is a Homebrew cask declared in
-# nix/.config/nix-darwin/flake.nix, so on such a machine it is installed the nix way.
-is_nix_darwin() { [ "$OS" = mac ] && has darwin-rebuild; }
 is_nixos()      { [ "$OS" = linux ] && [ -e /etc/NIXOS ]; }
 
 herdr_app_installed() {
@@ -679,54 +676,13 @@ want_herdr_app() {
   case "$ans" in [Yy]*) return 0;; *) return 1;; esac
 }
 
-install_herdr_app_linux() {
-  local arch=x86_64 target tmp flat entry url want got dest="$HOME/.local/share/herdr-app"
-  [ "$ARCH" = arm64 ] && arch=aarch64
-  target="linux-$arch"
-  if [ "$DRY_RUN" = 1 ]; then
-    info "${C_DIM}[dry-run]${C_RST} would fetch the $target app from $HERDR_RELEASES/app and link $LOCAL_BIN/herdr-app"
-    return 0
-  fi
-  tmp="$(mktemp -d)"
-  flat="$(curl -fsSL "$HERDR_RELEASES/app/latest.json" | tr -d '\n ')" || { warn "cannot reach $HERDR_RELEASES"; rm -rf "$tmp"; return 1; }
-  entry="$(printf '%s' "$flat" | sed -n "s/.*\"$target\":{\([^}]*\)}.*/\1/p")"
-  url="$(printf '%s' "$entry" | sed -n 's/.*"url":"\([^"]*\)".*/\1/p')"
-  want="$(printf '%s' "$entry" | sed -n 's/.*"sha256":"\([^"]*\)".*/\1/p')"
-  if [ -z "$url" ] || [ -z "$want" ]; then warn "no Herdr app build for $target"; rm -rf "$tmp"; return 1; fi
-  curl -fsSL "$url" -o "$tmp/app.tgz" || { warn "download failed: $url"; rm -rf "$tmp"; return 1; }
-  if has sha256sum; then got="$(sha256sum "$tmp/app.tgz" | cut -d' ' -f1)"; else got="$(shasum -a 256 "$tmp/app.tgz" | cut -d' ' -f1)"; fi
-  if [ "$got" != "$want" ]; then warn "Herdr app download is damaged (checksum mismatch)"; rm -rf "$tmp"; return 1; fi
-  tar -xzf "$tmp/app.tgz" -C "$tmp" && [ -x "$tmp/herdr-app/herdr-app" ] || { warn "unexpected app archive"; rm -rf "$tmp"; return 1; }
-  if mkdir -p "$LOCAL_BIN" "$(dirname "$dest")" && rm -rf "$dest" && mv "$tmp/herdr-app" "$dest" \
-     && ln -sfn "$dest/herdr-app" "$LOCAL_BIN/herdr-app"; then
-    ok "Herdr desktop app -> $LOCAL_BIN/herdr-app"
-  else
-    warn "couldn't install the Herdr app into $dest"
-  fi
-  rm -rf "$tmp"
-}
-
+# Herdr's own installer: Herdr.app into ~/Applications (Apple silicon) or the app into
+# ~/.local/share/herdr-app with a launcher entry (Linux), `herdr-app` in ~/.local/bin.
+# No Homebrew or nix involved; the app keeps itself and herdr-core updated afterwards.
 install_herdr_app_desktop() {
-  if is_nix_darwin; then
-    info "nix-darwin detected: herdr-app is declared as a cask in nix/.config/nix-darwin/flake.nix"
-    if _ask "Run 'darwin-rebuild switch' now to install it (rebuilds the whole system)?"; then
-      run sudo darwin-rebuild switch --flake "$DOTFILES_DIR/nix/.config/nix-darwin" && return 0
-      warn "darwin-rebuild failed (is this flake for another host?) — falling back to Homebrew"
-    else
-      info "Later: sudo darwin-rebuild switch --flake $DOTFILES_DIR/nix/.config/nix-darwin"
-      return 0
-    fi
-  fi
-  case "$OS" in
-    mac)
-      if [ "$ARCH" != arm64 ]; then warn "the Herdr desktop app is Apple-silicon only — skipping"; return 0; fi
-      if [ -n "$BREW" ]; then
-        run "$BREW" install --cask herdr-app && ok "Herdr desktop app (brew cask)" || warn "brew install --cask herdr-app failed"
-      else
-        warn "no Homebrew — get the app from https://herdr.dev"
-      fi ;;
-    linux) install_herdr_app_linux ;;
-  esac
+  info "Installing the Herdr desktop app"
+  run sh -c "curl -fsSL $HERDR_RELEASES/app/install.sh | sh" </dev/null || { warn "Herdr app install failed"; return 1; }
+  if [ "$DRY_RUN" = 1 ] || herdr_app_installed; then ok "Herdr desktop app"; fi
 }
 
 # my layout (preview-plus Files panel, popup terminals, idle-reaper), keys, theme and mods
@@ -746,7 +702,7 @@ deploy_herdr_app_config() {
 }
 
 module_herdr_app() {
-  step "Herdr app  — herdr-core (hc) + desktop app + my layout, mods and keys"
+  step "Herdr  — herdr-core (hc) + my layout, mods and keys (desktop app only if you say yes)"
   case ":$PATH:" in *":$LOCAL_BIN:"*) ;; *) PATH="$LOCAL_BIN:$PATH"; export PATH ;; esac
   install_herdr_core
   if herdr_app_installed; then ok "Herdr desktop app already installed"
@@ -779,6 +735,7 @@ export NVM_DIR="\$HOME/.nvm"
 command -v fnm >/dev/null 2>&1 && eval "\$(fnm env 2>/dev/null)"
 # portable aliases (work on every machine)
 alias cr='claude -r'
+alias h='hc'
 alias lg='lazygit'
 alias v='nvim'
 alias y='yazi'
@@ -988,7 +945,7 @@ main() {
   ${C_GRN}Next steps${C_RST}
     • Restart your terminal (or: ${C_B}exec $SHELL_TARGET${C_RST}) to load everything.
     • ${C_B}nvim${C_RST}  — first launch finishes any remaining plugin/parser installs.
-    • ${C_B}hc${C_RST}    — herdr-core's CLI; ${C_B}herdr-app${C_RST} — the desktop app, if installed  ${C_DIM}(⌘/ shell, ⌘G lazygit, ⌘Y yazi popups)${C_RST}
+    • ${C_B}h${C_RST}     — hc (herdr-core): pick a terminal and attach, no desktop needed; ${C_B}herdr-app${C_RST} — the desktop app, if installed  ${C_DIM}(⌘/ shell, ⌘G lazygit, ⌘Y yazi popups)${C_RST}
     • ${C_B}cr${C_RST}    — claude -r
     • Fonts: install a Nerd Font (MesloLGS NF) on your *local* machine's terminal.
 
