@@ -56,6 +56,7 @@
                     "herdr"
                 ];
                 casks = [
+                    "herdr-app"
                 ];
                 masApps = {};
                 onActivation.cleanup = "zap";

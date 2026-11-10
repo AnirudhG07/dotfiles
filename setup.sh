@@ -3,18 +3,23 @@
 #  dotfiles/setup.sh  —  Anirudh's one-shot machine bootstrapper
 #
 #  Sets up a fresh macOS or Linux box (with or without sudo) the way I like it:
-#  core CLI tools, neovim + LSPs/treesitter, claude/gh/uv, ghostty, herdr, and
-#  my shell + configs (symlinked from ~/dotfiles, stow-style).
+#  core CLI tools, neovim + LSPs/treesitter, claude/gh/uv, ghostty, herdr, the
+#  Herdr desktop app + herdr-core (hc), and my shell + configs (symlinked from
+#  ~/dotfiles, stow-style).
 #
-#  Usage:
-#     git clone https://github.com/AnirudhG07/my_configs ~/dotfiles
-#     bash ~/dotfiles/setup.sh                 # interactive
-#     bash ~/dotfiles/setup.sh --all           # install everything, no prompts
-#     bash ~/dotfiles/setup.sh --only core,nvim,shell
-#     bash ~/dotfiles/setup.sh --dry-run       # show what would happen
+#  Usage (straight from the internet — it clones the repo for you):
+#     curl -fsSL https://anirudhg07.github.io/dotfiles/setup.sh -o setup.sh
+#     bash setup.sh                            # interactive
+#     bash setup.sh --all                      # install everything, no prompts
+#     bash setup.sh --only core,nvim,shell
+#     bash setup.sh --dry-run                  # show what would happen
 #
-#  Or straight from the internet:
-#     curl -fsSL https://raw.githubusercontent.com/AnirudhG07/my_configs/stow/setup.sh | bash
+#  or, from a clone:
+#     git clone https://github.com/AnirudhG07/dotfiles ~/dotfiles
+#     bash ~/dotfiles/setup.sh
+#
+#  or in one go:
+#     curl -fsSL https://anirudhg07.github.io/dotfiles/setup.sh | bash
 #
 #  Safe to re-run: every step is idempotent.
 # =============================================================================
@@ -22,12 +27,10 @@
 set -uo pipefail
 
 # ------------------------------------------------------------------ constants
-REPO_URL="https://github.com/AnirudhG07/my_configs"
+REPO_URL="https://github.com/AnirudhG07/dotfiles"
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 LOCAL_PREFIX="$HOME/.local"
 LOCAL_BIN="$LOCAL_PREFIX/bin"
-MAC_BRANCH="stow"      # macOS + zsh configs live here (also the default trunk)
-LINUX_BRANCH="ugcl"    # linux bash config lives here
 
 DRY_RUN=0
 ASSUME_ALL=0
@@ -430,11 +433,13 @@ link_alias() { # link_alias real wanted
 # ============================================================================
 setup_dotfiles_repo() {
   step "Dotfiles repository"
-  # If this script already lives inside a clone, use that.
-  local self_dir
+  # If this script already lives inside a clone of this repo, use that. A setup.sh fetched with curl lands
+  # wherever it was run (maybe inside some unrelated git repo), so insist on this repo's own layout.
+  local self_dir top=""
   self_dir="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" && pwd)" 2>/dev/null || self_dir=""
-  if [ -n "$self_dir" ] && git -C "$self_dir" rev-parse --show-toplevel >/dev/null 2>&1; then
-    DOTFILES_DIR="$(git -C "$self_dir" rev-parse --show-toplevel)"
+  [ -n "$self_dir" ] && top="$(git -C "$self_dir" rev-parse --show-toplevel 2>/dev/null)" || true
+  if [ -n "$top" ] && [ -f "$top/setup.sh" ] && [ -d "$top/zsh" ] && [ -d "$top/nvim" ]; then
+    DOTFILES_DIR="$top"
     ok "Using existing clone at $DOTFILES_DIR"
   elif [ -d "$DOTFILES_DIR/.git" ]; then
     ok "Found $DOTFILES_DIR"
@@ -444,8 +449,20 @@ setup_dotfiles_repo() {
     run git clone "$REPO_URL" "$DOTFILES_DIR" || die "clone failed"
   fi
 
-  # make sure both branches' trees are available for cross-branch file grabs
-  run git -C "$DOTFILES_DIR" fetch --quiet origin "$MAC_BRANCH" "$LINUX_BRANCH" 2>/dev/null || true
+  # Everything (mac zsh + linux bash) lives on one trunk now. Older clones sit on the retired 'ugcl' branch
+  # or on 'stow' (the trunk's former name): move them to the remote's default branch when that's safe.
+  local cur def
+  cur="$(git -C "$DOTFILES_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
+  case "$cur" in ugcl|stow)
+    def="$(git -C "$DOTFILES_DIR" ls-remote --symref origin HEAD 2>/dev/null | sed -n 's#^ref: refs/heads/\([^[:space:]]*\)[[:space:]]*HEAD$#\1#p')"
+    if [ -n "$def" ] && [ "$def" != "$cur" ] \
+       && git -C "$DOTFILES_DIR" diff --quiet && git -C "$DOTFILES_DIR" diff --cached --quiet; then
+      info "Moving this clone from '$cur' to '$def'"
+      run git -C "$DOTFILES_DIR" fetch --quiet origin "$def" 2>/dev/null || true
+      run git -C "$DOTFILES_DIR" checkout -q "$def" 2>/dev/null && run git -C "$DOTFILES_DIR" pull --ff-only -q 2>/dev/null \
+        || warn "couldn't switch to '$def' — run: git -C $DOTFILES_DIR checkout $def"
+    fi ;;
+  esac
 }
 
 # ============================================================================
@@ -629,12 +646,129 @@ module_herdr() {
   step "Herdr (agent/pane multiplexer)  — alias: h"
   if has herdr; then ok "herdr already installed"
   elif [ -n "$BREW" ] && run "$BREW" install herdr && has herdr; then ok "herdr (brew)"
-  elif { ensure_cargo && run cargo install herdr; } && has herdr; then ok "herdr (cargo)"
   else
+    # official install script — prebuilt binary, no compiling / no rust toolchain
     run sh -c "curl -fsSL https://herdr.dev/install.sh | sh" </dev/null
-    has herdr && ok "herdr ready" || warn "herdr install failed"
+    if has herdr; then ok "herdr (install script)"
+    elif { ensure_cargo && run cargo install herdr; } && has herdr; then ok "herdr (cargo, compiled)"
+    else warn "herdr install failed"; fi
   fi
   deploy_packages herdr
+}
+
+# ============================================================================
+#  Herdr app: herdr-core (hc) + the desktop app + my layout/mods/keys
+# ============================================================================
+HERDR_RELEASES="https://releases.herdr.dev"
+
+# nix-darwin owns this Mac's apps: herdr-app is a Homebrew cask declared in
+# nix/.config/nix-darwin/flake.nix, so on such a machine it is installed the nix way.
+is_nix_darwin() { [ "$OS" = mac ] && has darwin-rebuild; }
+is_nixos()      { [ "$OS" = linux ] && [ -e /etc/NIXOS ]; }
+have_display()  { [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; }
+
+herdr_app_installed() {
+  has herdr-app || [ -d /Applications/Herdr.app ] || [ -d "$HOME/Applications/Herdr.app" ]
+}
+
+# herdr-core runs the terminals (and gives you `hc`); the app and the CLI both sit on it. Every machine gets it.
+install_herdr_core() {
+  if has herdr-core || [ -x "$LOCAL_BIN/herdr-core" ]; then ok "herdr-core (hc) already installed"; return 0; fi
+  if is_nixos; then
+    warn "NixOS: herdr-core's prebuilt binary can't run here and nixpkgs has no package for it yet — skipping"
+    return 0
+  fi
+  info "Installing herdr-core (hc)"
+  run sh -c "curl -fsSL $HERDR_RELEASES/core/install.sh | sh" </dev/null || { warn "herdr-core install failed"; return 1; }
+  if [ "$DRY_RUN" = 1 ] || has herdr-core || [ -x "$LOCAL_BIN/herdr-core" ]; then ok "herdr-core (hc)"; fi
+}
+
+# Ask before installing the desktop app: a server doesn't want a GUI. Default yes on a Mac, no on Linux.
+# --all installs it on a Mac, and on Linux only when a desktop session is running.
+want_herdr_app() {
+  if [ "$ASSUME_ALL" = 1 ]; then [ "$OS" = mac ] || have_display; return; fi
+  [ -t 0 ] || return 1
+  local def="y" hint="Y/n" ans
+  [ "$OS" = mac ] || { def="n"; hint="y/N"; }
+  printf '%s Install the Herdr desktop app too? %s[%s] ' "${C_CYN}?${C_RST}" "${C_DIM}(skip on servers)${C_RST} " "$hint" >&2
+  read -r ans || return 1
+  case "${ans:-$def}" in [Yy]*) return 0;; *) return 1;; esac
+}
+
+install_herdr_app_linux() {
+  local arch=x86_64 target tmp flat entry url want got dest="$HOME/.local/share/herdr-app"
+  [ "$ARCH" = arm64 ] && arch=aarch64
+  target="linux-$arch"
+  if [ "$DRY_RUN" = 1 ]; then
+    info "${C_DIM}[dry-run]${C_RST} would fetch the $target app from $HERDR_RELEASES/app and link $LOCAL_BIN/herdr-app"
+    return 0
+  fi
+  tmp="$(mktemp -d)"
+  flat="$(curl -fsSL "$HERDR_RELEASES/app/latest.json" | tr -d '\n ')" || { warn "cannot reach $HERDR_RELEASES"; rm -rf "$tmp"; return 1; }
+  entry="$(printf '%s' "$flat" | sed -n "s/.*\"$target\":{\([^}]*\)}.*/\1/p")"
+  url="$(printf '%s' "$entry" | sed -n 's/.*"url":"\([^"]*\)".*/\1/p')"
+  want="$(printf '%s' "$entry" | sed -n 's/.*"sha256":"\([^"]*\)".*/\1/p')"
+  if [ -z "$url" ] || [ -z "$want" ]; then warn "no Herdr app build for $target"; rm -rf "$tmp"; return 1; fi
+  curl -fsSL "$url" -o "$tmp/app.tgz" || { warn "download failed: $url"; rm -rf "$tmp"; return 1; }
+  if has sha256sum; then got="$(sha256sum "$tmp/app.tgz" | cut -d' ' -f1)"; else got="$(shasum -a 256 "$tmp/app.tgz" | cut -d' ' -f1)"; fi
+  if [ "$got" != "$want" ]; then warn "Herdr app download is damaged (checksum mismatch)"; rm -rf "$tmp"; return 1; fi
+  tar -xzf "$tmp/app.tgz" -C "$tmp" && [ -x "$tmp/herdr-app/herdr-app" ] || { warn "unexpected app archive"; rm -rf "$tmp"; return 1; }
+  if mkdir -p "$LOCAL_BIN" "$(dirname "$dest")" && rm -rf "$dest" && mv "$tmp/herdr-app" "$dest" \
+     && ln -sfn "$dest/herdr-app" "$LOCAL_BIN/herdr-app"; then
+    ok "Herdr desktop app -> $LOCAL_BIN/herdr-app"
+  else
+    warn "couldn't install the Herdr app into $dest"
+  fi
+  rm -rf "$tmp"
+}
+
+install_herdr_app_desktop() {
+  if is_nix_darwin; then
+    info "nix-darwin detected: herdr-app is declared as a cask in nix/.config/nix-darwin/flake.nix"
+    if _ask "Run 'darwin-rebuild switch' now to install it (rebuilds the whole system)?"; then
+      run sudo darwin-rebuild switch --flake "$DOTFILES_DIR/nix/.config/nix-darwin" && return 0
+      warn "darwin-rebuild failed (is this flake for another host?) — falling back to Homebrew"
+    else
+      info "Later: sudo darwin-rebuild switch --flake $DOTFILES_DIR/nix/.config/nix-darwin"
+      return 0
+    fi
+  fi
+  case "$OS" in
+    mac)
+      if [ "$ARCH" != arm64 ]; then warn "the Herdr desktop app is Apple-silicon only — skipping"; return 0; fi
+      if [ -n "$BREW" ]; then
+        run "$BREW" install --cask herdr-app && ok "Herdr desktop app (brew cask)" || warn "brew install --cask herdr-app failed"
+      else
+        warn "no Homebrew — get the app from https://herdr.dev"
+      fi ;;
+    linux) install_herdr_app_linux ;;
+  esac
+}
+
+# my layout (preview-plus Files panel, popup terminals, idle-reaper), keys, theme and mods
+deploy_herdr_app_config() {
+  local h="$HOME/.config/herdr-app"
+  # make the dirs first so stow links individual mods/files instead of folding the whole folder
+  # (the app writes plenty of state of its own in there)
+  run mkdir -p "$h/mods" "$h/layouts" "$h/themes"
+  deploy_packages herdr-app
+  # first start: open on my layout (afterwards the app keeps this file itself)
+  if [ "$DRY_RUN" != 1 ] && [ ! -e "$h/shared.json" ]; then
+    printf '{"layout":"anirudh","workspace.panels":["files","changes"]}\n' > "$h/shared.json"
+  fi
+  # a running window switches over live
+  if [ "$DRY_RUN" != 1 ] && has herdr-app; then herdr-app do layout.switch '{"name":"anirudh"}' >/dev/null 2>&1 || true; fi
+  has python3 || warn "python3 is missing — the claude-manager mod needs it"
+}
+
+module_herdr_app() {
+  step "Herdr app  — herdr-core (hc) + desktop app + my layout, mods and keys"
+  case ":$PATH:" in *":$LOCAL_BIN:"*) ;; *) PATH="$LOCAL_BIN:$PATH"; export PATH ;; esac
+  install_herdr_core
+  if herdr_app_installed; then ok "Herdr desktop app already installed"
+  elif want_herdr_app; then install_herdr_app_desktop
+  else info "Skipping the desktop app (herdr-core is in). Add it later: bash setup.sh --only herdr-app"; fi
+  deploy_herdr_app_config
 }
 
 # write a small machine-local file the rc sources: brew env, PATH, portable aliases
@@ -706,17 +840,18 @@ module_shell() {
       fi
     fi
   else
-    # linux, no sudo -> bash. The good bash config lives on the ugcl branch.
-    has zsh || true
-    info "Deploying bash config from '$LINUX_BRANCH' branch"
+    # linux, no sudo -> bash. The config is this repo's bash/ package.
+    info "Deploying bash config (bash/.bashrc)"
     if [ "$DRY_RUN" != 1 ]; then
-      if git -C "$DOTFILES_DIR" cat-file -e "origin/$LINUX_BRANCH:bash/.bashrc" 2>/dev/null; then
+      if [ -f "$DOTFILES_DIR/bash/.bashrc" ]; then
         [ -f "$HOME/.bashrc" ] && [ ! -L "$HOME/.bashrc" ] && cp -n "$HOME/.bashrc" "$HOME/.bashrc.pre-dotfiles.bak" 2>/dev/null || true
-        git -C "$DOTFILES_DIR" show "origin/$LINUX_BRANCH:bash/.bashrc" > "$HOME/.bashrc" && ok "deployed ~/.bashrc"
-        # guard fragile unconditional sources so a fresh box still gets a clean shell
+        cp "$DOTFILES_DIR/bash/.bashrc" "$HOME/.bashrc" && ok "deployed ~/.bashrc"
+        # guard fragile unconditional sources so a fresh box still gets a clean shell, and make the
+        # oh-my-bash path follow $HOME instead of one machine's /home/<user>
         sed -i.bak -E \
           -e 's#^([[:space:]]*)source "\$HOME/.local/share/blesh/ble.sh"#\1[ -f "$HOME/.local/share/blesh/ble.sh" ] \&\& source "$HOME/.local/share/blesh/ble.sh"#' \
           -e 's#^\. "\$HOME/.cargo/env"#[ -f "$HOME/.cargo/env" ] \&\& . "$HOME/.cargo/env"#' \
+          -e 's#^export OSH=.*#export OSH="$HOME/.oh-my-bash"#' \
           "$HOME/.bashrc" 2>/dev/null && rm -f "$HOME/.bashrc.bak"
         # oh-my-bash is a hard dependency of that bashrc
         if [ ! -d "$HOME/.oh-my-bash" ]; then
@@ -724,14 +859,15 @@ module_shell() {
           run sh -c 'export OSH="$HOME/.oh-my-bash"; curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh | bash -s -- --unattended' </dev/null || warn "oh-my-bash install failed"
         fi
       else
-        warn "Could not read bash/.bashrc from $LINUX_BRANCH; keeping existing ~/.bashrc"
+        warn "$DOTFILES_DIR/bash/.bashrc is missing; keeping existing ~/.bashrc"
       fi
     fi
     write_shell_local "$HOME/.bashrc.local" bash
   fi
 
   # shared user-level configs, regardless of shell
-  deploy_packages nvim yazi
+  # 'bin' stows ~/.local/bin scripts (mathlib, ...) — already on PATH.
+  deploy_packages nvim yazi bin
 
   install_nerd_font
 
@@ -778,7 +914,7 @@ interactive_account_setup() {
   fi
 }
 
-ALL_MODULES="core dev nvim ghostty herdr shell"
+ALL_MODULES="core dev nvim ghostty herdr herdr-app shell"
 
 run_module() { case "$1" in
   core)    module_core ;;
@@ -786,6 +922,7 @@ run_module() { case "$1" in
   nvim)    module_nvim ;;
   ghostty) module_ghostty ;;
   herdr)   module_herdr ;;
+  herdr-app) module_herdr_app ;;
   shell)   module_shell ;;
   *) warn "unknown module: $1" ;;
 esac; }
@@ -802,17 +939,18 @@ choose_modules() {
   ${C_GRN}3${C_RST}) nvim     — neovim + treesitter + LSPs (python/lean/C/C++/lua/markdown)
   ${C_GRN}4${C_RST}) ghostty  — config + terminfo
   ${C_GRN}5${C_RST}) herdr    — install + config (h = herdr)
-  ${C_GRN}6${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
+  ${C_GRN}6${C_RST}) herdr-app — herdr-core (hc) + the desktop app (asks) + my layout, mods, keys
+  ${C_GRN}7${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
   ${C_GRN}a${C_RST}) all of the above   ${C_DIM}(default)${C_RST}
 EOF
-  printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 6' or 'a'): " >&2
+  printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 7' or 'a'): " >&2
   local ans; read -r ans || true
   ans="${ans:-a}"
   case "$ans" in *a*|"") echo "$ALL_MODULES"; return;; esac
   local out=""
   for n in $ans; do case "$n" in
     1) out="$out core";; 2) out="$out dev";; 3) out="$out nvim";;
-    4) out="$out ghostty";; 5) out="$out herdr";; 6) out="$out shell";;
+    4) out="$out ghostty";; 5) out="$out herdr";; 6) out="$out herdr-app";; 7) out="$out shell";;
   esac; done
   echo "${out:-$ALL_MODULES}"
 }
@@ -870,6 +1008,7 @@ main() {
     • Restart your terminal (or: ${C_B}exec $SHELL_TARGET${C_RST}) to load everything.
     • ${C_B}nvim${C_RST}  — first launch finishes any remaining plugin/parser installs.
     • ${C_B}h${C_RST}     — herdr    ${C_DIM}(prefix Ctrl+a, like your old tmux)${C_RST}
+    • ${C_B}herdr-app${C_RST} — desktop app; ${C_B}hc${C_RST} — its terminals CLI  ${C_DIM}(⌘/ shell, ⌘G lazygit, ⌘Y yazi popups)${C_RST}
     • ${C_B}cr${C_RST}    — claude -r
     • Fonts: install a Nerd Font (MesloLGS NF) on your *local* machine's terminal.
 

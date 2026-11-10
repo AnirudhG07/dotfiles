@@ -28,7 +28,15 @@ The most important component is homebrew. After installing homebrew, I have conf
 
 ## Setup
 
-To download this configuration, you can do it manually by copy pasting or simply run -
+One command, on a fresh macOS or Linux box (with or without sudo). It clones this repo to `~/dotfiles`
+and asks what to set up — see it at <https://anirudhg07.github.io/dotfiles/>:
+
+```bash
+curl -fsSL https://anirudhg07.github.io/dotfiles/setup.sh -o setup.sh
+bash setup.sh              # interactive;  --all | --only core,nvim,shell | --dry-run
+```
+
+Or by hand:
 
 ```bash
 cd
@@ -63,12 +71,13 @@ If you are using Nix, you can simply run `nix-shell` and everything will be setu
 
 ## Terminal Emulator
 
-I might be changing terminal emulators here and there, so I have some of the configurations for shitty things in the "master" branch. The most important thing there is the `iTERM colorschemes` which you use (mainly 2).
+I might be changing terminal emulators here and there; older configs (the `iTERM colorschemes` I mainly use, kitty, wezterm) live in the `archive/master` tag.
 
-To try kitty and wezterm, you can also go to `ugcl` branch to configure them, my machine was Ubuntu 22.04.
+To try kitty and wezterm on Linux, see the `archive/ugcl` tag (that machine was Ubuntu 22.04).
 
-## Branches details
+## Branches
 
-- `stow` is the master branch containing my MacOS configurations
-- `ugcl` is the branch with all my settings in IISc UGCL Ubuntu 22.04 (cant install everything due to restricted access)
-- `master` is branch full of shit and some configs which you may need or never need.
+- `main` is the only branch: macOS (zsh) and Linux configs, including `bash/` for Linux machines without
+  sudo — `setup.sh` picks zsh on macOS and on Linux with sudo, bash + oh-my-bash otherwise.
+- The old `ugcl` (IISc UGCL Ubuntu, bash) and `master` (older experiments: iTerm2 colorschemes, kitty,
+  wezterm, …) branches are kept as the tags `archive/ugcl` and `archive/master`.

@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dotfiles — anirudh's terminal setup</title>
+<meta name="description" content="One command sets up a fresh macOS or Linux box — zsh, neovim, herdr, yazi, lazygit and more. With or without sudo.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231a1b26'/%3E%3Ctext x='4' y='22' font-family='monospace' font-size='15' font-weight='700' fill='%237aa2f7'%3E$_%3C/text%3E%3C/svg%3E">
+<script>document.documentElement.classList.add('js');try{if(localStorage.getItem('theme')==='day')document.documentElement.dataset.theme='day'}catch(e){}</script>
+<style>
+:root{
+  --bg:#1a1b26; --fg:#c0caf5; --dim:#565f89; --surface:#24283b; --sel:#33467c;
+  --blue:#7aa2f7; --cyan:#7dcfff; --green:#9ece6a; --yellow:#e0af68; --red:#f7768e; --mag:#bb9af7; --orange:#ff9e64;
+}
+:root[data-theme="day"]{
+  --bg:#e1e2e7; --fg:#3760bf; --dim:#848cb5; --surface:#d0d5e3; --sel:#b7c1e3;
+  --blue:#2e7de9; --cyan:#007197; --green:#587539; --yellow:#8c6c3e; --red:#f52a65; --mag:#9854f1; --orange:#b15c00;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:14px/1.55 ui-monospace,"JetBrains Mono","SF Mono","Cascadia Code",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  -webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
+::selection{background:var(--sel);color:var(--fg)}
+#term{max-width:94ch;margin:0 auto;padding:22px 16px 84px}
+pre{margin:0;font:inherit;white-space:pre-wrap;overflow-wrap:anywhere}
+a{color:var(--blue);text-decoration:none}
+a:hover,a:focus-visible{text-decoration:underline}
+i{font-style:normal}
+.d{color:var(--dim)} .b{color:var(--blue)} .c{color:var(--cyan)} .g{color:var(--green)} .y{color:var(--yellow)}
+.r{color:var(--red)} .m{color:var(--mag)} .o{color:var(--orange)} .sel{background:var(--sel);color:var(--fg)}
+.bold{font-weight:700}
+.l{margin:0 0 .2em}
+.gap{margin-top:1.1em}
+.ps .u{color:var(--green)} .ps .at{color:var(--dim)} .ps .h{color:var(--blue)} .ps .p{color:var(--mag)} .ps .s{color:var(--yellow)}
+button.cmd{all:unset;cursor:pointer;color:var(--fg);overflow-wrap:anywhere}
+button.cmd:hover,button.cmd:focus-visible{text-decoration:underline;text-decoration-color:var(--dim);text-underline-offset:3px}
+button.cmd:focus-visible{outline:1px dashed var(--blue);outline-offset:3px}
+.kv{display:grid;grid-template-columns:max-content 1fr;column-gap:2ch;margin:.15em 0 .15em 2ch}
+.kv>b{font-weight:400}
+.art{white-space:pre;overflow-x:auto;line-height:1.25;padding:2px 0 6px;margin-top:.5em}
+.art .w{display:inline-block;width:1ch;text-align:center;font-weight:inherit;overflow:hidden;vertical-align:bottom}
+.banner{color:var(--mag);font-weight:700;white-space:pre;overflow-x:auto}
+.rule{color:var(--dim);overflow:hidden;white-space:nowrap}
+.menu b{font-weight:400}
+.cur{display:inline-block;width:.62em;height:1.15em;background:var(--fg);vertical-align:text-bottom;animation:blink 1.05s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@keyframes in{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+html.js:not(.skip) .l{opacity:0;animation:in .18s ease-out forwards;animation-delay:min(calc(var(--i,0)*38ms),2600ms)}
+form{display:flex;gap:1ch;align-items:baseline;margin-top:.9em}
+form label{flex:none}
+#in{flex:1;min-width:0;background:none;border:0;outline:0;padding:0;color:var(--fg);font:inherit;caret-color:var(--fg)}
+#out>div{margin:0 0 .15em;white-space:pre-wrap;overflow-wrap:anywhere}
+#out .echo{margin-top:.7em}
+.bar{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:12px;
+  background:var(--surface);color:var(--dim);font-size:12.5px;line-height:1;padding:0;white-space:nowrap;overflow:hidden}
+.bar span{padding:7px 10px}
+.bar .name{background:var(--blue);color:var(--bg);font-weight:700}
+.bar .cur-win{color:var(--fg)}
+.bar .right{margin-left:auto}
+.bar .hint{color:var(--dim)}
+.toast{position:fixed;right:14px;bottom:40px;background:var(--surface);color:var(--green);padding:6px 10px;border:1px solid var(--dim);
+  opacity:0;pointer-events:none;transition:opacity .15s;font-size:12.5px}
+.toast.on{opacity:1}
+@media (max-width:640px){
+  body{font-size:12.5px}
+  #term{padding:14px 12px 76px}
+  .kv{grid-template-columns:1fr;margin-left:1ch;margin-bottom:.5em}
+  .kv>b{margin-top:.35em}
+  .bar .hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html.js .l{opacity:1!important;animation:none!important}
+  .cur{animation:none}
+}
+</style>
+</head>
+<body>
+<main id="term" aria-label="dotfiles setup — terminal">
+
+<div class="l"><span class="ps"><i class="u">anirudh</i><i class="at">@</i><i class="h">laptop</i> <i class="p">~</i> <i class="s">$</i></span> <button class="cmd" type="button" data-copy="curl -fsSL https://anirudhg07.github.io/dotfiles/setup.sh -o setup.sh" title="click to copy">curl -fsSL https://anirudhg07.github.io/dotfiles/setup.sh -o setup.sh</button></div>
+<div class="l"><span class="ps"><i class="u">anirudh</i><i class="at">@</i><i class="h">laptop</i> <i class="p">~</i> <i class="s">$</i></span> <button class="cmd" type="button" data-copy="bash setup.sh" title="click to copy">bash setup.sh</button></div>
+
+<pre class="l banner gap">   ___      _   _____ _ _
+  |   \ ___| |_|  ___(_) | ___ ___
+  | |) / _ \  _| |_  | | |/ -_|_-&lt;
+  |___/\___/\__|_|   |_|_|\___/__/   setup.sh</pre>
+<div class="l d">  Anirudh's machine bootstrapper — macOS &amp; Linux, sudo or not</div>
+
+<div class="l gap"><i class="m bold">==&gt;</i> <i class="bold">Detecting environment</i></div>
+<div class="l"><i class="g">✓</i> OS=mac  arch=arm64  sudo=no  brew=yes  shell=<i class="bold">zsh</i></div>
+<div class="l d">  <i class="d">(Linux without sudo? it picks</i> bash + oh-my-bash <i class="d">instead — no root needed, anywhere.)</i></div>
+
+<div class="l gap bold">What should I set up?</div>
+<div class="l menu">
+  <i class="g">1</i>) core&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— yazi lazygit fzf ripgrep fd bat eza zoxide delta jq tldr stow<br>
+  <i class="g">2</i>) dev&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— uv, python, node+nvm, gh, claude <i class="d">(cr = claude -r)</i><br>
+  <i class="g">3</i>) nvim&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— neovim + treesitter + LSPs <i class="d">(python/lean/C/C++/lua/markdown)</i><br>
+  <i class="g">4</i>) ghostty&nbsp;&nbsp;&nbsp;— config + terminfo<br>
+  <i class="g">5</i>) herdr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— install + config <i class="d">(h = herdr, prefix ctrl+a)</i><br>
+  <i class="g">6</i>) herdr-app&nbsp;— herdr-core (<i class="c">hc</i>) + the desktop app <i class="d">(asks)</i> + my layout, mods, keys<br>
+  <i class="g">7</i>) shell&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— zsh + powerlevel10k + my aliases/configs, stow-deployed<br>
+  <i class="g">a</i>) all of the above&nbsp;&nbsp;<i class="d">(default)</i>
+</div>
+<div class="l"><i class="c">?</i> Enter choices (e.g. '1 3 7' or 'a'): <i class="bold">a</i></div>
+
+<div class="l gap"><span class="ps"><i class="u">anirudh</i><i class="at">@</i><i class="h">laptop</i> <i class="p">~</i> <i class="s">$</i></span> ls ~/dotfiles</div>
+<div class="l kv">
+  <b class="b">shell</b><span>zsh  p10k.zsh  bash</span>
+  <b class="b">editor</b><span>nvim</span>
+  <b class="b">terminal</b><span>ghostty  tmux  herdr  <i class="c">herdr-app</i>  yazi  television</span>
+  <b class="b">cli</b><span>bin  cheatshh  taskwarrior</span>
+  <b class="b">macos</b><span>aerospace  yabai  skhd  sketchybar  simplebar  borders  macos <i class="d">(Brewfile)</i></span>
+  <b class="b">linux</b><span>rofi <i class="d">(+ a break-reminder timer)</i></span>
+  <b class="b">nix</b><span>nix-darwin flake + home-manager</span>
+</div>
+<div class="l d">  every directory is a stow package — symlinked into $HOME, nothing copied, re-run any time</div>
+
+<div class="l gap"><span class="ps"><i class="u">anirudh</i><i class="at">@</i><i class="h">laptop</i> <i class="p">~</i> <i class="s">$</i></span> herdr-app</div>
+<div class="l d">  Tokyo Night, agents in the sidebar, files in the side panel — the whole window is a config in this repo:</div>
+<pre class="l art" role="img" aria-label="ASCII sketch of the herdr-app window: spaces and agents on the left, a Claude Code pane in the middle, a file tree on the right"><i class="d">┌───────────────────┬──────────────────────────────────┬───────────────────┐</i>
+<i class="d">│</i><i class="b"> Herdr</i>             <i class="d">│</i><i class="d"> <b class="w">⌗</b> 1 </i><i class="sel"> 2 </i><i class="y"><b class="w">◐</b></i><i class="d"> <b class="w">×</b></i>                       <i class="d">│</i><i class="sel"> Files</i><i class="d">  Changes</i>    <i class="d">│</i>
+<i class="d">│</i><i class="d"> Spaces</i><i class="d">           +</i><i class="d">│</i>                                  <i class="d">│</i><i class="d"> ~/dotfiles</i>        <i class="d">│</i>
+<i class="d">│</i><i class="g"> <b class="w">●</b> </i><i class="b">dotfiles</i><i class="d">  main</i>  <i class="d">│</i><i class="b"> Claude Code </i><i class="d">~/dotfiles</i>           <i class="d">│</i><i class="d"> <b class="w">›</b> </i>aerospace       <i class="d">│</i>
+<i class="d">│</i><i class="d"> <b class="w">▣</b> </i><i class="d">10.134.10.33</i>    <i class="d">│</i><i class="d"> ──────────────────────────────</i>   <i class="d">│</i><i class="d"> <b class="w">›</b> </i>bin             <i class="d">│</i>
+<i class="d">│</i><i class="d">   SeQLean</i><i class="g">   <b class="w">↑</b>2</i>    <i class="d">│</i><i class="o"> <b class="w">✻</b> wiring setup.sh <b class="w">…</b></i>              <i class="d">│</i><i class="d"> <b class="w">›</b> </i><i class="b">herdr-app</i>       <i class="d">│</i>
+<i class="d">│</i><i class="d"> <b class="w">▣</b> </i><i class="d">10.192.53.10</i>    <i class="d">│</i><i class="g"> <b class="w">●</b> </i><i class="d">Read  setup.sh</i>                 <i class="d">│</i><i class="d"> <b class="w">›</b> </i>nvim            <i class="d">│</i>
+<i class="d">│</i><i class="d">   anirudh</i>         <i class="d">│</i><i class="g"> <b class="w">●</b> </i><i class="d">Edit  flake.nix</i>                <i class="d">│</i><i class="d"> <b class="w">›</b> </i>yazi            <i class="d">│</i>
+<i class="d">│</i>                   <i class="d">│</i><i class="g"> <b class="w">●</b> </i><i class="d">Bash  bash -n setup.sh</i>         <i class="d">│</i><i class="d"> <b class="w">›</b> </i>zsh             <i class="d">│</i>
+<i class="d">│</i><i class="d"> Agents</i>            <i class="d">│</i>                                  <i class="d">│</i><i class="d">   README.md</i>       <i class="d">│</i>
+<i class="d">│</i><i class="y"> Working</i><i class="d"> 1</i>         <i class="d">│</i><i class="b"> <b class="w">❯</b> </i><i class="d">also add herdr-app<b class="w">…</b></i>            <i class="d">│</i><i class="d">   setup.sh</i><i class="y">    M</i>   <i class="d">│</i>
+<i class="d">│</i><i class="y"> <b class="w">◐</b> </i><i class="b">dotfiles</i><i class="d">    &lt;1m</i> <i class="d">│</i><i class="d"> ──────────────────────────────</i>   <i class="d">│</i>                   <i class="d">│</i>
+<i class="d">│</i><i class="d"> Idle</i><i class="d"> 2</i>            <i class="d">│</i><i class="y"> <b class="w">⏵</b><b class="w">⏵</b> auto mode on</i>                  <i class="d">│</i><i class="d"> </i>                  <i class="d">│</i>
+<i class="d">│</i><i class="d"> <b class="w">○</b> </i><i class="d">SeQLean</i><i class="d">     3m</i>  <i class="d">│</i>                                  <i class="d">│</i>                   <i class="d">│</i>
+<i class="d">│</i><i class="d"> <b class="w">⚙</b> Settings</i>        <i class="d">│</i>                                  <i class="d">│</i>                   <i class="d">│</i>
+<i class="d">└───────────────────┴──────────────────────────────────┴───────────────────┘</i>
+<i class="d">  <b class="w">⌂</b> This computer    <b class="w">⎇</b> main    <b class="w">●</b> 4 agents</i>                     <i class="d"><b class="w">⌘</b><b class="w">⇧</b>P commands  </i></pre>
+<div class="l kv">
+  <b class="y">⌘/</b><span>popup shell</span>
+  <b class="y">⌘G</b><span>popup <i class="c">lazygit</i></span>
+  <b class="y">⌘Y</b><span>popup <i class="c">yazi</i> <i class="d">— opens in the focused terminal's folder, or over ssh on the same host</i></span>
+  <b class="y">⌘⇧K</b><span><i class="c">claude-manager</i> — toggle Claude Code skills / commands / agents / MCP / hooks / plugins</span>
+  <b class="g">files</b><span><i class="c">preview-plus</i> — rendered Markdown, JSON, CSV, images, PDF in the Files panel</span>
+  <b class="g">reaper</b><span><i class="c">idle-reaper</i> — parks agents idle for 4h, closes parked panes after 3 days</span>
+</div>
+<div class="l d">  herdr-core (<i class="c">hc</i>) goes on every machine; the desktop app is asked about (default yes on a Mac, no on a server)</div>
+
+<div class="l gap"><span class="ps"><i class="u">anirudh</i><i class="at">@</i><i class="h">laptop</i> <i class="p">~</i> <i class="s">$</i></span> bash setup.sh --help</div>
+<div class="l">
+Usage: bash setup.sh [options]<br>
+&nbsp;&nbsp;<i class="g">--all</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;install everything, no prompts<br>
+&nbsp;&nbsp;<i class="g">--only</i> m1,m2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;only these modules <i class="d">(core dev nvim ghostty herdr herdr-app shell)</i><br>
+&nbsp;&nbsp;<i class="g">--dry-run</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print actions without doing them<br>
+&nbsp;&nbsp;<i class="g">-h</i>, <i class="g">--help</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this help
+</div>
+
+<div class="l gap"><i class="g">✓</i> Safe to re-run — every step is idempotent.</div>
+<div class="l d">  or in one go: <button class="cmd" type="button" data-copy="curl -fsSL https://anirudhg07.github.io/dotfiles/setup.sh | bash" title="click to copy">curl -fsSL https://anirudhg07.github.io/dotfiles/setup.sh | bash</button></div>
+<div class="l d">  source: <a href="https://github.com/AnirudhG07/dotfiles">github.com/AnirudhG07/dotfiles</a> · read <a href="setup.sh">setup.sh</a> before you run it</div>
+
+<div class="l gap d">type <i class="y">help</i> — this prompt is live</div>
+<div id="out" aria-live="polite"></div>
+<form id="f" autocomplete="off">
+  <label for="in" class="ps"><i class="u">anirudh</i><i class="at">@</i><i class="h">laptop</i> <i class="p">~</i> <i class="s">$</i></label>
+  <input id="in" type="text" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off" aria-label="terminal input">
+</form>
+</main>
+
+<div class="bar" role="presentation">
+  <span class="name">[dotfiles]</span>
+  <span>0:zsh</span><span class="cur-win">1:setup.sh*</span>
+  <span class="right hint">type help · click a command to copy</span>
+  <span>⎇ main</span>
+  <span id="clock">--:--</span>
+</div>
+<div class="toast" id="toast" role="status">copied</div>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)}, out=$('#out'), inp=$('#in'), root=document.documentElement;
+  // stagger the reveal, and let any key or click skip it
+  document.querySelectorAll('#term > .l').forEach(function(el,i){el.style.setProperty('--i',i)});
+  function skip(){root.classList.add('skip')}
+  // typing anywhere goes to the prompt (no autofocus: that would scroll the page to the bottom on load)
+  addEventListener('keydown',function(e){
+    if(document.activeElement===inp||e.metaKey||e.ctrlKey||e.altKey)return;
+    if(e.key.length===1||e.key==='Enter'){inp.focus({preventScroll:false})}
+  });
+  addEventListener('keydown',skip,{once:true}); addEventListener('pointerdown',skip,{once:true});
+
+  // clock
+  function tick(){var d=new Date();$('#clock').textContent=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+  tick(); setInterval(tick,20000);
+
+  // click a command to copy it
+  var toast=$('#toast'), tt;
+  function copy(text){
+    function done(){toast.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('on')},1100)}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){})}
+    else{var t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(e){}t.remove()}
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('button.cmd'); if(b){copy(b.dataset.copy);return}
+    if(!window.getSelection().toString()) inp.focus();
+  });
+
+  // the live prompt
+  var H=function(rows){return rows.join('\n')};
+  var CMD={
+    help:function(){return H([
+      'commands:',
+      '  <i class="g">install</i>   how to run it',
+      '  <i class="g">modules</i>   what setup.sh can install',
+      '  <i class="g">ls</i>        what is in the repo',
+      '  <i class="g">tree</i>      the herdr-app config',
+      '  <i class="g">keys</i>      herdr-app shortcuts',
+      '  <i class="g">neofetch</i>  the setup at a glance',
+      '  <i class="g">theme</i>     tokyo night ⇄ day',
+      '  <i class="g">clear</i>'])},
+    install:function(){return H([
+      '<i class="d"># download, read it, run it</i>',
+      'curl -fsSL https://anirudhg07.github.io/dotfiles/setup.sh -o setup.sh',
+      'bash setup.sh <i class="d">[--all | --only core,nvim,shell | --dry-run]</i>',
+      '',
+      '<i class="d"># or from a clone</i>',
+      'git clone https://github.com/AnirudhG07/dotfiles ~/dotfiles &amp;&amp; bash ~/dotfiles/setup.sh'])},
+    modules:function(){return H([
+      '<i class="g">core</i>       yazi lazygit fzf ripgrep fd bat eza zoxide delta jq tldr stow',
+      '<i class="g">dev</i>        uv, python, node+nvm, gh, claude',
+      '<i class="g">nvim</i>       neovim + treesitter + LSPs',
+      '<i class="g">ghostty</i>    config + terminfo',
+      '<i class="g">herdr</i>      the terminal multiplexer + config',
+      '<i class="g">herdr-app</i>  herdr-core (hc) + desktop app + layout, mods, keys',
+      '<i class="g">shell</i>      zsh + powerlevel10k  <i class="d">(bash + oh-my-bash on Linux without sudo)</i>'])},
+    ls:function(){return H([
+      '<i class="b">aerospace</i>  <i class="b">bash</i>  <i class="b">bin</i>  <i class="b">borders</i>  <i class="b">cheatshh</i>  <i class="b">ghostty</i>  <i class="b">herdr</i>  <i class="b">herdr-app</i>',
+      '<i class="b">macos</i>  <i class="b">nix</i>  <i class="b">nvim</i>  <i class="b">p10k.zsh</i>  <i class="b">rofi</i>  <i class="b">simplebar</i>  <i class="b">sketchybar</i>  <i class="b">skhd</i>',
+      '<i class="b">taskwarrior</i>  <i class="b">television</i>  <i class="b">tmux</i>  <i class="b">yabai</i>  <i class="b">yazi</i>  <i class="b">zsh</i>  README.md  setup.sh'])},
+    tree:function(){return H([
+      '<i class="b">herdr-app/.config/herdr-app</i>',
+      '├── keys.json',
+      '├── settings.json',
+      '├── layouts/anirudh.json',
+      '├── themes/tokyo-night.json',
+      '└── mods/',
+      '    ├── <i class="c">preview-plus</i>',
+      '    ├── <i class="c">claude-manager</i>',
+      '    ├── <i class="c">idle-reaper</i>',
+      '    └── <i class="c">popup-term</i>'])},
+    keys:function(){return H([
+      '<i class="y">⌘/</i>    popup shell',
+      '<i class="y">⌘G</i>    popup lazygit',
+      '<i class="y">⌘Y</i>    popup yazi      <i class="d">same key again closes it</i>',
+      '<i class="y">⌘⇧K</i>   claude-manager',
+      '<i class="y">⌘⇧L</i>   switch layout'])},
+    neofetch:function(){return H([
+      '<i class="b">anirudh</i><i class="d">@</i><i class="b">laptop</i>',
+      '<i class="d">───────────────</i>',
+      '<i class="b">os</i>        macOS · Linux <i class="d">(sudo or not)</i>',
+      '<i class="b">shell</i>     zsh + powerlevel10k · bash + oh-my-bash',
+      '<i class="b">terminal</i>  ghostty · herdr · tmux',
+      '<i class="b">editor</i>    neovim',
+      '<i class="b">files</i>     yazi · television',
+      '<i class="b">git</i>       lazygit · delta · gh',
+      '<i class="b">wm</i>        aerospace · yabai + skhd · sketchybar',
+      '<i class="b">theme</i>     Tokyo Night'])},
+    whoami:function(){return 'anirudh'},
+    theme:function(){var day=root.dataset.theme==='day';if(day){delete root.dataset.theme}else{root.dataset.theme='day'}
+      try{localStorage.setItem('theme',day?'night':'day')}catch(e){}
+      return 'theme: '+(day?'tokyo night':'tokyo night day')+' <i class="d">(run theme again to switch back)</i>'},
+    sudo:function(){return 'anirudh is not in the sudoers file. This incident will not be reported.'},
+    clear:function(){out.innerHTML='';return null}
+  };
+  CMD.ll=CMD.ls; CMD.cat=function(a){return a[0]==='setup.sh'?'<a href="setup.sh">setup.sh</a> — opens the real script':'cat: '+(a[0]||'')+': No such file or directory'};
+  var hist=[],hp=0;
+  function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+  function line(html,cls){var d=document.createElement('div');if(cls)d.className=cls;d.innerHTML=html;out.appendChild(d)}
+  $('#f').addEventListener('submit',function(e){
+    e.preventDefault();
+    var raw=inp.value, v=raw.trim(); inp.value='';
+    line('<span class="ps"><i class="u">anirudh</i><i class="at">@</i><i class="h">laptop</i> <i class="p">~</i> <i class="s">$</i></span> '+esc(raw),'echo');
+    if(!v){return}
+    hist.push(v); hp=hist.length;
+    var p=v.split(/\s+/), name=p[0], fn=CMD[name];
+    if(fn){var r=fn(p.slice(1)); if(r!==null) line(r)}
+    else line('zsh: command not found: '+esc(name),'r');
+    scrollTo(0,document.body.scrollHeight);
+  });
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='ArrowUp'){e.preventDefault();if(hp>0){hp--;inp.value=hist[hp]}}
+    else if(e.key==='ArrowDown'){e.preventDefault();if(hp<hist.length-1){hp++;inp.value=hist[hp]}else{hp=hist.length;inp.value=''}}
+    else if(e.key==='Tab'){e.preventDefault();var v=inp.value;if(v){var m=Object.keys(CMD).filter(function(k){return k.indexOf(v)===0});if(m.length===1)inp.value=m[0]}}
+    else if(e.key==='l'&&e.ctrlKey){e.preventDefault();out.innerHTML=''}
+  });
+})();
+</script>
+</body>
+</html>
