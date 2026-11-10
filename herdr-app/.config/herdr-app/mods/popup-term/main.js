@@ -2,15 +2,15 @@
 // It closes itself when the program exits (the overlay ends with its terminal) or with the title bar's ✕.
 //
 // Keys (keys.json) send "<mod>.<name>": "cmd-/": "popup-term.shell", "cmd-g": "popup-term.lazygit", "cmd-y": "popup-term.yazi".
-// Remote machines that need a password again (`hc machine ls`: needs_login) get a login popup by themselves,
-// one machine at a time, once per time it happens; `herdr-app do popup-term.login` asks again right away.
+// Clicking a machine's "needs login" in the sidebar (the spaces-plus mod) opens `hc machine login` for it here;
+// `herdr-app do popup-term.login` does the same for the first machine that needs one.
 //
 // Edit POPUPS below to add one. It needs a zero-size block in the layout so it is always alive:
 //   { "id": "popup-term", "type": "block", "size": { "px": 0 }, "content": { "mod": "popup-term" } }
 
 import { View, div } from "gpui-kit";
 import { h_flex } from "gpui-base";
-import { exec, focused, home, nextCommand, openOverlay, closeOverlay, props, run, spaces, terminals, theme, notify } from "herdr";
+import { exec, focused, home, nextCommand, openOverlay, closeOverlay, props, run, shared, setShared, spaces, terminals, theme, notify } from "herdr";
 
 // name -> { argv: program + args (omit: the default shell), title, w, h: share of the window }
 const POPUPS = {
@@ -23,9 +23,6 @@ export default class PopupTerm extends View {
   init(_props, cx) {
     // The overlay's title-bar copy has props.bar and only draws.
     if (props()?.bar) return;
-    this.asked = new Set(); // machines already given a login popup while they need one
-    cx.timer.after(4000, (cx) => this.checkLogins(cx));
-    cx.timer.every(20000, (cx) => this.checkLogins(cx));
     cx.spawn(async (cx) => {
       for (;;) {
         const name = (await nextCommand()).trim();
@@ -33,8 +30,9 @@ export default class PopupTerm extends View {
         // keeps waiting here and answers keys with its old list.
         cx.notify();
         if (name === "login") {
-          this.asked.clear();
-          this.checkLogins(cx);
+          const machine = shared("popup-term.login");
+          setShared("popup-term.login", null);
+          await this.login(machine, cx);
           continue;
         }
         const spec = POPUPS[name];
@@ -54,32 +52,30 @@ export default class PopupTerm extends View {
     });
   }
 
-  // A machine that says needs_login gets `hc machine login <name>` in a popup here: it asks for the password (or
-  // code) and the machine comes back. Closing the popup without logging in doesn't make it ask again until the
-  // machine has been logged in and needs it once more (or popup-term.login).
-  checkLogins(cx) {
-    if (this.checking) return;
-    this.checking = true;
-    cx.spawn(async (cx) => {
+  // `hc machine login <machine>` in a popup: it asks for the password (or code) and the machine comes back.
+  // Opened only on request: clicking "needs login" in the sidebar (spaces-plus) sets shared "popup-term.login"
+  // to the machine and sends popup-term.login. With no machine given, the first one that needs a login.
+  async login(machine, cx) {
+    const up = this.up?.login;
+    if (up && terminals().some((t) => t.address === up.address && t.state === "live")) {
+      run("terminal.kill", { terminal: up.address });
+      closeOverlay(up.id);
+    }
+    if (!machine) {
       try {
         const r = await exec("hc", ["machine", "ls", "--json"]);
-        const need = (JSON.parse(r.stdout).machines ?? []).filter((m) => m.state === "needs_login").map((m) => m.name);
-        for (const n of [...this.asked]) if (!need.includes(n)) this.asked.delete(n);
-        const up = this.up?.login;
-        if (up && terminals().some((t) => t.address === up.address && t.state === "live")) return; // one at a time
-        const next = need.find((n) => !this.asked.has(n));
-        if (!next) return;
-        this.asked.add(next);
-        const script =
-          'echo "$1 needs you to log in again."; echo; ' +
-          'if hc machine login "$1"; then echo; echo "logged in."; sleep 1; ' +
-          'else echo; echo "login did not finish. Press Enter to close (it will not ask again until next time)."; read _; fi';
-        await this.open("login", { local: true, title: `Log in: ${next}`, w: 0.55, h: 0.45, argv: ["sh", "-c", script, "sh", next] }, cx);
-      } catch {
-      } finally {
-        this.checking = false;
+        machine = (JSON.parse(r.stdout).machines ?? []).find((m) => m.state === "needs_login")?.name;
+      } catch {}
+      if (!machine) {
+        notify({ title: "Log in", body: "no machine needs a login", level: "info" });
+        return;
       }
-    });
+    }
+    const script =
+      'echo "Logging in to $1"; echo; ' +
+      'if hc machine login "$1"; then echo; echo "logged in."; sleep 1; ' +
+      'else echo; echo "login did not finish. Press Enter to close."; read _; fi';
+    await this.open("login", { local: true, title: `Log in: ${machine}`, w: 0.55, h: 0.45, argv: ["sh", "-c", script, "sh", machine] }, cx);
   }
 
   // Where the popup should run, from the terminal that has focus:

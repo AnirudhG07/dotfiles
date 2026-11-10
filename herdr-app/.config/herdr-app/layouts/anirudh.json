@@ -29,7 +29,7 @@
               "id": "spaces",
               "type": "block",
               "content": {
-                "mod": "spaces"
+                "mod": "spaces-plus"
               },
               "size": {
                 "weight": 1
