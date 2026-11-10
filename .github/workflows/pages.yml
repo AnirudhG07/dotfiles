@@ -33,6 +33,7 @@ jobs:
           mkdir _site
           cp site/index.html _site/index.html
           cp setup.sh _site/setup.sh
+          git ls-files > _site/files.txt   # the page's pretend shell lists/cd's over the real tree
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
