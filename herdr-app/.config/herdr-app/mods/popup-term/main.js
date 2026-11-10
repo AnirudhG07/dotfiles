@@ -2,6 +2,9 @@
 // It closes itself when the program exits (the overlay ends with its terminal) or with the title bar's ✕.
 //
 // Keys (keys.json) send "<mod>.<name>": "cmd-/": "popup-term.shell", "cmd-g": "popup-term.lazygit", "cmd-y": "popup-term.yazi".
+// Remote machines that need a password again (`hc machine ls`: needs_login) get a login popup by themselves,
+// one machine at a time, once per time it happens; `herdr-app do popup-term.login` asks again right away.
+//
 // Edit POPUPS below to add one. It needs a zero-size block in the layout so it is always alive:
 //   { "id": "popup-term", "type": "block", "size": { "px": 0 }, "content": { "mod": "popup-term" } }
 
@@ -20,12 +23,20 @@ export default class PopupTerm extends View {
   init(_props, cx) {
     // The overlay's title-bar copy has props.bar and only draws.
     if (props()?.bar) return;
+    this.asked = new Set(); // machines already given a login popup while they need one
+    cx.timer.after(4000, (cx) => this.checkLogins(cx));
+    cx.timer.every(20000, (cx) => this.checkLogins(cx));
     cx.spawn(async (cx) => {
       for (;;) {
         const name = (await nextCommand()).trim();
         // Touching cx is what ends this loop when the mod is saved and reloaded: otherwise the old build
         // keeps waiting here and answers keys with its old list.
         cx.notify();
+        if (name === "login") {
+          this.asked.clear();
+          this.checkLogins(cx);
+          continue;
+        }
         const spec = POPUPS[name];
         if (!spec) {
           notify({ title: "Popup terminal", body: `no popup named "${name}"`, level: "error" });
@@ -39,6 +50,34 @@ export default class PopupTerm extends View {
           continue;
         }
         await this.open(name, spec, cx);
+      }
+    });
+  }
+
+  // A machine that says needs_login gets `hc machine login <name>` in a popup here: it asks for the password (or
+  // code) and the machine comes back. Closing the popup without logging in doesn't make it ask again until the
+  // machine has been logged in and needs it once more (or popup-term.login).
+  checkLogins(cx) {
+    if (this.checking) return;
+    this.checking = true;
+    cx.spawn(async (cx) => {
+      try {
+        const r = await exec("hc", ["machine", "ls", "--json"]);
+        const need = (JSON.parse(r.stdout).machines ?? []).filter((m) => m.state === "needs_login").map((m) => m.name);
+        for (const n of [...this.asked]) if (!need.includes(n)) this.asked.delete(n);
+        const up = this.up?.login;
+        if (up && terminals().some((t) => t.address === up.address && t.state === "live")) return; // one at a time
+        const next = need.find((n) => !this.asked.has(n));
+        if (!next) return;
+        this.asked.add(next);
+        const script =
+          'echo "$1 needs you to log in again."; echo; ' +
+          'if hc machine login "$1"; then echo; echo "logged in."; sleep 1; ' +
+          'else echo; echo "login did not finish. Press Enter to close (it will not ask again until next time)."; read _; fi';
+        await this.open("login", { local: true, title: `Log in: ${next}`, w: 0.55, h: 0.45, argv: ["sh", "-c", script, "sh", next] }, cx);
+      } catch {
+      } finally {
+        this.checking = false;
       }
     });
   }
@@ -62,7 +101,7 @@ export default class PopupTerm extends View {
   }
 
   async open(name, spec, cx) {
-    const { machine, cwd, ssh } = await this.target();
+    const { machine, cwd, ssh } = spec.local ? { machine: null, cwd: home(), ssh: null } : await this.target();
     const args = ["run", "--bg", "--json", "--no-parent", "--rm"];
     if (machine) args.push("--on", machine);
     if (cwd && !ssh) args.push("--cwd", cwd);
@@ -85,9 +124,12 @@ export default class PopupTerm extends View {
       notify({ title: `Popup terminal: ${name}`, body: (r.stderr || r.stdout || "could not start").trim().slice(0, 200), level: "error" });
       return;
     }
+    // A modal dialog, not a window: a window never takes the keyboard (q and Esc would go to the pane below,
+    // and pane.focus can't reach an overlay's terminal), a dialog hands its keys and Esc to the terminal.
+    // Modal so a stray click beside it doesn't close it and leave its program running.
     const id = openOverlay({
-      kind: "window",
-      key: `popup-term-${name}`,
+      kind: "dialog",
+      modal: true,
       width: spec.w,
       height: spec.h,
       layout: {
@@ -99,8 +141,6 @@ export default class PopupTerm extends View {
       },
     });
     (this.up ??= {})[name] = { id, address };
-    // A window doesn't take the keyboard when it opens: give it to the terminal, or Esc and q go to the pane below.
-    cx.timer.after(150, () => run("pane.focus", { terminal: address }));
   }
 
   render() {
