@@ -203,17 +203,23 @@ Usage: bash setup.sh [options]<br>
     if(!window.getSelection().toString()) inp.focus();
   });
 
-  // the live prompt: a pretend zsh over the repo's real file tree (GitHub's tree API, read live).
+  // the live prompt: a pretend zsh over the repo's real file tree, listed live: jsDelivr first (no rate
+  // limit), GitHub's tree API if that fails (60 requests/hour per IP, shared on campus networks).
   // It runs nothing — `cat` fetches the real file from GitHub, everything else is simulated here.
   var RAW='https://raw.githubusercontent.com/AnirudhG07/dotfiles/main/';
-  var TREE='https://api.github.com/repos/AnirudhG07/dotfiles/git/trees/main?recursive=1';
   var HOME='/home/anirudhg07', cwd=HOME, oldcwd=HOME, files=null;
   var ENV={HOME:HOME,USER:'anirudhg07',LOGNAME:'anirudhg07',SHELL:'/bin/zsh',EDITOR:'nvim',VISUAL:'nvim',TERM:'xterm-ghostty',LANG:'en_US.UTF-8'};
   var hist=[],hp=0;
-  fetch(TREE).then(function(r){return r.ok?r.json():{tree:[]}}).then(function(j){
-    files=(j.tree||[]).filter(function(e){return e.type==='blob'}).map(function(e){return HOME+'/dotfiles/'+e.path});
-    files.push(HOME+'/setup.sh');
-  }).catch(function(){files=[HOME+'/setup.sh']});
+  function getJSON(u){return fetch(u).then(function(r){if(!r.ok)throw 0;return r.json()})}
+  getJSON('https://data.jsdelivr.com/v1/packages/gh/AnirudhG07/dotfiles@main?structure=flat')
+    .then(function(j){return (j.files||[]).map(function(f){return f.name.replace(/^\//,'')})})
+    .catch(function(){return getJSON('https://api.github.com/repos/AnirudhG07/dotfiles/git/trees/main?recursive=1')
+      .then(function(j){return (j.tree||[]).filter(function(e){return e.type==='blob'}).map(function(e){return e.path})})})
+    .then(function(paths){
+      if(!paths.length)throw 0;
+      files=paths.map(function(p){return HOME+'/dotfiles/'+p});
+      files.push(HOME+'/setup.sh');
+    }).catch(function(){files=[HOME+'/setup.sh']});
 
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function tilde(p){return p===HOME?'~':p.indexOf(HOME+'/')===0?'~'+p.slice(HOME.length):p}
