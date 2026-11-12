@@ -3,7 +3,7 @@
 #  dotfiles/setup.sh  —  Anirudh's one-shot machine bootstrapper
 #
 #  Sets up a fresh macOS or Linux box (with or without sudo) the way I like it:
-#  core CLI tools, neovim + LSPs/treesitter, claude/gh/uv, ghostty, herdr-core
+#  core CLI tools, neovim (>= 0.12) + LSPs/treesitter, claude/gh/uv, ghostty, herdr-core
 #  (hc) + the Herdr desktop app (only if you say yes), and my shell + configs (symlinked from
 #  ~/dotfiles, stow-style).
 #
@@ -139,7 +139,7 @@ detect_env() {
   fi
 
   mkdir -p "$LOCAL_BIN"
-  case ":$PATH:" in *":$LOCAL_BIN:"*) ;; *) export PATH="$LOCAL_BIN:$PATH";; esac
+  local_bin_first
 
   ok "OS=$OS  arch=$ARCH  distro=${DISTRO:-n/a}  pkg=${PKG:-n/a}  sudo=$([ $HAVE_SUDO = 1 ] && echo yes || echo no)  brew=$([ -n "$BREW" ] && echo yes || echo no)  shell=$SHELL_TARGET"
 }
@@ -548,26 +548,166 @@ module_dev() {
     }
     has claude && ok "claude ready (alias: cr = claude -r)" || warn "claude install failed"
   fi
+  claude_settings_merge
+}
+
+# No attribution lines in Claude Code's commits/PRs. Merged into ~/.claude/settings.json:
+# the file is read, only attribution.{commit,pr,sessionUrl} are set, every other setting
+# (and any other attribution key) is kept, and it's written back atomically. A file that
+# isn't valid JSON is left untouched.
+claude_settings_merge() {
+  local f="$HOME/.claude/settings.json"
+  if [ "$DRY_RUN" = 1 ]; then info "${C_DIM}[dry-run]${C_RST} would set attribution (no commit/PR lines) in $f"; return 0; fi
+  has python3 || { warn "python3 missing: add \"attribution\": {\"commit\": \"\", \"pr\": \"\", \"sessionUrl\": false} to $f yourself"; return 0; }
+  mkdir -p "$(dirname "$f")"
+  python3 - "$f" <<'PY'
+import json, os, sys, tempfile
+path = sys.argv[1]
+want = {"commit": "", "pr": "", "sessionUrl": False}
+try:
+    with open(path) as fh:
+        text = fh.read()
+except FileNotFoundError:
+    text = ""
+try:
+    data = json.loads(text) if text.strip() else {}
+except json.JSONDecodeError as e:
+    print(f"! {path} isn't valid JSON ({e}); left it alone", file=sys.stderr)
+    sys.exit(0)
+if not isinstance(data, dict):
+    print(f"! {path} isn't a JSON object; left it alone", file=sys.stderr)
+    sys.exit(0)
+attr = data.get("attribution")
+attr = dict(attr) if isinstance(attr, dict) else {}
+if all(attr.get(k) == v for k, v in want.items()):
+    print(f"\u2713 claude settings: attribution already off ({path})")
+    sys.exit(0)
+attr.update(want)
+data["attribution"] = attr
+d = os.path.dirname(path)
+fd, tmp = tempfile.mkstemp(dir=d, prefix=".settings.", suffix=".json")
+with os.fdopen(fd, "w") as out:
+    json.dump(data, out, indent=2, ensure_ascii=False)
+    out.write("\n")
+if os.path.exists(path):
+    os.chmod(tmp, os.stat(path).st_mode & 0o777)
+os.replace(tmp, path)
+print(f"\u2713 claude settings: attribution off ({path})")
+PY
+}
+
+# ---------------------------------------------------------------- neovim
+# The config's treesitter (nvim-treesitter `main`) needs Neovim 0.12+ and tree-sitter CLI 0.26.1+.
+NVIM_MIN="0.12.0"
+TS_MIN="0.26.1"
+
+# ver_ge A B: dotted version A >= B
+ver_ge() {
+  awk -v a="$1" -v b="$2" 'BEGIN { split(a, x, "."); split(b, y, ".")
+    for (i = 1; i <= 3; i++) { if (x[i] + 0 > y[i] + 0) exit 0; if (x[i] + 0 < y[i] + 0) exit 1 } exit 0 }'
+}
+nvim_version() { "$1" --version 2>/dev/null | sed -n '1s/^NVIM v\([0-9][0-9.]*\).*/\1/p'; }
+ts_version()   { "$1" --version 2>/dev/null | sed -n '1s/^tree-sitter \([0-9][0-9.]*\).*/\1/p'; }
+
+# put ~/.local/bin first for the rest of this run, even if it's already on PATH after /usr/bin
+# (else apt's old /usr/bin/nvim keeps winning over the one we just installed)
+local_bin_first() {
+  PATH=":$PATH:"; PATH="${PATH//:$LOCAL_BIN:/:}"; PATH="${PATH#:}"; PATH="$LOCAL_BIN:${PATH%:}"; export PATH
+  hash -r 2>/dev/null || true
+}
+
+# Linux: the official tarball (glibc 2.34+, Ubuntu 22.04+), else neovim-releases' build for
+# older glibc (Ubuntu 20.04, RHEL 8, ...). Installed to ~/.local/nvim, linked into ~/.local/bin.
+install_nvim_release() {
+  local asset tmp url v dest="$LOCAL_PREFIX/nvim"
+  if [ "$ARCH" = arm64 ]; then asset=nvim-linux-arm64; else asset=nvim-linux-x86_64; fi
+  if [ "$DRY_RUN" = 1 ]; then info "${C_DIM}[dry-run]${C_RST} would install the latest $asset into $dest"; return 0; fi
+  for url in "https://github.com/neovim/neovim/releases/latest/download/$asset.tar.gz" \
+             "https://github.com/neovim/neovim-releases/releases/latest/download/$asset.tar.gz"; do
+    tmp="$(mktemp -d)"
+    if curl -fsSL "$url" -o "$tmp/nvim.tgz" && mkdir -p "$tmp/nvim" \
+       && tar -xzf "$tmp/nvim.tgz" -C "$tmp/nvim" --strip-components=1; then
+      v="$(nvim_version "$tmp/nvim/bin/nvim")"
+      if [ -n "$v" ] && ver_ge "$v" "$NVIM_MIN"; then
+        mkdir -p "$LOCAL_BIN" && rm -rf "$dest" && mv "$tmp/nvim" "$dest" && ln -sfn "$dest/bin/nvim" "$LOCAL_BIN/nvim"
+        rm -rf "$tmp"; ok "neovim $v -> $dest  ${C_DIM}(${url#https://github.com/})${C_RST}"; return 0
+      fi
+      info "${url#https://github.com/} doesn't run here (glibc too old?) — trying the next build"
+    fi
+    rm -rf "$tmp"
+  done
+  warn "couldn't install a Neovim >= $NVIM_MIN"; return 1
+}
+
+ensure_nvim() {
+  local cur v
+  cur="$(command -v nvim || true)"
+  v="$([ -n "$cur" ] && nvim_version "$cur")"
+  if [ -n "$v" ] && ver_ge "$v" "$NVIM_MIN"; then ok "neovim $v ($cur)"; return 0; fi
+  [ -n "$cur" ] && info "neovim ${v:-?} at $cur is too old (need >= $NVIM_MIN) — installing a newer one"
+  if [ "$OS" = mac ]; then
+    ensure_brew && { has_brew_pkg neovim && run "$BREW" upgrade neovim || run "$BREW" install neovim; }
+  else
+    install_nvim_release && local_bin_first
+  fi
+  cur="$(command -v nvim || true)"; v="$([ -n "$cur" ] && nvim_version "$cur")"
+  if [ "$DRY_RUN" = 1 ]; then return 0
+  elif [ -n "$v" ] && ver_ge "$v" "$NVIM_MIN"; then ok "using neovim $v ($cur)"
+  else warn "nvim on PATH is still ${v:-missing} ($cur); the config needs >= $NVIM_MIN"; fi
+}
+has_brew_pkg() { "$BREW" list --formula "$1" >/dev/null 2>&1; }
+
+# tree-sitter CLI, which nvim-treesitter uses to build parsers. In order:
+#   1. one already on PATH that is >= 0.26.1 and really runs;
+#   2. the official binary from GitHub releases, if it runs here (it needs glibc 2.39 on Linux,
+#      i.e. Ubuntu 24.04+; mason's and npm's copies are the same binary);
+#   3. tree-sitter-cc (bin/.local/bin): a stand-in that builds parsers with just cc. Every core
+#      parser builds with it; only "generated" ones (latex, perl, swift) need the real CLI.
+ensure_tree_sitter() {
+  local cur v os a tmp
+  cur="$(command -v tree-sitter || true)"
+  v="$([ -n "$cur" ] && ts_version "$cur")"
+  if [ -n "$v" ] && ver_ge "$v" "$TS_MIN" && ! "$cur" --version 2>/dev/null | grep -q tree-sitter-cc; then
+    ok "tree-sitter CLI $v ($cur)"; return 0
+  fi
+  if [ "$DRY_RUN" = 1 ]; then info "${C_DIM}[dry-run]${C_RST} would fetch the tree-sitter CLI from GitHub, or link tree-sitter-cc"; return 0; fi
+  case "$OS" in mac) os=macos ;; *) os=linux ;; esac
+  case "$ARCH" in arm64) a=arm64 ;; *) a=x64 ;; esac
+  tmp="$(mktemp -d)"; mkdir -p "$LOCAL_BIN"
+  if curl -fsSL "https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-$os-$a.gz" -o "$tmp/ts.gz" \
+     && gunzip -f "$tmp/ts.gz" && chmod +x "$tmp/ts" \
+     && v="$(ts_version "$tmp/ts")" && [ -n "$v" ] && ver_ge "$v" "$TS_MIN"; then
+    rm -f "$LOCAL_BIN/tree-sitter" && mv "$tmp/ts" "$LOCAL_BIN/tree-sitter" && ok "tree-sitter CLI $v (GitHub release) -> $LOCAL_BIN/tree-sitter"
+  else
+    ln -sfn "$DOTFILES_DIR/bin/.local/bin/tree-sitter-cc" "$LOCAL_BIN/tree-sitter"
+    ok "tree-sitter-cc -> $LOCAL_BIN/tree-sitter  ${C_DIM}(the official CLI doesn't run here; parsers build with cc)${C_RST}"
+  fi
+  rm -rf "$tmp"
+  local_bin_first
+  # mason's tree-sitter-cli is that same GitHub binary; inside nvim it would shadow ours
+  local m="$HOME/.local/share/nvim/mason"
+  if [ -e "$m/bin/tree-sitter" ] && ! "$m/bin/tree-sitter" --version >/dev/null 2>&1; then
+    rm -rf "$m/packages/tree-sitter-cli" "$m/bin/tree-sitter" && info "removed mason's tree-sitter-cli (it can't run here)"
+  fi
+}
+
+# this machine's nvim extras (gitignored lua/anirudh/machine.lua): start one from the template
+seed_nvim_machine_file() {
+  local d="$DOTFILES_DIR/nvim/.config/nvim/lua/anirudh"
+  [ -e "$d/machine.lua" ] && return 0
+  [ "$DRY_RUN" = 1 ] && { info "${C_DIM}[dry-run]${C_RST} would create $d/machine.lua"; return 0; }
+  cp "$d/machine.example.lua" "$d/machine.lua" \
+    && info "nvim: core only on this machine (pyright, ruff, clangd). Extras go in ${C_B}~/.config/nvim/lua/anirudh/machine.lua${C_RST}"
 }
 
 module_nvim() {
-  step "Neovim + treesitter + LSPs"
+  step "Neovim (>= $NVIM_MIN) + treesitter + Python & C/C++ LSPs"
+  local_bin_first
 
-  # 1) Neovim itself — apt ships ancient versions, so grab the official build.
-  if has nvim; then ok "neovim already installed"
-  elif [ "$OS" = mac ] && { ensure_brew && run "$BREW" install neovim; }; then ok "neovim (brew)"
-  else
-    info "Fetching official Neovim build"
-    local nv_asset
-    if [ "$ARCH" = arm64 ]; then nv_asset="nvim-linux-arm64"; else nv_asset="nvim-linux-x86_64"; fi
-    local url="https://github.com/neovim/neovim/releases/latest/download/${nv_asset}.tar.gz"
-    run sh -c "curl -fsSL '$url' -o /tmp/nvim.tar.gz && rm -rf '$LOCAL_PREFIX/nvim' && mkdir -p '$LOCAL_PREFIX/nvim' && tar -xzf /tmp/nvim.tar.gz -C '$LOCAL_PREFIX/nvim' --strip-components=1" \
-      && run ln -sfn "$LOCAL_PREFIX/nvim/bin/nvim" "$LOCAL_BIN/nvim" \
-      && ok "neovim ($LOCAL_PREFIX/nvim)" || warn "neovim install failed"
-  fi
+  # 1) Neovim itself: apt's is usually too old (Ubuntu 24.04 ships 0.9.5)
+  ensure_nvim
 
-  # 2) Build prerequisites the config's treesitter `main` branch needs:
-  #    a C compiler + tree-sitter CLI, plus node for many LSP servers.
+  # 2) What parsers and LSP servers need: a C compiler, the tree-sitter CLI, node (pyright)
   step "Neovim build deps (C compiler, tree-sitter CLI, node)"
   if ! has cc && ! has gcc && ! has clang; then
     if [ "$OS" = mac ]; then
@@ -581,16 +721,14 @@ module_nvim() {
       esac
     elif [ -n "$BREW" ]; then run "$BREW" install gcc; fi
   fi
-  install_tool tree-sitter brew=tree-sitter pacman=tree-sitter-cli npm=tree-sitter-cli cargo=tree-sitter-cli 'eget=tree-sitter/tree-sitter|--asset|.gz'
+  has cc || has gcc || has clang || warn "no C compiler: treesitter parsers can't be built (ask an admin for gcc / build-essential)"
+  ensure_tree_sitter
   ensure_node
 
-  # 3) LSP toolchains that must exist system-wide (mason installs the rest):
-  #    python, lean, C/C++, lua, markdown.
-  step "LSP toolchains (python, lean, C/C++, lua, markdown)"
-
-  # python: ruff + pyright (mason also manages ruff/ty; we make sure ruff+node exist)
+  # 3) System-wide toolchains (mason installs pyright, and ruff/clangd when these are missing)
+  step "LSP toolchains (python, C/C++, lean)"
   ensure_uv && run uv tool install ruff >/dev/null 2>&1 && ok "ruff (uv)" || true
-
+  install_tool clangd brew=llvm apt=clangd dnf=clang-tools-extra pacman=clang eget=clangd/clangd || true
   # lean: elan toolchain manager (installs lean/lake; lean.nvim uses its LSP)
   if has lean || has elan; then ok "lean/elan present"
   elif [ -n "$BREW" ] && run "$BREW" install elan-init 2>/dev/null && has elan; then ok "elan (brew)"
@@ -601,19 +739,17 @@ module_nvim() {
   fi
   [ -f "$HOME/.elan/env" ] && . "$HOME/.elan/env" 2>/dev/null || true
 
-  # C/C++: clangd
-  install_tool clangd brew=llvm apt=clangd dnf=clang-tools-extra pacman=clang eget=clangd/clangd || true
+  seed_nvim_machine_file
 
-  # lua_ls & marksman are installed by mason on first launch (see below).
-
-  # 4) First-launch sync: lazy.nvim plugins, treesitter parsers, mason tools.
+  # 4) First launch, headless: plugins, then parsers + mason tools from lua/anirudh/core/tools.lua
+  #    (core + this machine's extras), waiting for each to finish.
   if has nvim && [ "$DRY_RUN" != 1 ]; then
     step "Bootstrapping Neovim (plugins, parsers, LSP servers) — headless"
     info "This compiles treesitter parsers; give it a minute..."
     nvim --headless "+Lazy! sync" +qa 2>/dev/null || warn "Lazy sync had issues (open nvim to finish)"
-    nvim --headless "+TSUpdateSync" +qa 2>/dev/null || true
+    nvim --headless "+lua require('nvim-treesitter').install(require('anirudh.core.tools').treesitter()):wait(900000)" +qa 2>/dev/null \
+      || warn "some parsers didn't build (open nvim, :checkhealth nvim-treesitter)"
     nvim --headless "+MasonToolsInstallSync" +qa 2>/dev/null || true
-    nvim --headless "+MasonInstall lua-language-server marksman" +qa 2>/dev/null || true
     ok "Neovim bootstrapped"
   else
     info "Open nvim once to let lazy.nvim + mason finish installing."
@@ -721,9 +857,11 @@ write_shell_local() {
   cat > "$target" <<EOF
 # ---- managed by dotfiles/setup.sh : machine-local shell setup ----
 $brew_line
-# prepend user bin dirs, but only if not already present (no duplicates on nested shells)
+# user bin dirs go first, ahead of /usr/bin (so ~/.local/bin/nvim beats an old apt nvim);
+# an entry already on PATH is moved to the front, never duplicated on nested shells
 for d in "\$HOME/.local/bin" "\$HOME/go/bin"; do
-  case ":\$PATH:" in *":\$d:"*) ;; *) [ -d "\$d" ] && PATH="\$d:\$PATH";; esac
+  [ -d "\$d" ] || continue
+  PATH=":\$PATH:"; PATH="\${PATH//:\$d:/:}"; PATH="\${PATH#:}"; PATH="\$d:\${PATH%:}"
 done
 export PATH
 [ -f "\$HOME/.cargo/env" ] && . "\$HOME/.cargo/env"
@@ -875,7 +1013,7 @@ choose_modules() {
   cat >&2 <<EOF
   ${C_GRN}1${C_RST}) core     — yazi lazygit fzf ripgrep fd bat eza zoxide delta jq tldr stow
   ${C_GRN}2${C_RST}) dev      — uv, python, node+nvm, gh, claude (cr = claude -r)
-  ${C_GRN}3${C_RST}) nvim     — neovim + treesitter + LSPs (python/lean/C/C++/lua/markdown)
+  ${C_GRN}3${C_RST}) nvim     — neovim >= 0.12 + treesitter + python & C/C++ LSPs (extras per machine)
   ${C_GRN}4${C_RST}) ghostty  — config + terminfo
   ${C_GRN}5${C_RST}) herdr-app — herdr-core (hc) + my layout, mods, keys; asks before the desktop app
   ${C_GRN}6${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy

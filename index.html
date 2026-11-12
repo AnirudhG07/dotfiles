@@ -95,7 +95,7 @@ form label{flex:none}
 <div class="l menu">
   <i class="g">1</i>) core&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— yazi lazygit fzf ripgrep fd bat eza zoxide delta jq tldr stow<br>
   <i class="g">2</i>) dev&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— uv, python, node+nvm, gh, claude <i class="d">(cr = claude -r)</i><br>
-  <i class="g">3</i>) nvim&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— neovim + treesitter + LSPs <i class="d">(python/lean/C/C++/lua/markdown)</i><br>
+  <i class="g">3</i>) nvim&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— neovim ≥ 0.12 + treesitter + python &amp; C/C++ LSPs <i class="d">(extras per machine)</i><br>
   <i class="g">4</i>) ghostty&nbsp;&nbsp;&nbsp;— config + terminfo<br>
   <i class="g">5</i>) herdr-app&nbsp;— herdr-core (<i class="c">hc</i>) + my layout, mods, keys; asks before the desktop app<br>
   <i class="g">6</i>) shell&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— zsh + powerlevel10k + my aliases/configs, stow-deployed<br>
@@ -300,7 +300,7 @@ Usage: bash setup.sh [options]<br>
     modules:function(){return [
       '<i class="g">core</i>       yazi lazygit fzf ripgrep fd bat eza zoxide delta jq tldr stow',
       '<i class="g">dev</i>        uv, python, node+nvm, gh, claude',
-      '<i class="g">nvim</i>       neovim + treesitter + LSPs',
+      '<i class="g">nvim</i>       neovim ≥ 0.12 + treesitter + python &amp; C/C++ LSPs',
       '<i class="g">ghostty</i>    config + terminfo',
       '<i class="g">herdr-app</i>  herdr-core (hc) + layout, mods, keys  <i class="d">(desktop app only if you say yes)</i>',
       '<i class="g">shell</i>      zsh + powerlevel10k  <i class="d">(bash + oh-my-bash on Linux without sudo)</i>'].join('\n')},

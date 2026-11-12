@@ -20,14 +20,12 @@ return {
 			},
 		})
 
+		-- what to install lives in lua/anirudh/core/tools.lua (core: Python + C/C++ servers)
+		-- and lua/anirudh/machine.lua (this machine's extras); mason-tool-installer does it all.
+		local tools = require("anirudh.core.tools")
+
 		require("mason-lspconfig").setup({
-			-- list of servers for mason to install
-			ensure_installed = {
-				"html",
-				"lua_ls",
-				-- "jdtls",
-				-- "rust_analyzer",
-			},
+			ensure_installed = {},
 			-- mason-lspconfig v2 auto-enables every installed server via
 			-- vim.lsp.enable(). Servers owned by another plugin must be excluded
 			-- or you get two clients attached to the same buffer.
@@ -40,18 +38,14 @@ return {
 			},
 		})
 
+		-- No tree-sitter-cli here: mason's copy is the GitHub binary, which needs glibc 2.39 and
+		-- would shadow the working one setup.sh puts in ~/.local/bin (mason's bin dir comes first).
 		require("mason-tool-installer").setup({
-			ensure_installed = {
-				"prettier", -- prettier formatter
-				"stylua", -- lua formatter
-				"ruff", -- python linter
-				"tinymist", -- typst linter
-				"isort", -- python import formatter
-				"tree-sitter-cli", -- required by nvim-treesitter `main` to install parsers
-				-- "gopls", -- go formatter
-				-- "goimports",
-				-- "rust-analyzer", -- rust formatter
-			},
+			ensure_installed = tools.mason(),
 		})
+
+		-- core servers the system already provides (apt clangd, uv's ruff): mason-lspconfig only
+		-- auto-enables servers mason installed, so turn these on by name
+		vim.lsp.enable(tools.system_servers())
 	end,
 }

@@ -147,7 +147,9 @@ return {
 		vim.lsp.config("clangd", {
 			cmd = {
 				"clangd",
-				"--style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never, ColumnLimit: 80}",
+				-- clangd has no --style (it exited on the unknown flag, so C/C++ never got a server);
+				-- --fallback-style applies when the project has no .clang-format
+				"--fallback-style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never, ColumnLimit: 80}",
 			},
 		})
 	end,

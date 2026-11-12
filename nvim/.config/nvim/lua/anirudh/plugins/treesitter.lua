@@ -8,37 +8,8 @@
 -- treesitter decoration provider.
 --
 -- `main` has no module system: highlighting/indent are enabled per-buffer.
-local LANGS = {
-	"bash",
-	"c",
-	"css",
-	"csv",
-	"dockerfile",
-	"gitignore",
-	"go",
-	"gomod",
-	"gosum",
-	"graphql",
-	"html",
-	"javascript",
-	"json",
-	"latex",
-	"lua",
-	"markdown",
-	"markdown_inline",
-	"php",
-	"prisma",
-	"python",
-	"query",
-	"rust",
-	"svelte",
-	"tsx",
-	"typescript",
-	"typst",
-	"vim",
-	"vimdoc",
-	"yaml",
-}
+-- the parsers: lua/anirudh/core/tools.lua (core) + lua/anirudh/machine.lua (this machine)
+local LANGS = require("anirudh.core.tools").treesitter()
 
 return {
 	"nvim-treesitter/nvim-treesitter",

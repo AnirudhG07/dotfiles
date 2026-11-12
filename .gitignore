@@ -11,6 +11,5 @@ asciinema
 cheatshh/.config/cheatshh/grouped_commands.txt
 nvim/.config/nvim/lua/anirudh/plugins/autosave.lua
 sketchybarr/.config/sketchybar
-/herdr/.config/herdr/herdr-server.log
-/herdr/.config/herdr/herdr-client.log
-/herdr/.config/herdr/session.json
+# each machine's own nvim extras (template: machine.example.lua)
+nvim/.config/nvim/lua/anirudh/machine.lua

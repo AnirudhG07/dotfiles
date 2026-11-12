@@ -1,0 +1,66 @@
+#!/bin/sh
+# tree-sitter-cc — a stand-in for the tree-sitter CLI that needs nothing but a C compiler.
+#
+# nvim-treesitter (`main`) only asks the CLI to do one thing for almost every parser:
+#   tree-sitter build -o parser.so        (in the parser's folder)
+# which is a single cc command: src/parser.c (+ src/scanner.c) -> a shared library. This
+# runs that command with the same flags the real CLI uses (tree-sitter v0.27 loader.rs).
+#
+# Why: the official CLI binaries (GitHub releases, and so mason and npm too) need
+# glibc 2.39, i.e. Ubuntu 24.04+. On older Linux they don't start at all.
+# setup.sh links ~/.local/bin/tree-sitter to this only when the real CLI can't run.
+#
+# Not supported: `generate` (a few parsers ship without a generated parser.c, e.g.
+# latex, perl, swift) and wasm builds. Those still need the real CLI.
+set -eu
+
+VERSION=0.26.1   # what nvim-treesitter's :checkhealth wants to see
+
+case "${1:-}" in
+  --version | -V | version)
+    echo "tree-sitter $VERSION (tree-sitter-cc stand-in: build only)"
+    exit 0 ;;
+  build) shift ;;
+  generate)
+    echo "tree-sitter-cc: this parser has to be generated, which needs the real tree-sitter CLI" >&2
+    echo "  (github.com/tree-sitter/tree-sitter/releases, or: cargo install --locked tree-sitter-cli)" >&2
+    exit 1 ;;
+  *)
+    echo "tree-sitter-cc: only 'build' and '--version' are supported (got: ${*:-nothing})" >&2
+    exit 2 ;;
+esac
+
+out=""
+dir=.
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -o | --output) out=$2; shift 2 ;;
+    --output=*) out=${1#*=}; shift ;;
+    -w | --wasm)
+      echo "tree-sitter-cc: wasm builds need the real tree-sitter CLI" >&2
+      exit 2 ;;
+    -*) shift ;; # --reuse-allocator, -d/--debug, ...: harmless to skip
+    *) dir=$1; shift ;;
+  esac
+done
+
+cd "$dir"
+[ -f src/parser.c ] || { echo "tree-sitter-cc: no src/parser.c in $(pwd)" >&2; exit 1; }
+[ -n "$out" ] || out="$(basename "$(pwd)").so"
+
+CC=${CC:-cc}
+command -v "$CC" >/dev/null 2>&1 || { echo "tree-sitter-cc: no C compiler ($CC); install gcc or clang" >&2; exit 1; }
+
+set -- -std=c11 -O2 -fPIC -I src -Werror=implicit-function-declaration
+case "$(uname -s)" in
+  Darwin) set -- "$@" -dynamiclib -UTREE_SITTER_REUSE_ALLOCATOR ;;
+  *) set -- "$@" -shared -Wl,--no-undefined ;;
+esac
+set -- "$@" src/parser.c
+[ -f src/scanner.c ] && set -- "$@" src/scanner.c
+
+# compile beside the target and rename into place, so nothing ever loads a half-written library
+tmp="$out.tmp.$$"
+trap 'rm -f "$tmp"' EXIT
+"$CC" "$@" -o "$tmp"
+mv -f "$tmp" "$out"
