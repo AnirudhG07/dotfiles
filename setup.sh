@@ -739,9 +739,12 @@ module_nvim() {
   fi
   [ -f "$HOME/.elan/env" ] && . "$HOME/.elan/env" 2>/dev/null || true
 
+  # 4) The config itself (~/.config/nvim -> dotfiles), before anything starts nvim: without it the
+  #    headless sync below has no plugins to install and nvim opens bare
+  deploy_packages nvim
   seed_nvim_machine_file
 
-  # 4) First launch, headless: plugins, then parsers + mason tools from lua/anirudh/core/tools.lua
+  # 5) First launch, headless: plugins, then parsers + mason tools from lua/anirudh/core/tools.lua
   #    (core + this machine's extras), waiting for each to finish.
   if has nvim && [ "$DRY_RUN" != 1 ]; then
     step "Bootstrapping Neovim (plugins, parsers, LSP servers) — headless"
@@ -944,8 +947,8 @@ module_shell() {
   fi
 
   # shared user-level configs, regardless of shell
-  # 'bin' stows ~/.local/bin scripts (mathlib, ...) — already on PATH.
-  deploy_packages nvim yazi bin
+  # 'bin' stows ~/.local/bin scripts (mathlib, ...) — already on PATH. (nvim's config is deployed by the nvim module.)
+  deploy_packages yazi bin
 
   install_nerd_font
 
