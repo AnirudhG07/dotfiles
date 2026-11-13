@@ -71,7 +71,13 @@ export default class Spaces extends View {
     for (const state of Object.values(this.reconnecting)) state.busy = false;
     this.folded = new Set(JSON.parse(localStorage.getItem("machines.folded") ?? "[]"));
     this.refreshMachines(cx);
-    cx.timer.every(15000, cx => this.refreshMachines(cx));
+    // spaces-plus: every 2s while a machine is offline or needs a login (so "needs login" goes away right
+    // after you log in), every 15s otherwise; `hc machine ls` is a local call that answers instantly.
+    this.lastMachinesCheck = Date.now();
+    cx.timer.every(2000, cx => {
+      const waiting = this.machines.some(m => m.state !== "connected");
+      if (waiting || Date.now() - this.lastMachinesCheck >= 15000) this.refreshMachines(cx);
+    });
     // `git status` walks the whole tree, on another machine a process there:
     // only when its answer could have changed (see `due`).
     cx.timer.every(250, (cx) => this.checkNew(cx));
@@ -127,6 +133,7 @@ export default class Spaces extends View {
   }
 
   refreshMachines(cx) {
+    this.lastMachinesCheck = Date.now();
     cx.spawn(async cx => {
       try { const r = await hc(["machine", "ls", "--json"]); if (r.code === 0) this.machines = (JSON.parse(r.stdout).machines ?? []).filter((m) => !m.temporary); } catch {}
       cx.notify();
