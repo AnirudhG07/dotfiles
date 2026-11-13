@@ -8,7 +8,7 @@
 
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { spaces, machines, panes, run, openOverlay, exec, hc, theme, shared, setShared, watchFolder, window, layout } from "herdr";
+import { spaces, machines, panes, run, openOverlay, exec, hc, theme, shared, setShared, watchFolder, window, layout, notify } from "herdr";
 
 function find(node, id) {
   if (node?.id === id) return node;
@@ -131,6 +131,34 @@ export default class Spaces extends View {
       try { const r = await hc(["machine", "ls", "--json"]); if (r.code === 0) this.machines = (JSON.parse(r.stdout).machines ?? []).filter((m) => !m.temporary); } catch {}
       cx.notify();
     });
+  }
+
+  // spaces-plus: a machine that can't be reached can't have its spaces closed or its agents ended: they
+  // live on that machine's core, so every structural command fails until it's back. What does work is
+  // forgetting it (`hc machine rm`): its spaces and stale agents leave the window, its terminals keep
+  // running there, and `hc machine add <target>` brings it all back. Two clicks: ✕, then "forget?".
+  forgetButton(t, machine, m) {
+    const armed = this.forgetArmed?.name === m && Date.now() - this.forgetArmed.at < 5000;
+    const target = machine?.target ?? m;
+    return div().id(`machine-forget-${m}`).flex_none().px(4).rounded(4).cursor_pointer()
+      .text_color(armed ? t.blocked : t.dim)
+      .hover(s => s.bg(t.hover).text_color(armed ? t.blocked : t.foreground))
+      .tooltip(armed
+        ? `Click again to forget ${m}. Its spaces leave this window; its terminals keep running there. Back with: hc machine add ${target}`
+        : `Forget ${m}: while it can't be reached its spaces can't be closed`)
+      .on_mouse_down("left", (_e, cx) => cx.stop_propagation())
+      .on_click((_e, cx) => {
+        cx.stop_propagation();
+        if (!armed) { this.forgetArmed = { name: m, at: Date.now() }; cx.notify(); return; }
+        this.forgetArmed = null;
+        cx.spawn(async cx => {
+          const r = await hc(["machine", "rm", m]).catch(e => ({ code: 1, stderr: String(e), stdout: "" }));
+          if (r.code === 0) notify({ title: `Forgot ${m}`, body: `Its terminals keep running there. Back with: hc machine add ${target}`, level: "info" });
+          else notify({ title: `Couldn't forget ${m}`, body: (r.stderr || r.stdout || "hc machine rm failed").trim().slice(0, 200), level: "error" });
+          this.refreshMachines(cx);
+        });
+      })
+      .child(armed ? "forget?" : "✕");
   }
 
   rebuilt(machine) {
@@ -342,6 +370,7 @@ export default class Spaces extends View {
             .on_mouse_down("left", (_e, cx) => cx.stop_propagation())
             .on_click((_e, cx) => { cx.stop_propagation(); setShared("popup-term.login", m); run("popup-term.login"); })
             .child("needs login")))
+          .when(!connected && !rebuilt && Boolean(m), el => el.child(this.forgetButton(t, machine, m)))
           .when(rebuilt, el => el.child(h_flex().flex_none().gap(3).items_center()
             .child(div().max_w(140).truncate().child(repair?.error || "rebuilt ·"))
             .child(div().id(`machine-connect-${m}`).text_color(repair?.error ? t.blocked : t.muted)
