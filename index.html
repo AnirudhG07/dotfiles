@@ -101,7 +101,8 @@ form label{flex:none}
   <i class="g">6</i>) fonts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— MesloLGS Nerd Font (install on whichever machine's terminal actually renders it)<br>
   <i class="g">7</i>) herdr-app&nbsp;— herdr-core (<i class="c">hc</i>) + my layout, mods, keys; asks before the desktop app<br>
   <i class="g">8</i>) shell&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— zsh + powerlevel10k + my aliases/configs, stow-deployed<br>
-  <i class="g">a</i>) all of the above&nbsp;&nbsp;<i class="d">(default)</i>
+  <i class="g">a</i>) all of the above&nbsp;&nbsp;<i class="d">(default)</i><br>
+  <i class="g">f</i>) fingerprint — Touch ID / fingerprint reader for sudo <i class="d">(opt-in: never part of 'a'; leaves nix-darwin's setting alone)</i>
 </div>
 <div class="l"><i class="c">?</i> Enter choices (<span id="choiceExample">e.g. '1 3 8' or 'a'</span>): <i class="bold">a</i></div>
 
@@ -308,7 +309,8 @@ Usage: bash setup.sh [options]<br>
       '<i class="g">latex</i>      latexmk (script only, no TeX distro) + VS Code LaTeX Workshop; asks first',
       '<i class="g">fonts</i>      MesloLGS Nerd Font',
       '<i class="g">herdr-app</i>  herdr-core (hc) + layout, mods, keys  <i class="d">(desktop app only if you say yes)</i>',
-      '<i class="g">shell</i>      zsh + powerlevel10k  <i class="d">(bash + oh-my-bash on Linux without sudo)</i>'].join('\n')},
+      '<i class="g">shell</i>      zsh + powerlevel10k  <i class="d">(bash + oh-my-bash on Linux without sudo)</i>',
+      '<i class="g">fingerprint</i> Touch ID / fingerprint for sudo  <i class="d">(opt-in, not in --all)</i>'].join('\n')},
     keys:function(){return [
       '<i class="y">⌘/</i>    popup shell',
       '<i class="y">⌘G</i>    popup lazygit',

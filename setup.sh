@@ -1107,6 +1107,144 @@ interactive_account_setup() {
   fi
 }
 
+# ============================================================================
+#  fingerprint: Touch ID / fingerprint for sudo. Opt-in only: never part of
+#  'all' or --all; pick 'f' in the menu or run --only fingerprint.
+#  Every change is `sufficient`, so the password prompt stays as the fallback.
+# ============================================================================
+
+# install a root-owned file from stdin, honoring --dry-run
+_install_root_file() { # path mode
+  local tmp; tmp="$(mktemp)"; cat >"$tmp"
+  if [ "$DRY_RUN" = 1 ]; then
+    printf '%s would write %s:\n' "${C_DIM}[dry-run]${C_RST}" "$1"; sed 's/^/    /' "$tmp"
+  else
+    $SUDO install -m "$2" "$tmp" "$1"
+  fi
+  rm -f "$tmp"
+}
+
+fingerprint_mac() {
+  local f=/etc/pam.d/sudo_local
+  if ! grep -q '^auth.*include.*sudo_local' /etc/pam.d/sudo 2>/dev/null; then
+    warn "this macOS has no sudo_local (needs macOS 14+); editing /etc/pam.d/sudo directly would be undone by updates — skipping"
+    return
+  fi
+  bioutil -r -s 2>/dev/null | grep -q 'Biometrics functionality: 1' \
+    || warn "no Touch ID sensor seen (a Touch ID keyboard may still work); sudo will just fall back to the password"
+
+  # nix-darwin owns the file: it is a symlink into /etc/static. Leave it to nix,
+  # writing it here would make the next darwin-rebuild abort or undo this.
+  if [ -L "$f" ] && readlink "$f" | grep -q '/etc/static/'; then
+    if grep -q '^auth.*pam_tid.so' "$f"; then
+      ok "Touch ID for sudo is already on, managed by nix-darwin (security.pam.services.sudo_local.touchIdAuth) — leaving it to nix"
+    else
+      warn "nix-darwin manages $f but Touch ID is off; set security.pam.services.sudo_local.touchIdAuth = true in the flake and darwin-rebuild"
+    fi
+    return
+  fi
+
+  local reattach="" lib
+  # pam_reattach lets Touch ID work inside tmux / herdr terminals (otherwise they fall back to the password)
+  if [ -n "$BREW" ]; then
+    lib="$("$BREW" --prefix)/lib/pam/pam_reattach.so"
+    [ -e "$lib" ] || run "$BREW" install pam-reattach || true
+    [ -e "$lib" ] && reattach="$lib"
+  fi
+
+  if [ -f "$f" ] && grep -q '^auth.*pam_tid.so' "$f" && { [ -z "$reattach" ] || grep -q pam_reattach "$f"; }; then
+    ok "Touch ID for sudo is already on ($f)"; return
+  fi
+  if has darwin-rebuild || [ -d /etc/static ]; then
+    warn "nix-darwin is installed but doesn't manage $f; if you later turn on touchIdAuth there, first run: sudo rm $f"
+  fi
+
+  info "Turning on Touch ID for sudo via $f (survives macOS updates)"
+  [ -f "$f" ] && run $SUDO cp "$f" "$f.before-dotfiles"
+  {
+    echo "# sudo_local: written by dotfiles setup.sh (fingerprint). Delete this file to undo."
+    [ -n "$reattach" ] && echo "auth       optional       $reattach ignore_ssh"
+    echo "auth       sufficient     pam_tid.so"
+    # keep anything else that was already there (e.g. pam_watchid), minus our own lines
+    [ -f "$f" ] && grep -v -e '^#' -e 'pam_tid.so' -e 'pam_reattach' "$f" | grep -v '^[[:space:]]*$' || true
+  } | _install_root_file "$f" 444
+  ok "Touch ID for sudo is on — try: sudo -k; sudo true   (undo: sudo rm $f)"
+}
+
+# A USB fingerprint reader libfprint knows? (laptops' built-in readers are USB too)
+_has_fp_reader() {
+  local d v p
+  for d in /sys/bus/usb/devices/*; do
+    [ -r "$d/idVendor" ] || continue
+    v="$(cat "$d/idVendor")"; p="$(cat "$d/product" 2>/dev/null || true)"
+    case "$p" in *[Ff]inger*|*FPC*|*[Bb]iometric*) return 0;; esac
+    case "$v" in 06cb|27c6|138a|147e|1c7a|10a5|2808|08ff|298d|05ba|2541|04f3) return 0;; esac
+  done
+  return 1
+}
+
+_pam_module_exists() {
+  local d; for d in /lib/*/security /lib/security /usr/lib/*/security /usr/lib/security /usr/lib64/security; do
+    [ -e "$d/$1" ] && return 0
+  done; return 1
+}
+
+fingerprint_linux() {
+  if is_nixos; then
+    warn "NixOS: set services.fprintd.enable = true; and security.pam.services.sudo.fprintAuth = true; in configuration.nix — not touching PAM here"
+    return
+  fi
+  if ! _has_fp_reader; then
+    warn "no fingerprint reader found on this machine"
+    _ask "Install fprintd and set it up anyway?" || return
+  fi
+  case "$PKG" in
+    apt)          pkg_install fprintd && pkg_install libpam-fprintd ;;
+    dnf|zypper)   pkg_install fprintd && pkg_install fprintd-pam ;;
+    pacman)       pkg_install fprintd ;;
+    *) warn "don't know the fprintd packages for '$PKG' — install fprintd + its PAM module, then re-run"; return ;;
+  esac || { warn "couldn't install fprintd"; return; }
+  [ "$DRY_RUN" = 1 ] && { info "[dry-run] would enroll a finger and enable pam_fprintd for sudo"; return; }
+
+  local list; list="$(fprintd-list "$USER" 2>&1 || true)"
+  if printf '%s' "$list" | grep -qi 'no devices'; then
+    warn "fprintd sees no supported reader (libfprint may not support it yet) — leaving PAM alone"; return
+  fi
+  if ! printf '%s' "$list" | grep -q ' - #'; then
+    if [ -t 0 ]; then
+      info "Enroll a finger: touch the reader repeatedly until it says 'enroll-completed'"
+      fprintd-enroll || $SUDO fprintd-enroll "$USER" || { warn "enrollment failed — run fprintd-enroll, then re-run this"; return; }
+    else
+      warn "no finger enrolled; run fprintd-enroll, then re-run with --only fingerprint"; return
+    fi
+  fi
+
+  if ! _pam_module_exists pam_fprintd.so; then warn "pam_fprintd.so not found — leaving PAM alone"; return; fi
+  if grep -rqs pam_fprintd /etc/pam.d/sudo /etc/pam.d/common-auth /etc/pam.d/system-auth; then
+    ok "fingerprint already enabled in PAM"; return
+  fi
+
+  if has pam-auth-update; then            # Debian / Ubuntu: the distro's own switch (sudo + login + lock screen)
+    run $SUDO pam-auth-update --enable fprintd
+  elif has authselect && $SUDO authselect current >/dev/null 2>&1; then   # Fedora / RHEL
+    run $SUDO authselect enable-feature with-fingerprint
+  else                                     # Arch & others: just sudo, first auth line
+    run $SUDO cp /etc/pam.d/sudo /etc/pam.d/sudo.before-dotfiles
+    awk 'BEGIN{d=0} !d && /^auth/{print "auth      sufficient  pam_fprintd.so"; d=1} {print}' /etc/pam.d/sudo \
+      | _install_root_file /etc/pam.d/sudo 644
+  fi
+  ok "fingerprint for sudo is on — try: sudo -k; sudo true   (ssh sessions still ask for the password)"
+}
+
+module_fingerprint() {
+  step "Fingerprint for sudo"
+  if [ "$HAVE_SUDO" != 1 ]; then warn "needs sudo — skipping"; return; fi
+  case "$OS" in
+    mac)   fingerprint_mac ;;
+    linux) fingerprint_linux ;;
+  esac
+}
+
 ALL_MODULES="core dev nvim ghostty raycast latex fonts herdr-app shell"
 
 run_module() { case "$1" in
@@ -1118,6 +1256,7 @@ run_module() { case "$1" in
   latex)   module_latex ;;
   fonts)   module_fonts ;;
   herdr-app) module_herdr_app ;;
+  fingerprint) module_fingerprint ;;
   shell)   module_shell ;;
   *) warn "unknown module: $1" ;;
 esac; }
@@ -1139,16 +1278,18 @@ choose_modules() {
   ${C_GRN}8${C_RST}) herdr-app — herdr-core (hc) + my layout, mods, keys; asks before the desktop app
   ${C_GRN}9${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
   ${C_GRN}a${C_RST}) all of the above   ${C_DIM}(default)${C_RST}
+  ${C_GRN}f${C_RST}) fingerprint — Touch ID / fingerprint reader for sudo ${C_DIM}(opt-in: never part of 'a'; leaves nix-darwin's setting alone)${C_RST}
 EOF
   printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 9' or 'a'): " >&2
   local ans; read -r ans || true
   ans="${ans:-a}"
-  case "$ans" in *a*|"") echo "$ALL_MODULES"; return;; esac
+  case "$ans" in *a*|"") case " $ans " in *" f "*) echo "$ALL_MODULES fingerprint";; *) echo "$ALL_MODULES";; esac; return;; esac
   local out=""
   for n in $ans; do case "$n" in
     1) out="$out core";; 2) out="$out dev";; 3) out="$out nvim";;
     4) out="$out ghostty";; 5) out="$out raycast";; 6) out="$out latex";;
     7) out="$out fonts";; 8) out="$out herdr-app";; 9) out="$out shell";;
+    f|F) out="$out fingerprint";;
   esac; done
   echo "${out:-$ALL_MODULES}"
 }
@@ -1169,7 +1310,8 @@ usage() {
   cat <<EOF
 Usage: bash setup.sh [options]
   --all                install everything, no prompts
-  --only m1,m2         only these modules ($ALL_MODULES)
+  --only m1,m2         only these modules ($ALL_MODULES, fingerprint)
+                       fingerprint (sudo via Touch ID / fingerprint) is opt-in: --all skips it
   --dry-run            print actions without doing them
   -h, --help           this help
 EOF
