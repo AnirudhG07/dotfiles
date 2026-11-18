@@ -759,6 +759,48 @@ module_nvim() {
   fi
 }
 
+module_fonts() {
+  install_nerd_font
+}
+
+module_latex() {
+  step "LaTeX (latexmk + VS Code extension)"
+  install_latexmk_script
+
+  if has code; then
+    info "code --install-extension James-Yu.latex-workshop"
+    run code --install-extension James-Yu.latex-workshop >/dev/null 2>&1 \
+      && ok "VS Code: LaTeX Workshop extension" || warn "VS Code extension install failed"
+  else
+    warn "VS Code ('code' on PATH) not found — install the 'LaTeX Workshop' extension manually once it is"
+  fi
+}
+
+# Just the latexmk script (a single perl file, no TeX distribution): CTAN ships it
+# standalone, so this skips BasicTeX/texlive entirely (hundreds of KB, not GBs).
+# A LaTeX engine (pdflatex/xelatex, from whatever TeX install you already use) is
+# still needed at build time — latexmk only drives it.
+install_latexmk_script() {
+  has latexmk && { ok "latexmk already installed"; return 0; }
+  has perl || warn "perl not found — latexmk needs it to run"
+  [ "$DRY_RUN" = 1 ] && { info "[dry-run] would fetch latexmk.pl from CTAN into $LOCAL_BIN/latexmk"; return 0; }
+  info "Fetching latexmk (just the script, from CTAN)"
+  local tmp; tmp="$(mktemp -d)"
+  if curl -fsSL https://mirrors.ctan.org/support/latexmk.zip -o "$tmp/latexmk.zip" \
+     && { (has unzip && unzip -o -q "$tmp/latexmk.zip" -d "$tmp") \
+          || (has python3 && python3 -m zipfile -e "$tmp/latexmk.zip" "$tmp"); } \
+     && [ -f "$tmp/latexmk/latexmk.pl" ]; then
+    mkdir -p "$LOCAL_BIN"
+    cp "$tmp/latexmk/latexmk.pl" "$LOCAL_BIN/latexmk" && chmod +x "$LOCAL_BIN/latexmk" \
+      && ok "latexmk -> $LOCAL_BIN/latexmk" \
+      || warn "couldn't place latexmk in $LOCAL_BIN"
+  else
+    warn "latexmk download/extract failed — get it yourself: https://mirrors.ctan.org/support/latexmk.zip"
+  fi
+  rm -rf "$tmp"
+  local_bin_first
+}
+
 module_ghostty() {
   step "Ghostty (config + terminfo)"
   # On a remote server we usually only need Ghostty's terminfo so keys/colors
@@ -950,8 +992,6 @@ module_shell() {
   # 'bin' stows ~/.local/bin scripts (mathlib, ...) — already on PATH. (nvim's config is deployed by the nvim module.)
   deploy_packages yazi bin
 
-  install_nerd_font
-
   # run the shell once so plugins/prompt finish installing now, not on first prompt
   warm_shell
 }
@@ -978,7 +1018,9 @@ interactive_account_setup() {
 
   step "Account setup — set up whichever you want (or skip)"
   if has gh; then
-    if gh auth status >/dev/null 2>&1; then
+    # gh auth status exits non-zero if *any* linked account's token is stale, even
+    # when the active one is fine; `gh api user` only checks the one that matters.
+    if gh api user >/dev/null 2>&1; then
       ok "GitHub CLI already authenticated"
     elif _ask "Authenticate GitHub CLI now (runs 'gh auth login')?"; then
       gh auth login || warn "gh auth login didn't finish — run it again anytime"
@@ -987,7 +1029,9 @@ interactive_account_setup() {
     fi
   fi
   if has claude; then
-    if _ask "Set up / log in to Claude Code now (opens 'claude'; exit it to return)?"; then
+    if claude auth status 2>/dev/null | grep -q '"loggedIn": *true'; then
+      ok "Claude Code already logged in"
+    elif _ask "Set up / log in to Claude Code now (opens 'claude'; exit it to return)?"; then
       claude || true
     else
       info "Skipped claude — run 'claude' later to log in. (alias: cr = claude -r)"
@@ -995,13 +1039,15 @@ interactive_account_setup() {
   fi
 }
 
-ALL_MODULES="core dev nvim ghostty herdr-app shell"
+ALL_MODULES="core dev nvim ghostty latex fonts herdr-app shell"
 
 run_module() { case "$1" in
   core)    module_core ;;
   dev)     module_dev ;;
   nvim)    module_nvim ;;
   ghostty) module_ghostty ;;
+  latex)   module_latex ;;
+  fonts)   module_fonts ;;
   herdr-app) module_herdr_app ;;
   shell)   module_shell ;;
   *) warn "unknown module: $1" ;;
@@ -1018,18 +1064,21 @@ choose_modules() {
   ${C_GRN}2${C_RST}) dev      — uv, python, node+nvm, gh, claude (cr = claude -r)
   ${C_GRN}3${C_RST}) nvim     — neovim >= 0.12 + treesitter + python & C/C++ LSPs (extras per machine)
   ${C_GRN}4${C_RST}) ghostty  — config + terminfo
-  ${C_GRN}5${C_RST}) herdr-app — herdr-core (hc) + my layout, mods, keys; asks before the desktop app
-  ${C_GRN}6${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
+  ${C_GRN}5${C_RST}) latex    — latexmk (script only, no TeX distro) + the VS Code LaTeX Workshop extension; asks first
+  ${C_GRN}6${C_RST}) fonts    — MesloLGS Nerd Font (install on whichever machine's terminal actually renders it)
+  ${C_GRN}7${C_RST}) herdr-app — herdr-core (hc) + my layout, mods, keys; asks before the desktop app
+  ${C_GRN}8${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
   ${C_GRN}a${C_RST}) all of the above   ${C_DIM}(default)${C_RST}
 EOF
-  printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 6' or 'a'): " >&2
+  printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 8' or 'a'): " >&2
   local ans; read -r ans || true
   ans="${ans:-a}"
   case "$ans" in *a*|"") echo "$ALL_MODULES"; return;; esac
   local out=""
   for n in $ans; do case "$n" in
     1) out="$out core";; 2) out="$out dev";; 3) out="$out nvim";;
-    4) out="$out ghostty";; 5) out="$out herdr-app";; 6) out="$out shell";;
+    4) out="$out ghostty";; 5) out="$out latex";; 6) out="$out fonts";;
+    7) out="$out herdr-app";; 8) out="$out shell";;
   esac; done
   echo "${out:-$ALL_MODULES}"
 }
@@ -1088,7 +1137,6 @@ main() {
     • ${C_B}nvim${C_RST}  — first launch finishes any remaining plugin/parser installs.
     • ${C_B}h${C_RST}     — hc (herdr-core): pick a terminal and attach, no desktop needed; ${C_B}herdr-app${C_RST} — the desktop app, if installed  ${C_DIM}(⌘/ shell, ⌘G lazygit, ⌘Y yazi popups)${C_RST}
     • ${C_B}cr${C_RST}    — claude -r
-    • Fonts: install a Nerd Font (MesloLGS NF) on your *local* machine's terminal.
 
   Configs are symlinked from ${C_B}$DOTFILES_DIR${C_RST}. Re-run this script anytime.
 EOF
