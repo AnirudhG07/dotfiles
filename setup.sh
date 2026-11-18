@@ -476,6 +476,11 @@ manual_stow() {
   ( cd "$src" && find . \( -type f -o -type l \) -print ) | while IFS= read -r rel; do
     rel="${rel#./}"
     local dest="$HOME/$rel"
+    # a stow destination must always land outside the repo; if it resolves back inside
+    # $DOTFILES_DIR we'd symlink a tracked file to itself and clobber it, so refuse instead
+    case "$dest" in
+      "$DOTFILES_DIR"/*|"$DOTFILES_DIR") warn "refusing to stow '$pkg': $rel would land inside $DOTFILES_DIR itself"; continue ;;
+    esac
     run mkdir -p "$(dirname "$dest")"
     if [ -e "$dest" ] && [ ! -L "$dest" ]; then
       run cp -n "$dest" "$dest.pre-dotfiles.bak" 2>/dev/null || true
@@ -801,6 +806,69 @@ install_latexmk_script() {
   local_bin_first
 }
 
+RAYCAST_DOWNLOAD="https://www.raycast.com/download"
+
+raycast_installed() { [ -d /Applications/Raycast.app ] || [ -d "$HOME/Applications/Raycast.app" ]; }
+
+# Official DMG (not the Homebrew cask, by request): raycast.com/download redirects straight to a
+# signed DMG for the given arch, no email-gate. Current Raycast builds are Apple Silicon only, so
+# Intel falls back to Homebrew's cask, which still carries older Intel-compatible releases.
+install_raycast_dmg() {
+  if [ "$ARCH" != arm64 ]; then
+    warn "Raycast's current DMG build is Apple Silicon only — falling back to Homebrew cask for Intel"
+    ensure_brew && run "$BREW" install --cask raycast
+    return
+  fi
+  [ "$DRY_RUN" = 1 ] && { info "[dry-run] would download the official Raycast DMG and install it to /Applications"; return 0; }
+  info "Downloading Raycast (official DMG)"
+  local tmp dmg mnt
+  tmp="$(mktemp -d)"; dmg="$tmp/Raycast.dmg"
+  if ! curl -fsSL "$RAYCAST_DOWNLOAD?architecture=arm64" -o "$dmg"; then
+    warn "Raycast download failed"; rm -rf "$tmp"; return 1
+  fi
+  mnt="$tmp/mnt"; mkdir -p "$mnt"
+  if ! hdiutil attach "$dmg" -nobrowse -quiet -mountpoint "$mnt"; then
+    warn "couldn't mount the Raycast DMG"; rm -rf "$tmp"; return 1
+  fi
+  if [ -d "$mnt/Raycast.app" ]; then
+    rm -rf /Applications/Raycast.app
+    cp -R "$mnt/Raycast.app" /Applications/ && ok "Raycast -> /Applications/Raycast.app" || warn "couldn't copy Raycast.app"
+  else
+    warn "Raycast.app not found inside the mounted DMG"
+  fi
+  hdiutil detach "$mnt" -quiet 2>/dev/null || true
+  rm -rf "$tmp"
+}
+
+# Raycast has no headless install API for Window Management or extensions (no CLI, no defaults
+# toggle — its settings live in an internal SQLite DB). The one thing that *is* scriptable end to
+# end is carrying over a `.rayconfig` export: deploy it here, point "Import Settings & Data" at it.
+module_raycast() {
+  step "Raycast (window manager + launcher)"
+  if [ "$OS" != mac ]; then
+    info "Raycast is mac-only — skipping"
+    return 0
+  fi
+
+  if raycast_installed; then
+    ok "Raycast already installed"
+  elif confirm "Install Raycast (official DMG)?" y; then
+    install_raycast_dmg
+  else
+    info "Skipping Raycast"
+    return 0
+  fi
+
+  deploy_packages raycast
+
+  if [ "$DRY_RUN" != 1 ] && raycast_installed; then
+    open -g -a Raycast 2>/dev/null || true
+  fi
+  if [ -f "$DOTFILES_DIR/raycast/.config/raycast/raycast-settings.rayconfig" ]; then
+    info "To bring over Window Management + hotkeys: open Raycast -> type \"Import Settings & Data\" -> Enter -> pick ~/.config/raycast/raycast-settings.rayconfig -> enter the export passphrase (yours — not stored in this repo)"
+  fi
+}
+
 module_ghostty() {
   step "Ghostty (config + terminfo)"
   # On a remote server we usually only need Ghostty's terminfo so keys/colors
@@ -1039,13 +1107,14 @@ interactive_account_setup() {
   fi
 }
 
-ALL_MODULES="core dev nvim ghostty latex fonts herdr-app shell"
+ALL_MODULES="core dev nvim ghostty raycast latex fonts herdr-app shell"
 
 run_module() { case "$1" in
   core)    module_core ;;
   dev)     module_dev ;;
   nvim)    module_nvim ;;
   ghostty) module_ghostty ;;
+  raycast) module_raycast ;;
   latex)   module_latex ;;
   fonts)   module_fonts ;;
   herdr-app) module_herdr_app ;;
@@ -1064,21 +1133,22 @@ choose_modules() {
   ${C_GRN}2${C_RST}) dev      — uv, python, node+nvm, gh, claude (cr = claude -r)
   ${C_GRN}3${C_RST}) nvim     — neovim >= 0.12 + treesitter + python & C/C++ LSPs (extras per machine)
   ${C_GRN}4${C_RST}) ghostty  — config + terminfo
-  ${C_GRN}5${C_RST}) latex    — latexmk (script only, no TeX distro) + the VS Code LaTeX Workshop extension; asks first
-  ${C_GRN}6${C_RST}) fonts    — MesloLGS Nerd Font (install on whichever machine's terminal actually renders it)
-  ${C_GRN}7${C_RST}) herdr-app — herdr-core (hc) + my layout, mods, keys; asks before the desktop app
-  ${C_GRN}8${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
+  ${C_GRN}5${C_RST}) raycast  — official DMG install + my exported window-manager/hotkey settings (mac only)
+  ${C_GRN}6${C_RST}) latex    — latexmk (script only, no TeX distro) + the VS Code LaTeX Workshop extension
+  ${C_GRN}7${C_RST}) fonts    — MesloLGS Nerd Font (install on whichever machine's terminal actually renders it)
+  ${C_GRN}8${C_RST}) herdr-app — herdr-core (hc) + my layout, mods, keys; asks before the desktop app
+  ${C_GRN}9${C_RST}) shell    — $SHELL_TARGET + powerlevel10k prompt + my aliases/configs, stow-deploy
   ${C_GRN}a${C_RST}) all of the above   ${C_DIM}(default)${C_RST}
 EOF
-  printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 8' or 'a'): " >&2
+  printf '%s' "${C_CYN}?${C_RST} Enter choices (e.g. '1 3 9' or 'a'): " >&2
   local ans; read -r ans || true
   ans="${ans:-a}"
   case "$ans" in *a*|"") echo "$ALL_MODULES"; return;; esac
   local out=""
   for n in $ans; do case "$n" in
     1) out="$out core";; 2) out="$out dev";; 3) out="$out nvim";;
-    4) out="$out ghostty";; 5) out="$out latex";; 6) out="$out fonts";;
-    7) out="$out herdr-app";; 8) out="$out shell";;
+    4) out="$out ghostty";; 5) out="$out raycast";; 6) out="$out latex";;
+    7) out="$out fonts";; 8) out="$out herdr-app";; 9) out="$out shell";;
   esac; done
   echo "${out:-$ALL_MODULES}"
 }
