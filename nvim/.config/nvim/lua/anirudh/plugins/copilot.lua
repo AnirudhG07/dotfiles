@@ -7,7 +7,10 @@ return {
 		},
 		build = "make tiktoken",
 		opts = {
-			-- model = "claude-4-sonnet",
+			-- "auto": GitHub picks the current default model per request, so nothing goes stale when
+			-- Copilot retires a model (the plugin's built-in default gpt-5-mini no longer exists).
+			-- Pick another for one chat with :CopilotChatModels, or $model in the prompt.
+			model = "auto",
 			window = {
 				layout = "float",
 				border = "rounded",
