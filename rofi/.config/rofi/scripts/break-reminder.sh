@@ -9,6 +9,11 @@ BREAK_MINS=3
 ROFI="env WAYLAND_DISPLAY= /usr/local/bin/rofi -normal-window"
 SNOOZE_FILE="/tmp/rofi-break-snooze"
 
+# Only run when a local graphical session is active (skip on SSH-only logins)
+if ! loginctl show-session "$(loginctl show-user "$USER" -p Display --value 2>/dev/null)" -p Type --value 2>/dev/null | grep -qE 'wayland|x11'; then
+    exit 0
+fi
+
 # Check for active snooze
 if [ -f "$SNOOZE_FILE" ]; then
     snooze_until=$(cat "$SNOOZE_FILE")

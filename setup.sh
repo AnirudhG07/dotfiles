@@ -941,6 +941,45 @@ deploy_herdr_app_config() {
   # (the app writes plenty of state of its own in there)
   run mkdir -p "$h/mods" "$h/layouts" "$h/themes"
   deploy_packages herdr-app
+
+  # Linux: replace the macOS keys.json (stowed) with the Linux variant
+  if [ "$OS" = linux ] && [ "$DRY_RUN" != 1 ]; then
+    rm -f "$h/keys.json"
+    cp "$DOTFILES/herdr-app/keys-linux.json" "$h/keys.json"
+    ok "herdr keys: Linux (Ctrl-based)"
+  fi
+
+  # register custom mods in installed.json so the app loads them
+  if [ "$DRY_RUN" != 1 ]; then
+    local ij="$h/installed.json"
+    [ -f "$ij" ] || printf '{}\n' > "$ij"
+    python3 -c "
+import json, os, hashlib, sys
+ij_path = sys.argv[1]
+mods_dir = sys.argv[2]
+with open(ij_path) as f:
+    installed = json.load(f)
+changed = False
+for mod in os.listdir(mods_dir):
+    mod_dir = os.path.join(mods_dir, mod)
+    if not os.path.isdir(mod_dir): continue
+    if mod in installed: continue
+    entry = {}
+    for fname in os.listdir(mod_dir):
+        fpath = os.path.join(mod_dir, fname)
+        if not os.path.isfile(fpath): continue
+        h = hashlib.blake2b(open(fpath,'rb').read(), digest_size=8).hexdigest()
+        entry[fname] = h
+    if entry:
+        installed[mod] = entry
+        changed = True
+        print(f'  registered mod: {mod}', file=sys.stderr)
+if changed:
+    with open(ij_path, 'w') as f:
+        json.dump(installed, f, indent=4)
+" "$ij" "$h/mods" 2>&1 | while read -r line; do info "$line"; done
+  fi
+
   # first start: open on my layout (afterwards the app keeps this file itself)
   if [ "$DRY_RUN" != 1 ] && [ ! -e "$h/shared.json" ]; then
     printf '{"layout":"anirudh","workspace.panels":["files","changes"]}\n' > "$h/shared.json"
