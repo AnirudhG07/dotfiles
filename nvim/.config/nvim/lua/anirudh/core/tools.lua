@@ -22,7 +22,9 @@ M.core_mason = {
 M.core_treesitter = {
 	"bash",
 	"c",
+	"cpp",
 	"css",
+	"cuda",
 	"csv",
 	"dockerfile",
 	"gitignore",

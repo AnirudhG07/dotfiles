@@ -156,7 +156,7 @@ desc = "Recursively enter parent directory, skipping parents with only a single 
 [[mgr.prepend_keymap]]
 on  = [ "<C-n>" ]
 run = '''
-	shell 'open -R "$1"' --confirm
+	shell 'open -R %s1' --confirm
 '''
 desc = "Open file in Finder to drag and drop"
 ## Testing plugin for understanding
@@ -224,7 +224,7 @@ desc = "easyjump"
 [[mgr.prepend_keymap]]
 on = [ "<C-v>" ]
 run = '''
-  shell --confirm 'qlmanage -p "$@"'
+  shell --confirm 'qlmanage -p %s'
 '''
 desc = "Preview"
 for = "macos"
@@ -242,7 +242,7 @@ run = '''
 [[mgr.prepend_keymap]]
 on = "<C-p>"
 run = '''
-  shell 'qlmanage -p "$@"' --confirm
+  shell 'qlmanage -p %s' --confirm
 '''
 
 [[mgr.prepend_keymap]]
@@ -254,7 +254,7 @@ desc = "Browse repo on github"
 [[mgr.prepend_keymap]]
 on = [ "g", "f"]
 run = '''
-    shell 'gh browse $(git ls-files $0) --branch=$(git branch --show-current)'
+    shell 'gh browse $(git ls-files %h) --branch=$(git branch --show-current)'
 '''
 desc = "Browse file on github"
 
