@@ -9,8 +9,21 @@ BREAK_MINS=3
 ROFI="env WAYLAND_DISPLAY= /usr/local/bin/rofi -normal-window"
 SNOOZE_FILE="/tmp/rofi-break-snooze"
 
-# Only run when a local graphical session is active (skip on SSH-only logins)
+# Only run when someone is actively using the desktop right now:
+#  1. graphical session exists
+#  2. screen is not locked
+#  3. monitor is on (DPMS power-save mode 0)
+#  4. user is not idle > 5 min
 if ! loginctl show-session "$(loginctl show-user "$USER" -p Display --value 2>/dev/null)" -p Type --value 2>/dev/null | grep -qE 'wayland|x11'; then
+    exit 0
+fi
+if gdbus call --session --dest=org.gnome.ScreenSaver --object-path /org/gnome/ScreenSaver --method org.gnome.ScreenSaver.GetActive 2>/dev/null | grep -q 'true'; then
+    exit 0
+fi
+dpms=$(gdbus call --session --dest=org.gnome.Mutter.DisplayConfig --object-path /org/gnome/Mutter/DisplayConfig \
+    --method org.freedesktop.DBus.Properties.Get org.gnome.Mutter.DisplayConfig PowerSaveMode 2>/dev/null \
+    | grep -oP '<\K[0-9]+')
+if [ -n "$dpms" ] && [ "$dpms" -ne 0 ]; then
     exit 0
 fi
 
@@ -33,9 +46,6 @@ idle_ms=$(dbus-send --print-reply --dest=org.gnome.Mutter.IdleMonitor \
 if [ -z "$idle_ms" ] || [ "$idle_ms" -ge "$IDLE_THRESHOLD_MS" ]; then
     exit 0
 fi
-
-# Launch the break screen directly (3 min)
-notify-send "Break Time" "Starting a $BREAK_MINS minute break. Relax!" -t 3000
 
 secs=$((BREAK_MINS * 60))
 
@@ -154,7 +164,6 @@ if [ "$exit_code" -eq 1 ]; then
         mins=$($ROFI -dmenu -p "Minutes" -i -lines 0)
         [ -z "$mins" ] && exit 0
         if ! [[ "$mins" =~ ^[0-9]+$ ]] || [ "$mins" -eq 0 ]; then
-            notify-send "Snooze" "Invalid number" -t 2000
             exit 1
         fi
         snooze="$mins minutes"
@@ -167,7 +176,4 @@ if [ "$exit_code" -eq 1 ]; then
     # Schedule a one-shot timer to re-trigger after snooze
     systemd-run --user --on-active="${mins}m" --unit=break-snooze \
         bash "$HOME/.config/rofi/scripts/break-reminder.sh" 2>/dev/null
-    notify-send "Break Snoozed" "Next break in $snooze" -t 3000
-else
-    notify-send "Break Over" "Welcome back! 💪" -t 3000
 fi
